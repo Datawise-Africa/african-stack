@@ -1,0 +1,186 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { ArrowRight } from '@lucide/astro';
+
+const title = "Newsletter Archive - The African Stack";
+
+// Sample newsletter data - in a real app, this would come from a CMS or database
+const newsletters = [
+  {
+    id: 12,
+    title: "The Future of African Fintech",
+    date: "December 2024",
+    summary: "Exploring how mobile money, blockchain, and AI are reshaping financial services across Africa.",
+    readTime: "8 min read",
+    category: "Fintech"
+  },
+  {
+    id: 11,
+    title: "Data Centers: Africa's Digital Backbone",
+    date: "November 2024",
+    summary: "The rapid expansion of data center infrastructure across the continent and its impact on digital transformation.",
+    readTime: "6 min read",
+    category: "Infrastructure"
+  },
+  {
+    id: 10,
+    title: "AI in African Healthcare",
+    date: "October 2024",
+    summary: "How artificial intelligence is revolutionizing healthcare delivery and diagnosis in remote African communities.",
+    readTime: "10 min read",
+    category: "Healthcare"
+  },
+  {
+    id: 9,
+    title: "Renewable Energy & Tech",
+    date: "September 2024",
+    summary: "Solar, wind, and hydroelectric power projects driving sustainable development and tech innovation.",
+    readTime: "7 min read",
+    category: "Energy"
+  },
+  {
+    id: 8,
+    title: "E-commerce Revolution",
+    date: "August 2024",
+    summary: "The rise of digital marketplaces and how they're transforming retail and commerce across Africa.",
+    readTime: "9 min read",
+    category: "E-commerce"
+  },
+  {
+    id: 7,
+    title: "Smart Cities & IoT",
+    date: "July 2024",
+    summary: "Internet of Things solutions creating intelligent urban environments and improving quality of life.",
+    readTime: "8 min read",
+    category: "Smart Cities"
+  }
+];
+---
+
+<Layout title={title}>
+  <!-- Header Section -->
+  <section class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6">Newsletter Archive</h1>
+      <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
+        Explore our collection of insights on Africa's data, infrastructure, and intelligence landscape
+      </p>
+    </div>
+  </section>
+
+  <!-- Archive Grid -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Filter Tabs -->
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <button class="px-6 py-3 bg-indigo-600 text-white rounded-full font-medium hover:bg-indigo-700 transition-colors duration-300">
+          All Issues
+        </button>
+        <button class="px-6 py-3 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 transition-colors duration-300 border border-gray-200">
+          Data & AI
+        </button>
+        <button class="px-6 py-3 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 transition-colors duration-300 border border-gray-200">
+          Infrastructure
+        </button>
+        <button class="px-6 py-3 bg-white text-gray-700 rounded-full font-medium hover:bg-gray-100 transition-colors duration-300 border border-gray-200">
+          Fintech
+        </button>
+      </div>
+
+      <!-- Newsletter Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {newsletters.map((newsletter) => (
+          <article class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
+            <!-- Card Header -->
+            <div class="p-6 border-b border-gray-100">
+              <div class="flex items-center justify-between mb-4">
+                <span class="px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-medium rounded-full">
+                  #{newsletter.id}
+                </span>
+                <span class="text-sm text-gray-500">{newsletter.readTime}</span>
+              </div>
+              <h3 class="text-xl font-bold text-gray-900 mb-2 leading-tight">
+                {newsletter.title}
+              </h3>
+              <p class="text-gray-600 leading-relaxed">
+                {newsletter.summary}
+              </p>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="p-6 bg-gray-50">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full">
+                    {newsletter.category}
+                  </span>
+                  <span class="text-sm text-gray-500">{newsletter.date}</span>
+                </div>
+                                  <a 
+                    href={`/article/${newsletter.id}`} 
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+                  >
+                    Read More
+                    <ArrowRight class="w-4 h-4" />
+                  </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Load More Button -->
+      <div class="text-center mt-16">
+        <button class="px-8 py-4 bg-white text-indigo-600 border-2 border-indigo-600 rounded-full font-semibold hover:bg-indigo-600 hover:text-white transition-all duration-300 hover:shadow-xl">
+          Load More Issues
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Subscribe Section -->
+  <section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Never Miss an Issue</h2>
+      <p class="text-xl opacity-90 mb-8">
+        Get the latest insights on Africa's tech future delivered directly to your inbox
+      </p>
+      
+      <form class="max-w-md mx-auto" id="archive-signup">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input 
+            type="email" 
+            placeholder="Enter your email" 
+            required
+            class="flex-1 px-6 py-4 bg-white/10 border border-white/20 rounded-full text-white placeholder-white/70 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all duration-300"
+          >
+          <button 
+            type="submit" 
+            class="px-8 py-4 bg-white text-indigo-600 font-semibold rounded-full hover:shadow-2xl hover:shadow-white/25 transition-all duration-300 hover:-translate-y-1"
+          >
+            Subscribe
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Handle form submission
+  document.addEventListener('DOMContentLoaded', function() {
+    const archiveForm = document.getElementById('archive-signup');
+
+    if (archiveForm) {
+      archiveForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = e.target.querySelector('input[type="email"]');
+        const emailValue = email.value;
+        
+        // Here you would integrate with Mailchimp, ConvertKit, or your preferred service
+        alert(`Thank you for subscribing with: ${emailValue}`);
+        e.target.reset();
+      });
+    }
+  });
+</script>
