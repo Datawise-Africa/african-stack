@@ -8,7 +8,7 @@ publishDate: "June 15, 2025"
 image: "/futuristic-ai-holographic-interface.png"
 author:
   name: "Felix Orinda"
-  avatar: "/professional-woman-scientist.png"
+  avatar: "/forinda.jpg"
   bio: "AI Research Scientist specializing in multimodal systems and human-computer interaction."
 tags: 
   - "Multimodal AI"

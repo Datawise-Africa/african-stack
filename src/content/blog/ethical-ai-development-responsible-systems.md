@@ -7,8 +7,8 @@ readTime: "12 min read"
 publishDate: "June 12, 2025"
 image: "/ethical-ai-scales.png"
 author:
-  name: "Dorothy"
-  avatar: "/professional-professor.png"
+  name: "Albert Kahira"
+  avatar: "/albert-kahira.jpeg"
   bio: "Ethics in AI researcher and professor at MIT, focusing on responsible AI development."
 tags: 
   - "AI Ethics"

@@ -8,7 +8,7 @@ publishDate: "May 5, 2025"
 image: "/medical-ai-hologram.png"
 author:
   name: "Brian Odhiambo"
-  avatar: "/placeholder-user.jpg"
+  avatar: "/brian-odhiambo.jpg"
   bio: "Medical AI researcher and practicing physician specializing in AI integration in clinical settings."
 tags: 
   - "Healthcare"

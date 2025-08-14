@@ -8,7 +8,7 @@ publishDate: "June 8, 2025"
 image: "/abstract-neural-network-text.png"
 author:
   name: "Winny"
-  avatar: "/ai-researcher-portrait.png"
+  avatar: "/winny.jpg"
   bio: "Lead AI Researcher at OpenAI and advisor to multiple AI startups."
 tags: 
   - "LLMs"

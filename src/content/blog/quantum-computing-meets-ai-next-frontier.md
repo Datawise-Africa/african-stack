@@ -7,8 +7,8 @@ readTime: "10 min read"
 publishDate: "April 10, 2025"
 image: "/quantum-ai-visualization.png"
 author:
-  name: "Albert"
-  avatar: "/placeholder-xo9ak.png"
+  name: "Albert Kahira"
+  avatar: "/albert-kahira.jpeg"
   bio: "Quantum computing researcher and AI specialist at IBM Quantum Network."
 tags: 
   - "Quantum Computing"

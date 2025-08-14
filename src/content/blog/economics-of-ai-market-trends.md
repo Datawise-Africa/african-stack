@@ -7,8 +7,8 @@ readTime: "7 min read"
 publishDate: "April 3, 2025"
 image: "/financial-ai-growth.png"
 author:
-  name: "Albert"
-  avatar: "/placeholder-user.jpg"
+  name: "Albert Kahira"
+  avatar: "/albert-kahira.jpeg"
   bio: "Professor of Economics specializing in technological innovation and market dynamics."
 tags: 
   - "AI Economics"
