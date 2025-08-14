@@ -1,0 +1,121 @@
+---
+// FeaturedArticles component using Astro Content Collections
+import { getCollection } from "astro:content";
+
+// Get all blog posts
+const allBlogPosts = await getCollection("blog");
+
+// Sort by publish date (most recent first)
+const sortedPosts = allBlogPosts.sort((a, b) => {
+  return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+});
+
+// Featured articles (posts with featured: true)
+const featuredArticles = sortedPosts.filter(post => post.data.featured === true);
+
+// Recent articles (excluding featured ones, take 3 most recent)
+const recentArticles = sortedPosts
+  .filter(post => post.data.featured !== true)
+  .slice(0, 3);
+---
+
+<section class="py-16 lg:py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Featured Articles -->
+    <div class="mb-16">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="font-serif font-bold text-3xl lg:text-4xl text-foreground">Featured Articles</h2>
+        <a
+          href="/blog"
+          class="text-blue-600 hover:text-blue-500 font-medium flex items-center gap-1 transition-colors"
+        >
+          View all
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+        </a>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        {featuredArticles.map((article) => (
+          <div class="group hover:shadow-xl transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-1 rounded-lg overflow-hidden">
+            <div class="aspect-video overflow-hidden">
+              <img
+                src={article.data.image || "/placeholder.svg"}
+                alt={article.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div class="p-6">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                  {article.data.category}
+                </span>
+              </div>
+              <h3 class="font-serif font-semibold text-xl leading-tight group-hover:text-blue-600 transition-colors mb-3">
+                <a href={`/blog/${article.slug}`}>{article.data.title}</a>
+              </h3>
+              <p class="text-muted-foreground mb-4 leading-relaxed">{article.data.excerpt}</p>
+              <div class="flex items-center gap-4 text-sm text-muted-foreground">
+                <div class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  {article.data.publishDate}
+                </div>
+                <div class="flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  {article.data.readTime}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Recent Articles -->
+    <div>
+      <h2 class="font-serif font-bold text-3xl lg:text-4xl text-foreground mb-8">Recent Articles</h2>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {recentArticles.map((article) => (
+          <div class="group hover:shadow-lg transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-0.5 rounded-lg overflow-hidden">
+            <div class="aspect-video overflow-hidden">
+              <img
+                src={article.data.image || "/placeholder.svg"}
+                alt={article.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div class="p-4">
+              <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium w-fit mb-2 inline-block">
+                {article.data.category}
+              </span>
+              <h3 class="font-serif font-semibold text-lg leading-tight group-hover:text-blue-600 transition-colors mb-2">
+                <a href={`/blog/${article.slug}`}>{article.data.title}</a>
+              </h3>
+              <p class="text-muted-foreground text-sm mb-3 leading-relaxed">{article.data.excerpt}</p>
+              <div class="flex items-center gap-3 text-xs text-muted-foreground">
+                <div class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  {article.data.publishDate}
+                </div>
+                <div class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  {article.data.readTime}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

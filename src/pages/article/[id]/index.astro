@@ -1,0 +1,174 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Navigation from '../../../components/Navigation.astro';
+import Footer from '../../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  // In a real app, you'd fetch this from your CMS or database
+  const articles = [
+    {
+      id: 1,
+      title: "The Rise of Multimodal AI: Transforming Human-Computer Interaction",
+      excerpt: "Explore how multimodal AI systems are revolutionizing the way we interact with technology, combining vision, language, and audio processing.",
+      category: "Machine Learning",
+      readTime: "8 min read",
+      publishDate: "Dec 15, 2024",
+      image: "/futuristic-ai-neural-network.png",
+      featured: true,
+      content: `
+        <p>Artificial Intelligence has evolved significantly over the past decade, moving from single-modal systems that could only process one type of input (like text or images) to sophisticated multimodal systems that can understand and integrate information from multiple sources simultaneously.</p>
+        
+        <h2>What is Multimodal AI?</h2>
+        <p>Multimodal AI refers to artificial intelligence systems that can process and understand information from multiple modalities or data types. These systems can integrate visual, textual, auditory, and sometimes even tactile information to make more informed decisions and provide more comprehensive responses.</p>
+        
+        <h2>Key Applications</h2>
+        <p>From autonomous vehicles that combine camera feeds, radar, and GPS data to virtual assistants that can see, hear, and respond to users, multimodal AI is transforming how we interact with technology.</p>
+        
+        <h2>The Future of Human-Computer Interaction</h2>
+        <p>As these systems become more sophisticated, we're moving toward more natural and intuitive ways of interacting with computers. The future promises interfaces that can understand context, emotion, and intent across multiple channels.</p>
+      `
+    },
+    {
+      id: 2,
+      title: "Ethical AI Development: Building Responsible Systems",
+      excerpt: "A deep dive into the principles and practices needed to develop AI systems that are fair, transparent, and beneficial for society.",
+      category: "AI Ethics",
+      readTime: "12 min read",
+      publishDate: "Dec 12, 2024",
+      image: "/ai-ethics-balance.png",
+      featured: true,
+      content: `
+        <p>As artificial intelligence becomes increasingly integrated into our daily lives, the importance of developing these systems ethically and responsibly cannot be overstated.</p>
+        
+        <h2>Core Principles of Ethical AI</h2>
+        <p>Ethical AI development is built on several foundational principles: fairness, transparency, accountability, and beneficence. Each of these principles guides developers in creating systems that serve humanity's best interests.</p>
+        
+        <h2>Addressing Bias and Fairness</h2>
+        <p>One of the most critical challenges in AI development is ensuring that systems are fair and unbiased. This requires careful attention to training data, algorithm design, and ongoing monitoring.</p>
+        
+        <h2>Transparency and Explainability</h2>
+        <p>Users and stakeholders need to understand how AI systems make decisions. This transparency is crucial for building trust and ensuring accountability.</p>
+      `
+    }
+  ];
+
+  return articles.map(article => ({
+    params: { id: article.id.toString() },
+    props: { article }
+  }));
+}
+
+const { article } = Astro.props;
+---
+
+<Layout title={`${article.title} - AI Insights Blog`}>
+  <div class="min-h-screen bg-background">
+    <Navigation />
+    <main>
+      <!-- Article Header -->
+      <section class="py-16 lg:py-24 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/20 dark:to-background">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="mb-6">
+            <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-3 py-1 rounded-full text-sm font-medium">
+              {article.category}
+            </span>
+          </div>
+          
+          <h1 class="font-serif font-bold text-3xl sm:text-4xl lg:text-5xl text-foreground mb-6 leading-tight">
+            {article.title}
+          </h1>
+          
+          <p class="text-xl text-muted-foreground mb-8 leading-relaxed">
+            {article.excerpt}
+          </p>
+          
+          <div class="flex items-center gap-6 text-sm text-muted-foreground">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              {article.publishDate}
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              {article.readTime}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Article Content -->
+      <section class="py-16 lg:py-24">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="mb-12">
+            <img
+              src={article.image}
+              alt={article.title}
+              class="w-full h-64 lg:h-96 object-cover rounded-lg"
+            />
+          </div>
+          
+          <article class="prose prose-lg max-w-none">
+            <div set:html={article.content}></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Related Articles -->
+      <section class="py-16 lg:py-24 bg-muted/30">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="font-serif font-bold text-3xl lg:text-4xl text-foreground mb-12 text-center">
+            Related Articles
+          </h2>
+          
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="group hover:shadow-lg transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 rounded-lg overflow-hidden">
+              <div class="aspect-video overflow-hidden">
+                <img
+                  src="/quantum-ai-integration.png"
+                  alt="Quantum AI"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div class="p-6">
+                <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                  Quantum AI
+                </span>
+                <h3 class="font-serif font-semibold text-xl leading-tight group-hover:text-blue-600 transition-colors mt-3 mb-2">
+                  <a href="/article/3">Quantum Computing Meets AI: The Next Frontier</a>
+                </h3>
+                <p class="text-muted-foreground text-sm">
+                  Discover how quantum computing is poised to accelerate AI capabilities and solve previously intractable problems.
+                </p>
+              </div>
+            </div>
+            
+            <div class="group hover:shadow-lg transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 rounded-lg overflow-hidden">
+              <div class="aspect-video overflow-hidden">
+                <img
+                  src="/ai-safety-shield.png"
+                  alt="AI Safety"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div class="p-6">
+                <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                  AI Safety
+                </span>
+                <h3 class="font-serif font-semibold text-xl leading-tight group-hover:text-blue-600 transition-colors mt-3 mb-2">
+                  <a href="/article/9">AI Safety: Ensuring Beneficial AI Development</a>
+                </h3>
+                <p class="text-muted-foreground text-sm">
+                  Critical considerations for developing AI systems that are safe and beneficial for humanity.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </div>
+</Layout>

@@ -1,0 +1,146 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "../../layouts/MainLayout.astro";
+
+// Get query parameters
+const { category, page = 1 } = Astro.url.searchParams;
+const currentPage = parseInt(page.toString()) || 1;
+const postsPerPage = 6; // Number of posts per page
+
+// Get all blog posts
+const allPosts = await getCollection("blog");
+
+// Sort by publish date (most recent first)
+const sortedPosts = allPosts.sort((a, b) => {
+  return new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime();
+});
+
+// Filter by category if specified
+const filteredPosts = category 
+  ? sortedPosts.filter(post => post.data.category === category)
+  : sortedPosts;
+
+// Get all unique categories for filter options
+const categories = [...new Set(sortedPosts.map(post => post.data.category))];
+
+// Pagination
+const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+const paginatedPosts = filteredPosts.slice(
+  (currentPage - 1) * postsPerPage, 
+  currentPage * postsPerPage
+);
+
+// Create pagination URLs
+const createPageURL = (pageNum: number) => {
+  const url = new URL(Astro.request.url);
+  url.searchParams.set('page', pageNum.toString());
+  return url.pathname + url.search;
+};
+---
+
+<MainLayout title="Blog">
+  <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+      <h1 class="font-serif font-bold text-4xl md:text-5xl">Blog Articles</h1>
+      
+      <div class="flex flex-wrap gap-2">
+        <a 
+          href="/blog" 
+          class={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${!category ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+        >
+          All
+        </a>
+        {categories.map((cat) => (
+          <a 
+            href={`/category/${cat.toLowerCase().replace(/\s+/g, '-')}`}
+            class={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${category === cat ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}`}
+          >
+            {cat}
+          </a>
+        ))}
+      </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {paginatedPosts.map((post) => (
+        <div class="group hover:shadow-lg transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-0.5 rounded-lg overflow-hidden">
+          <div class="aspect-video overflow-hidden">
+            <img
+              src={post.data.image || "/placeholder.svg"}
+              alt={post.data.title}
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                {post.data.category}
+              </span>
+              {post.data.featured && (
+                <span class="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-2 py-1 rounded-full text-xs font-medium">
+                  Featured
+                </span>
+              )}
+            </div>
+            <h3 class="font-serif font-semibold text-xl leading-tight group-hover:text-blue-600 transition-colors mb-3">
+              <a href={`/blog/${post.data.id}`}>{post.data.title}</a>
+            </h3>
+            <p class="text-muted-foreground mb-4 line-clamp-2 leading-relaxed">{post.data.excerpt}</p>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full overflow-hidden">
+                  <img
+                    src={post.data.author.avatar}
+                    alt={post.data.author.name}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <span class="text-sm font-medium">{post.data.author.name}</span>
+              </div>
+              <div class="flex items-center gap-1 text-sm text-muted-foreground">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                {post.data.publishDate}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    {/* Pagination */}
+    {totalPages > 1 && (
+      <div class="flex justify-center items-center gap-2 mt-12">
+        {currentPage > 1 && (
+          <a 
+            href={createPageURL(currentPage - 1)} 
+            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          >
+            Previous
+          </a>
+        )}
+        
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+          <a 
+            href={createPageURL(pageNum)} 
+            class={`px-3 py-1.5 rounded-md transition-colors ${currentPage === pageNum 
+              ? 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-100' 
+              : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700'}`}
+          >
+            {pageNum}
+          </a>
+        ))}
+        
+        {currentPage < totalPages && (
+          <a 
+            href={createPageURL(currentPage + 1)} 
+            class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          >
+            Next
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+</Layout>
