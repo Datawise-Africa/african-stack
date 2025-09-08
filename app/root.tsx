@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import TanstackQueryProvider from "./providers/tanstack";
+import { ThemeProvider } from "./providers/theme";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,9 +46,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <>
-      <TanstackQueryProvider>
-        <Outlet />;
-      </TanstackQueryProvider>
+      <ThemeProvider>
+        <TanstackQueryProvider>
+          <Outlet />;
+        </TanstackQueryProvider>
+      </ThemeProvider>
     </>
   );
 }

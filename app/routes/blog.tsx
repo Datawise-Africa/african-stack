@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useLocation, useSearchParams } from "react-router";
+import { useLocation, useSearchParams, Link } from "react-router";
 import MainLayout from "~/components/_layouts/main";
 import { useArticlesQuery } from "~/queries/articles/query";
 import { useCategoriesQuery } from "~/queries/categories/query";
@@ -67,8 +67,8 @@ export default function Blog() {
                 href="/blog"
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   !categoryParam
-                    ? "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
-                    : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                    ? "bg-primary/20 text-primary border border-primary/30"
+                    : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground border border-border"
                 }`}
               >
                 All
@@ -79,8 +79,8 @@ export default function Blog() {
                   href={`/blog?category=${cat.toLowerCase().replace(/\s+/g, "-")}`}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     categoryParam === cat.toLowerCase().replace(/\s+/g, "-")
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
-                      : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+                      ? "bg-primary/20 text-primary border border-primary/30"
+                      : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground border border-border"
                   }`}
                 >
                   {cat}
@@ -93,7 +93,7 @@ export default function Blog() {
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[400px]">
             <div className="flex flex-col items-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
               <p className="mt-4 text-lg">Loading articles...</p>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function Blog() {
           <div className="flex justify-center items-center min-h-[400px] text-center">
             <div>
               <h3 className="text-2xl font-semibold mb-2">No articles found</h3>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground">
                 {categoryParam 
                   ? `No articles found in the "${categoryParam}" category.` 
                   : "No articles found. Check back later for new content."}
@@ -111,7 +111,7 @@ export default function Blog() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {paginatedPosts.map((article) => (
-            <div key={article.id} className="group hover:shadow-lg transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-0.5 rounded-lg overflow-hidden">
+            <div key={article.id} className="group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/50 hover:-translate-y-0.5 rounded-lg overflow-hidden bg-card">
               <div className="aspect-video overflow-hidden">
                 <img
                   src={article.image || "/placeholder.svg"}
@@ -121,17 +121,17 @@ export default function Blog() {
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                  <span className="bg-primary/20 text-primary px-2 py-1 rounded-full text-xs font-medium border border-primary/30">
                     {article.category}
                   </span>
                   {article.featured && (
-                    <span className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-2 py-1 rounded-full text-xs font-medium">
+                    <span className="bg-accent/20 text-accent-foreground px-2 py-1 rounded-full text-xs font-medium border border-accent/30">
                       Featured
                     </span>
                   )}
                 </div>
-                <h3 className="font-serif font-semibold text-xl leading-tight group-hover:text-blue-600 transition-colors mb-3">
-                  <a href={`/blog/${article.id}`}>{article.title}</a>
+                <h3 className="font-serif font-semibold text-xl leading-tight group-hover:text-primary transition-colors mb-3">
+                  <Link to={`/blog/${article.id}`}>{article.title}</Link>
                 </h3>
                 <p className="text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
                   {article.excerpt}
@@ -178,7 +178,7 @@ export default function Blog() {
             {currentPage > 1 && (
               <a
                 href={createPageURL(currentPage - 1)}
-                className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground rounded-md border border-border transition-colors"
               >
                 Previous
               </a>
@@ -189,10 +189,10 @@ export default function Blog() {
                 <a
                   key={pageNum}
                   href={createPageURL(pageNum)}
-                  className={`px-3 py-1.5 rounded-md transition-colors ${
+                  className={`px-3 py-1.5 rounded-md transition-colors border ${
                     currentPage === pageNum
-                      ? "bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-100"
-                      : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+                      ? "bg-primary/20 text-primary border-primary/30"
+                      : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground border-border"
                   }`}
                 >
                   {pageNum}
@@ -203,7 +203,7 @@ export default function Blog() {
             {currentPage < totalPages && (
               <a
                 href={createPageURL(currentPage + 1)}
-                className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground rounded-md border border-border transition-colors"
               >
                 Next
               </a>

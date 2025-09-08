@@ -12,7 +12,7 @@ export default function FeaturedArticles() {
         <h2 className="font-serif font-bold text-3xl lg:text-4xl text-foreground">Featured Articles</h2>
         <a
           href="/blog"
-          className="text-blue-600 hover:text-blue-500 font-medium flex items-center gap-1 transition-colors"
+          className="text-primary hover:text-primary/80 font-medium flex items-center gap-1 transition-colors"
         >
           View all
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@ export default function FeaturedArticles() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         {featuredArticlesQuery.data!.map((article) => (
-          <div className="group hover:shadow-xl transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-1 rounded-lg overflow-hidden">
+          <div className="group hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/50 hover:-translate-y-1 rounded-lg overflow-hidden bg-card">
             <div className="aspect-video overflow-hidden">
               <img
                 src={article.image || "/placeholder.svg"}
@@ -33,11 +33,11 @@ export default function FeaturedArticles() {
             </div>
             <div className="p-6">
               <div className="flex items-center gap-2 mb-2">
-                <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">
+                <span className="bg-primary/20 text-primary px-2 py-1 rounded-full text-xs font-medium border border-primary/30">
                   {article.category}
                 </span>
               </div>
-              <h3 className="font-serif font-semibold text-xl leading-tight group-hover:text-blue-600 transition-colors mb-3">
+              <h3 className="font-serif font-semibold text-xl leading-tight group-hover:text-primary transition-colors mb-3">
                 <a href={`/blog/${article.slug}`}>{article.title}</a>
               </h3>
               <p className="text-muted-foreground mb-4 leading-relaxed">{article.excerpt}</p>
@@ -67,7 +67,7 @@ export default function FeaturedArticles() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {recentArticlesQuery.data!.map((article) => (
-          <div className="group hover:shadow-lg transition-all duration-300 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-0.5 rounded-lg overflow-hidden">
+          <div className="group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/50 hover:-translate-y-0.5 rounded-lg overflow-hidden bg-card">
             <div className="aspect-video overflow-hidden">
               <img
                 src={article.image || "/placeholder.svg"}
@@ -76,10 +76,10 @@ export default function FeaturedArticles() {
               />
             </div>
             <div className="p-4">
-              <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium w-fit mb-2 inline-block">
+              <span className="bg-primary/20 text-primary px-2 py-1 rounded-full text-xs font-medium border border-primary/30 w-fit mb-2 inline-block">
                 {article.category}
               </span>
-              <h3 className="font-serif font-semibold text-lg leading-tight group-hover:text-blue-600 transition-colors mb-2">
+              <h3 className="font-serif font-semibold text-lg leading-tight group-hover:text-primary transition-colors mb-2">
                 <a href={`/blog/${article.slug}`}>{article.title}</a>
               </h3>
               <p className="text-muted-foreground text-sm mb-3 leading-relaxed">{article.excerpt}</p>
