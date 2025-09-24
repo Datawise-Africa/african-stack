@@ -1,17 +1,19 @@
-import { reactRouter } from "@react-router/dev/vite";
-import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
-import devtoolsJson from 'vite-plugin-devtools-json';
-
+import react from "@vitejs/plugin-react-swc";
+import tailwindcss from "@tailwindcss/vite";
+import { fileURLToPath } from "url";
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths(),devtoolsJson()],
+  plugins: [react(), tailwindcss()],
+  
   resolve: {
     alias: {
-      '@/*': '/app/*'
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-  server:{
-    port: 3000
-  }
+  build: {
+    rollupOptions: {
+      external: ["**/*.cy.tsx"], // Exclude Cypress component test files
+    },
+  },
 });
