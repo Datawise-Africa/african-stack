@@ -4,44 +4,26 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { 
   Plus, 
-  Edit, 
   Eye, 
   Heart, 
-  MessageCircle, 
   Calendar,
   MoreHorizontal,
-  Trash2,
-  ExternalLink,
-  TrendingUp,
-  BarChart3,
-  Users,
-  Clock,
-  Search,
-  Filter,
-  Download,
-  Upload,
-  Settings,
-  BookOpen,
-  Target,
-  Zap,
-  Bookmark,
-  History,
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useUserArticles } from "@/features/user/hooks";
+import { useUserArticles, useCurrentUser } from "@/features/user/hooks";
 
 export default function DashboardCalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
 
-  const { data: articlesData } = useUserArticles();
-  const publishedArticles = articlesData?.published || [];
+  const { data: currentUser } = useCurrentUser();
+  const { data: articlesData } = useUserArticles(currentUser?.id || '');
+  const publishedArticles = articlesData?.filter(article => article.status === 'published') || [];
 
   // Generate calendar days
   const year = currentDate.getFullYear();

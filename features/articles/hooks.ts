@@ -1,29 +1,16 @@
-"use client";
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Article, ArticleFilters, ArticleListResponse, Comment, Reaction } from '@/lib/types';
-import { mockArticles, mockComments, mockReactions } from './mock-data';
+import { queryKeys } from '@/lib/query-keys';
+import { mockArticles, mockCategories, mockTags } from './mock-data';
+import { Article, ArticleFilters, Category, Tag } from '@/lib/types';
 
-// Query keys
-export const articleKeys = {
-  all: ['articles'] as const,
-  lists: () => [...articleKeys.all, 'list'] as const,
-  list: (filters: ArticleFilters) => [...articleKeys.lists(), filters] as const,
-  details: () => [...articleKeys.all, 'detail'] as const,
-  detail: (slug: string) => [...articleKeys.details(), slug] as const,
-  comments: (articleId: string) => [...articleKeys.all, 'comments', articleId] as const,
-  reactions: (articleId: string) => [...articleKeys.all, 'reactions', articleId] as const,
-};
-
-// Mock API functions
+// Mock API functions (will be replaced with real API calls)
 const mockApi = {
-  getArticles: async (filters: ArticleFilters = {}): Promise<ArticleListResponse> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+  // Articles
+  getArticles: async (filters: ArticleFilters = {}): Promise<Article[]> => {
+    await new Promise(resolve => setTimeout(resolve, 300)); // Simulate API delay
     
     let filteredArticles = [...mockArticles];
     
-    // Apply filters
     if (filters.query) {
       const query = filters.query.toLowerCase();
       filteredArticles = filteredArticles.filter(article => 
@@ -41,163 +28,266 @@ const mockApi = {
     
     if (filters.tag) {
       filteredArticles = filteredArticles.filter(article => 
-        article.tags.some(tag => tag.toLowerCase() === filters.tag?.toLowerCase())
+        article.tags.includes(filters.tag!)
       );
     }
     
-    // Apply sorting
+    if (filters.author) {
+      filteredArticles = filteredArticles.filter(article => 
+        article.author.id === filters.author
+      );
+    }
+    
+    if (filters.status) {
+      filteredArticles = filteredArticles.filter(article => 
+        article.status === filters.status
+      );
+    }
+    
+    // Sort
     if (filters.sort === 'trending') {
       filteredArticles.sort((a, b) => b.reactionsCount - a.reactionsCount);
-    } else if (filters.sort === 'popular') {
-      filteredArticles.sort((a, b) => (b.views || 0) - (a.views || 0));
-    } else {
-      // Default to latest
+    } else if (filters.sort === 'latest') {
       filteredArticles.sort((a, b) => 
-        new Date(b.publishedAt || '').getTime() - new Date(a.publishedAt || '').getTime()
+        new Date(b.publishedAt || b.updatedAt || '').getTime() - 
+        new Date(a.publishedAt || a.updatedAt || '').getTime()
       );
     }
     
-    // Apply pagination
-    const page = filters.page || 1;
-    const limit = filters.limit || 10;
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    
-    return {
-      articles: filteredArticles.slice(startIndex, endIndex),
-      pagination: {
-        page,
-        limit,
-        total: filteredArticles.length,
-        totalPages: Math.ceil(filteredArticles.length / limit),
-      },
-    };
+    return filteredArticles;
   },
-  
-  getArticle: async (slug: string): Promise<Article> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const article = mockArticles.find(a => a.slug === slug);
-    if (!article) {
-      throw new Error('Article not found');
-    }
-    
-    return article;
-  },
-  
-  getComments: async (articleId: string): Promise<Comment[]> => {
+
+  getArticle: async (slug: string): Promise<Article | null> => {
     await new Promise(resolve => setTimeout(resolve, 200));
-    return mockComments.filter(comment => comment.articleId === articleId);
+    return mockArticles.find(article => article.slug === slug) || null;
   },
-  
-  toggleReaction: async (articleId: string): Promise<{ isReacted: boolean; count: number }> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    const article = mockArticles.find(a => a.id === articleId);
-    if (!article) throw new Error('Article not found');
-    
-    // Simulate toggle logic
-    const isReacted = Math.random() > 0.5;
-    const newCount = isReacted ? article.reactionsCount + 1 : article.reactionsCount - 1;
-    
-    return { isReacted, count: Math.max(0, newCount) };
+
+  getArticleById: async (id: string): Promise<Article | null> => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return mockArticles.find(article => article.id === id) || null;
   },
-  
-  addComment: async (articleId: string, body: string): Promise<Comment> => {
+
+  createArticle: async (article: Partial<Article>): Promise<Article> => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const newComment: Comment = {
-      id: `comment-${Date.now()}`,
-      articleId,
-      user: {
-        id: 'current-user',
-        name: 'Current User',
-        avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=current'
+    const newArticle: Article = {
+      id: Date.now().toString(),
+      slug: article.slug || `article-${Date.now()}`,
+      title: article.title || 'Untitled',
+      excerpt: article.excerpt || '',
+      content: article.content || '',
+      contentJson: article.contentJson || {},
+      author: article.author || {
+        id: '1',
+        name: 'John Doe',
+        handle: '@johndoe',
+        avatarUrl: undefined
       },
-      body,
-      createdAt: new Date().toISOString(),
+      category: article.category || mockCategories[0],
+      tags: article.tags || [],
+      thumbnailUrl: article.thumbnailUrl,
+      readTimeMins: article.readTimeMins || 5,
+      publishedAt: article.status === 'published' ? new Date().toISOString() : undefined,
+      updatedAt: new Date().toISOString(),
+      status: article.status || 'draft',
+      approvalStatus: article.approvalStatus,
+      reactionsCount: 0,
+      commentsCount: 0,
+      views: 0
     };
     
-    return newComment;
+    // In a real app, this would update the server
+    mockArticles.unshift(newArticle);
+    return newArticle;
+  },
+
+  updateArticle: async (id: string, updates: Partial<Article>): Promise<Article> => {
+    await new Promise(resolve => setTimeout(resolve, 400));
+    const index = mockArticles.findIndex(article => article.id === id);
+    if (index === -1) throw new Error('Article not found');
+    
+    const updatedArticle = { ...mockArticles[index], ...updates, updatedAt: new Date().toISOString() };
+    mockArticles[index] = updatedArticle;
+    return updatedArticle;
+  },
+
+  deleteArticle: async (id: string): Promise<void> => {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const index = mockArticles.findIndex(article => article.id === id);
+    if (index === -1) throw new Error('Article not found');
+    mockArticles.splice(index, 1);
+  },
+
+  // Categories
+  getCategories: async (): Promise<Category[]> => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return mockCategories;
+  },
+
+  getCategory: async (slug: string): Promise<Category | null> => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return mockCategories.find(category => category.slug === slug) || null;
+  },
+
+  // Tags
+  getTags: async (): Promise<Tag[]> => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    return mockTags;
+  },
+
+  getPopularTags: async (): Promise<Tag[]> => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    // Count tag usage and return most popular
+    const tagCounts = mockArticles.reduce((acc, article) => {
+      article.tags.forEach(tag => {
+        acc[tag] = (acc[tag] || 0) + 1;
+      });
+      return acc;
+    }, {} as Record<string, number>);
+
+    return Object.entries(tagCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([name, count], index) => ({ 
+        id: `popular-tag-${index + 1}`,
+        name, 
+        slug: name.toLowerCase().replace(/\s+/g, '-'),
+        color: `hsl(${index * 36}, 70%, 50%)`,
+        articleCount: count
+      }));
   },
 };
 
-// Hooks
-export function useArticles(filters: ArticleFilters = {}) {
+// Article Hooks
+export const useArticles = (filters: ArticleFilters = {}) => {
   return useQuery({
-    queryKey: articleKeys.list(filters),
+    queryKey: queryKeys.articles.list(filters),
     queryFn: () => mockApi.getArticles(filters),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-}
+};
 
-export function useArticle(slug: string) {
+export const useArticle = (slug: string) => {
   return useQuery({
-    queryKey: articleKeys.detail(slug),
+    queryKey: queryKeys.articles.bySlug(slug),
     queryFn: () => mockApi.getArticle(slug),
     enabled: !!slug,
+    staleTime: 10 * 60 * 1000, // 10 minutes
   });
-}
+};
 
-export function useArticleComments(articleId: string) {
+export const useArticleById = (id: string) => {
   return useQuery({
-    queryKey: articleKeys.comments(articleId),
-    queryFn: () => mockApi.getComments(articleId),
+    queryKey: queryKeys.articles.detail(id),
+    queryFn: () => mockApi.getArticleById(id),
+    enabled: !!id,
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useCreateArticle = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (article: Partial<Article>) => mockApi.createArticle(article),
+    onSuccess: (newArticle) => {
+      // Invalidate and refetch articles lists
+      queryClient.invalidateQueries({ queryKey: queryKeys.articles.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users.articles(newArticle.author.id) });
+      
+      // Add the new article to the cache
+      queryClient.setQueryData(queryKeys.articles.detail(newArticle.id), newArticle);
+      queryClient.setQueryData(queryKeys.articles.bySlug(newArticle.slug), newArticle);
+    },
+  });
+};
+
+export const useUpdateArticle = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<Article> }) => 
+      mockApi.updateArticle(id, updates),
+    onSuccess: (updatedArticle) => {
+      // Update the specific article in cache
+      queryClient.setQueryData(queryKeys.articles.detail(updatedArticle.id), updatedArticle);
+      queryClient.setQueryData(queryKeys.articles.bySlug(updatedArticle.slug), updatedArticle);
+      
+      // Invalidate lists to ensure they're up to date
+      queryClient.invalidateQueries({ queryKey: queryKeys.articles.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users.articles(updatedArticle.author.id) });
+    },
+  });
+};
+
+export const useDeleteArticle = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (id: string) => mockApi.deleteArticle(id),
+    onSuccess: (_, deletedId) => {
+      // Remove from cache
+      queryClient.removeQueries({ queryKey: queryKeys.articles.detail(deletedId) });
+      
+      // Invalidate lists
+      queryClient.invalidateQueries({ queryKey: queryKeys.articles.lists() });
+    },
+  });
+};
+
+// Category Hooks
+export const useCategories = () => {
+  return useQuery({
+    queryKey: queryKeys.categories.lists(),
+    queryFn: mockApi.getCategories,
+    staleTime: 30 * 60 * 1000, // 30 minutes
+  });
+};
+
+export const useCategory = (slug: string) => {
+  return useQuery({
+    queryKey: queryKeys.categories.bySlug(slug),
+    queryFn: () => mockApi.getCategory(slug),
+    enabled: !!slug,
+    staleTime: 30 * 60 * 1000,
+  });
+};
+
+// Tag Hooks
+export const useTags = () => {
+  return useQuery({
+    queryKey: queryKeys.tags.lists(),
+    queryFn: mockApi.getTags,
+    staleTime: 30 * 60 * 1000,
+  });
+};
+
+export const usePopularTags = () => {
+  return useQuery({
+    queryKey: queryKeys.tags.popular(),
+    queryFn: mockApi.getPopularTags,
+    staleTime: 15 * 60 * 1000, // 15 minutes
+  });
+};
+
+// Search Hooks
+export const useSearchArticles = (query: string) => {
+  return useQuery({
+    queryKey: queryKeys.articles.search(query),
+    queryFn: () => mockApi.getArticles({ query }),
+    enabled: !!query && query.length > 2,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+// Legacy hooks for backward compatibility
+export const useArticleComments = (articleId: string) => {
+  // This will be implemented when we add comments
+  return useQuery({
+    queryKey: queryKeys.comments.byArticle(articleId),
+    queryFn: async () => {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      return []; // Mock empty comments for now
+    },
     enabled: !!articleId,
   });
-}
-
-export function useToggleReaction() {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: mockApi.toggleReaction,
-    onSuccess: (data, articleId) => {
-      // Update the article's reaction count
-      queryClient.setQueryData(
-        articleKeys.detail(articleId),
-        (oldData: Article | undefined) => {
-          if (!oldData) return oldData;
-          return {
-            ...oldData,
-            reactionsCount: data.count,
-          };
-        }
-      );
-      
-      // Update articles list
-      queryClient.invalidateQueries({ queryKey: articleKeys.lists() });
-    },
-  });
-}
-
-export function useAddComment() {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: ({ articleId, body }: { articleId: string; body: string }) =>
-      mockApi.addComment(articleId, body),
-    onSuccess: (newComment, { articleId }) => {
-      // Add comment to the list
-      queryClient.setQueryData(
-        articleKeys.comments(articleId),
-        (oldData: Comment[] | undefined) => {
-          if (!oldData) return [newComment];
-          return [...oldData, newComment];
-        }
-      );
-      
-      // Update article comment count
-      queryClient.setQueryData(
-        articleKeys.detail(articleId),
-        (oldData: Article | undefined) => {
-          if (!oldData) return oldData;
-          return {
-            ...oldData,
-            commentsCount: oldData.commentsCount + 1,
-          };
-        }
-      );
-    },
-  });
-}
+};

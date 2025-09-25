@@ -7,7 +7,9 @@ import { ArticleCard } from "@/components/article-card";
 import { CommentList } from "@/components/comment-list";
 import { ReactionButton } from "@/components/reaction-button";
 import { BookmarkButton } from "@/components/bookmark-button";
-import { useArticle, useArticleComments } from "@/features/articles/hooks";
+import { QuillViewer } from "@/components/quill-editor";
+import { useArticle } from "@/features/articles/hooks";
+import { useArticleComments } from "@/features/interactions/hooks";
 import { mockArticles } from "@/features/articles/mock-data";
 
 interface ArticlePageProps {
@@ -122,7 +124,10 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
         {/* Article Content */}
         <div className="prose prose-lg max-w-none mb-12">
-          {article.contentJson && typeof article.contentJson === 'object' && 'content' in article.contentJson && Array.isArray(article.contentJson.content) ? (
+          {/* Check if content is HTML (from Quill) */}
+          {article.content && article.content.includes('<') ? (
+            <QuillViewer content={article.content} />
+          ) : article.contentJson && typeof article.contentJson === 'object' && 'content' in article.contentJson && Array.isArray(article.contentJson.content) ? (
             <div className="space-y-6">
               {article.contentJson.content.map((node: Record<string, unknown>, index: number) => {
                 if (node.type === 'heading') {

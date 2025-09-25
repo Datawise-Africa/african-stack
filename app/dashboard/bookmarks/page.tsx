@@ -1,44 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import { useBookmarks, useCurrentUser } from "@/features/user/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
   Plus, 
-  Edit, 
-  Eye, 
   Heart, 
   MessageCircle, 
-  Calendar,
   MoreHorizontal,
   Trash2,
   ExternalLink,
   TrendingUp,
-  BarChart3,
-  Users,
   Clock,
   Search,
-  Filter,
   Download,
-  Upload,
-  Settings,
-  BookOpen,
-  Target,
-  Zap,
-  Bookmark,
-  History
-} from "lucide-react";
+  Bookmark} from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useBookmarks } from "@/features/user/hooks";
 
 export default function DashboardBookmarksPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "popular" | "title">("recent");
 
-  const { data: bookmarks, isLoading } = useBookmarks();
+  const { data: currentUser } = useCurrentUser();
+  const { data: bookmarks, isLoading } = useBookmarks(currentUser?.id || '');
 
   // Filter and sort bookmarks
   const filteredBookmarks = (bookmarks || [])

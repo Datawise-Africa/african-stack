@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useAdminUsers, useUpdateUserStatus, useUpdateUserRole } from "@/features/admin/hooks";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, 
   Search,
@@ -15,12 +15,9 @@ import {
   UserX,
   Shield,
   Mail,
-  Calendar,
-  TrendingUp,
   ChevronDown,
   ArrowUpDown,
   Eye,
-  EyeOff,
   X
 } from "lucide-react";
 import {
@@ -190,6 +187,20 @@ export default function UserManagement() {
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
 
+  // React Query hooks
+  const { data: usersData, isLoading, error } = useAdminUsers({
+    search: globalFilter,
+    role: columnFilters.find(f => f.id === 'role')?.value,
+    status: columnFilters.find(f => f.id === 'status')?.value,
+    sortBy: sorting[0]?.id || 'joinedAt',
+    sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
+    page: 1,
+    limit: 100
+  });
+
+  const updateUserStatus = useUpdateUserStatus();
+  const updateUserRole = useUpdateUserRole();
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
@@ -330,7 +341,7 @@ export default function UserManagement() {
         cell: ({ row }) => {
           return (
             <div className="text-center">
-              <div className="font-medium">{row.getValue("views").toLocaleString()}</div>
+              <div className="font-medium">{(row.getValue("views") as number).toLocaleString()}</div>
             </div>
           );
         },
@@ -443,7 +454,7 @@ export default function UserManagement() {
   );
 
   const table = useReactTable({
-    data: mockUsers,
+    data: usersData?.users || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -464,6 +475,32 @@ export default function UserManagement() {
     },
   });
 
+  if (isLoading) {
+    return (
+      <div className="p-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading users...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-destructive mb-4">Failed to load users</p>
+            <Button onClick={() => window.location.reload()}>Retry</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -482,7 +519,7 @@ export default function UserManagement() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockUsers.length}</div>
+            <div className="text-2xl font-bold">{usersData?.total || 0}</div>
             <p className="text-xs text-muted-foreground">
               +12% from last month
             </p>
@@ -496,7 +533,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockUsers.filter(u => u.role === "creator" && u.status === "active").length}
+              {usersData?.users.filter(u => u.role === "creator" && u.status === "active").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               +5 new this week
@@ -511,7 +548,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockUsers.filter(u => u.status === "pending_approval").length}
+              {usersData?.users.filter(u => u.status === "pending_approval").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               Requires attention
@@ -526,7 +563,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {mockUsers.filter(u => u.status === "suspended").length}
+              {usersData?.users.filter(u => u.status === "suspended").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               -1 from last week
@@ -563,11 +600,11 @@ export default function UserManagement() {
                   <Button variant="outline" size="sm" className="relative">
                     <Shield className="h-4 w-4 mr-2" />
                     Role
-                    {table.getColumn("role")?.getFilterValue() && (
+                    {table.getColumn("role")?.getFilterValue() ? (
                       <Badge variant="secondary" className="ml-2 h-5 px-1 text-xs">
-                        {(table.getColumn("role")?.getFilterValue() as string[])?.length}
+                        {(table.getColumn("role")?.getFilterValue() as string[])?.length || 0}
                       </Badge>
-                    )}
+                    ) : null}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -578,7 +615,7 @@ export default function UserManagement() {
                     <DropdownMenuCheckboxItem
                       key={role}
                       className="capitalize"
-                      checked={table.getColumn("role")?.getFilterValue()?.includes(role) || false}
+                        checked={(table.getColumn("role")?.getFilterValue() as string[])?.includes(role) || false}
                       onCheckedChange={(value) => {
                         const currentFilter = table.getColumn("role")?.getFilterValue() as string[] || [];
                         const newFilter = value
@@ -606,11 +643,11 @@ export default function UserManagement() {
                   <Button variant="outline" size="sm" className="relative">
                     <Filter className="h-4 w-4 mr-2" />
                     Status
-                    {table.getColumn("status")?.getFilterValue() && (
+                    {table.getColumn("status")?.getFilterValue() ? (
                       <Badge variant="secondary" className="ml-2 h-5 px-1 text-xs">
-                        {(table.getColumn("status")?.getFilterValue() as string[])?.length}
+                        {(table.getColumn("status")?.getFilterValue() as string[])?.length || 0}
                       </Badge>
-                    )}
+                    ) : null}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -621,7 +658,7 @@ export default function UserManagement() {
                     <DropdownMenuCheckboxItem
                       key={status}
                       className="capitalize"
-                      checked={table.getColumn("status")?.getFilterValue()?.includes(status) || false}
+                        checked={(table.getColumn("status")?.getFilterValue() as string[])?.includes(status) || false}
                       onCheckedChange={(value) => {
                         const currentFilter = table.getColumn("status")?.getFilterValue() as string[] || [];
                         const newFilter = value

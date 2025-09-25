@@ -2,33 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Bookmark, Clock, User, Calendar } from "lucide-react";
-
-interface Article {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string;
-  author: {
-    id: string;
-    name: string;
-    avatarUrl?: string;
-    handle: string;
-  };
-  category: {
-    id: string;
-    slug: string;
-    name: string;
-  };
-  tags: string[];
-  thumbnailUrl?: string;
-  readTimeMins: number;
-  publishedAt?: string;
-  status: 'draft' | 'published';
-  reactionsCount: number;
-  commentsCount: number;
-  contentJson: unknown;
-}
+import { Heart, MessageCircle, Bookmark, Clock } from "lucide-react";
+import { Article } from "@/lib/types";
 
 interface ArticleCardProps {
   article: Article;

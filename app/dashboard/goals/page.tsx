@@ -8,43 +8,26 @@ import { Input } from "@/components/ui/input";
 import { 
   Plus, 
   Edit, 
-  Eye, 
-  Heart, 
-  MessageCircle, 
   Calendar,
   MoreHorizontal,
   Trash2,
-  ExternalLink,
-  TrendingUp,
-  BarChart3,
-  Users,
-  Clock,
-  Search,
-  Filter,
   Download,
-  Upload,
-  Settings,
-  BookOpen,
   Target,
-  Zap,
-  Bookmark,
-  History,
   CheckCircle,
   Circle,
   AlertCircle
 } from "lucide-react";
-import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useUserProfile, useUserArticles } from "@/features/user/hooks";
+import { useCurrentUser, useUserArticles } from "@/features/user/hooks";
 
 export default function DashboardGoalsPage() {
   const [newGoal, setNewGoal] = useState("");
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
-  const { data: userProfile } = useUserProfile();
-  const { data: articlesData } = useUserArticles();
+  const { data: userProfile } = useCurrentUser();
+  const { data: articlesData } = useUserArticles(userProfile?.id || '');
 
-  const publishedArticles = articlesData?.published || [];
+  const publishedArticles = articlesData?.filter(article => article.status === 'published') || [];
 
   // Mock goals data
   const [goals, setGoals] = useState([

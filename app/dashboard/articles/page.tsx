@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useUserArticles, useCurrentUser } from "@/features/user/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,33 +17,25 @@ import {
   Trash2,
   ExternalLink,
   TrendingUp,
-  BarChart3,
-  Users,
   Clock,
   Search,
   Filter,
   Download,
   Upload,
-  Settings,
-  BookOpen,
-  Target,
-  Zap,
-  Bookmark,
-  History
-} from "lucide-react";
+  BookOpen} from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useUserArticles } from "@/features/user/hooks";
 
 export default function DashboardArticlesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
   const [sortBy, setSortBy] = useState<"latest" | "popular" | "views">("latest");
 
-  const { data: articlesData, isLoading: articlesLoading } = useUserArticles();
+  const { data: currentUser } = useCurrentUser();
+  const { data: articlesData, isLoading: articlesLoading } = useUserArticles(currentUser?.id || '');
 
-  const publishedArticles = articlesData?.published || [];
-  const draftArticles = articlesData?.drafts || [];
+  const publishedArticles = articlesData?.filter(article => article.status === 'published') || [];
+  const draftArticles = articlesData?.filter(article => article.status === 'draft') || [];
   const allArticles = [...publishedArticles, ...draftArticles];
 
   // Filter and sort articles

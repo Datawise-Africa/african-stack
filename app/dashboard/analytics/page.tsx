@@ -3,48 +3,28 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { 
-  Plus, 
-  Edit, 
   Eye, 
   Heart, 
   MessageCircle, 
-  Calendar,
   MoreHorizontal,
-  Trash2,
-  ExternalLink,
-  TrendingUp,
-  BarChart3,
   Users,
   Clock,
-  Search,
-  Filter,
   Download,
-  Upload,
-  Settings,
-  BookOpen,
-  Target,
-  Zap,
-  Bookmark,
-  History,
   ArrowUp,
-  ArrowDown,
-  Minus
-} from "lucide-react";
+  ArrowDown} from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useUserProfile, useUserArticles } from "@/features/user/hooks";
+import { useCurrentUser, useUserArticles } from "@/features/user/hooks";
 
 export default function DashboardAnalyticsPage() {
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "1y">("30d");
 
-  const { data: userProfile, isLoading: profileLoading } = useUserProfile();
-  const { data: articlesData, isLoading: articlesLoading } = useUserArticles();
+  const { data: currentUser } = useCurrentUser();
+  const { data: articlesData, isLoading: articlesLoading } = useUserArticles(currentUser?.id || '');
 
-  const publishedArticles = articlesData?.published || [];
-  const draftArticles = articlesData?.drafts || [];
+  const publishedArticles = articlesData?.filter(article => article.status === 'published') || [];
+  const draftArticles = articlesData?.filter(article => article.status === 'draft') || [];
 
   // Calculate analytics data
   const totalViews = publishedArticles.reduce((sum, article) => sum + (article.views || 0), 0);
@@ -172,7 +152,7 @@ export default function DashboardAnalyticsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Followers</p>
-                        <p className="text-2xl font-bold">{userProfile?.stats.followers || 0}</p>
+                        <p className="text-2xl font-bold">{currentUser?.stats.followers || 0}</p>
                         <div className="flex items-center text-sm text-green-500 mt-1">
                           <ArrowUp className="w-3 h-3 mr-1" />
                           +5.3% from last month

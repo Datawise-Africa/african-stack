@@ -50,7 +50,7 @@ import { useRole } from "@/hooks/use-role";
 const creatorNavigation = [
   { 
     name: "Overview", 
-    href: "/dashboard", 
+    href: "/dashboard/creator", 
     icon: BarChart3, 
     description: "Dashboard overview",
     roles: ['creator'] 
@@ -120,6 +120,44 @@ const creatorNavigation = [
   }
 ];
 
+const userNavigation = [
+  { 
+    name: "Overview", 
+    href: "/dashboard/user", 
+    icon: BarChart3, 
+    description: "Your dashboard",
+    roles: ['user'] 
+  },
+  { 
+    name: "Profile", 
+    href: "/dashboard/profile", 
+    icon: User, 
+    description: "Your profile and stats",
+    roles: ['user'] 
+  },
+  { 
+    name: "Bookmarks", 
+    href: "/dashboard/bookmarks", 
+    icon: Bookmark, 
+    description: "Saved articles",
+    roles: ['user'] 
+  },
+  { 
+    name: "Read History", 
+    href: "/dashboard/history", 
+    icon: History, 
+    description: "Reading history",
+    roles: ['user'] 
+  },
+  { 
+    name: "Settings", 
+    href: "/dashboard/settings", 
+    icon: Settings, 
+    description: "Account settings",
+    roles: ['user'] 
+  }
+];
+
 const adminNavigation = [
   { 
     name: "Admin Overview", 
@@ -133,6 +171,13 @@ const adminNavigation = [
     href: "/admin/users", 
     icon: UserCheck, 
     description: "Manage users and roles",
+    roles: ['system_admin'] 
+  },
+  { 
+    name: "Article Moderation", 
+    href: "/admin/articles", 
+    icon: FileText, 
+    description: "Review and approve articles",
     roles: ['system_admin'] 
   },
   { 
@@ -170,7 +215,8 @@ export function SharedDashboardLayout({
 
   // Choose navigation based on current route and user role
   const isAdminRoute = pathname.startsWith('/admin');
-  const navigation = isAdminRoute ? adminNavigation : creatorNavigation;
+  const isUserRoute = pathname.startsWith('/dashboard/user');
+  const navigation = isAdminRoute ? adminNavigation : isUserRoute ? userNavigation : creatorNavigation;
   
   // Filter navigation items based on user role
   const filteredNavigation = navigation.filter(item => 
@@ -185,7 +231,7 @@ export function SharedDashboardLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <RoleGuard allowedRoles={['creator', 'system_admin']}>
+        <RoleGuard allowedRoles={['user', 'creator', 'system_admin']}>
           <div className="min-h-screen bg-muted/30 flex">
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (

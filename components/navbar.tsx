@@ -4,14 +4,15 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Moon, Sun, Menu, Search, User, BookOpen, Bookmark, History, Edit, LogOut, BarChart3, Shield, UserPlus } from "lucide-react";
+import { Moon, Sun, Menu, Search, User, BookOpen, Bookmark, History, Edit, LogOut, BarChart3, Shield, UserPlus, Clock } from "lucide-react";
 import { useState } from "react";
-import { useRole } from "@/hooks/use-role";
+import { useAuth } from "@/contexts/auth-context";
+import { canCreateArticles, canManageUsers, canRequestCreatorRole } from "@/lib/auth";
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, canCreateArticles, canManageUsers, canRequestCreatorRole } = useRole();
+  const { user, logout, isAuthenticated } = useAuth();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -25,11 +26,14 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
+            <Link href="/newsletter" className="text-sm font-medium hover:text-primary transition-colors">
+              Newsletter
+            </Link>
             <Link href="/articles" className="text-sm font-medium hover:text-primary transition-colors">
               Articles
             </Link>
-            <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors">
-              Categories
+            <Link href="/contribute" className="text-sm font-medium hover:text-primary transition-colors">
+              Contribute
             </Link>
             <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
               About
@@ -73,6 +77,7 @@ export function Navbar() {
             </DropdownMenu>
 
             {/* User Menu */}
+            {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -95,7 +100,7 @@ export function Navbar() {
                 </DropdownMenuItem>
                 
                 {/* Role-based menu items */}
-                {canCreateArticles() && (
+                {canCreateArticles(user) && (
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/articles" className="flex items-center">
                       <Edit className="mr-2 h-4 w-4" />
@@ -104,7 +109,7 @@ export function Navbar() {
                   </DropdownMenuItem>
                 )}
                 
-                {canManageUsers() && (
+                {canManageUsers(user) && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin" className="flex items-center">
                       <Shield className="mr-2 h-4 w-4" />
@@ -113,7 +118,7 @@ export function Navbar() {
                   </DropdownMenuItem>
                 )}
                 
-                {canRequestCreatorRole() && (
+                {canRequestCreatorRole(user) && (
                   <DropdownMenuItem asChild>
                     <Link href="/request-creator" className="flex items-center">
                       <UserPlus className="mr-2 h-4 w-4" />
@@ -122,14 +127,28 @@ export function Navbar() {
                   </DropdownMenuItem>
                 )}
                 
-                <DropdownMenuItem>
+                {canRequestCreatorRole(user) && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/request-creator/status" className="flex items-center">
+                      <Clock className="mr-2 h-4 w-4" />
+                      View My Requests
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                
+                <DropdownMenuItem onClick={() => logout()}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          ) : (
+            <Button asChild>
+              <Link href="/auth/login">Sign In</Link>
+            </Button>
+          )}
 
-            {/* Mobile Menu Button */}
+          {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
@@ -146,11 +165,14 @@ export function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden border-t py-4">
             <div className="flex flex-col space-y-4">
+              <Link href="/newsletter" className="text-sm font-medium hover:text-primary transition-colors">
+                Newsletter
+              </Link>
               <Link href="/articles" className="text-sm font-medium hover:text-primary transition-colors">
                 Articles
               </Link>
-              <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors">
-                Categories
+              <Link href="/contribute" className="text-sm font-medium hover:text-primary transition-colors">
+                Contribute
               </Link>
               <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
                 About

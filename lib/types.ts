@@ -36,15 +36,15 @@ export interface UserProfile extends User {
 export interface RoleRequest {
   id: ID;
   userId: ID;
-  user: Pick<User, 'id' | 'name' | 'handle' | 'avatarUrl'>;
-  requestedRole: UserRole;
-  reason: string;
+  message: string;
+  portfolio?: string;
+  socialMedia?: string;
+  expectedContent: string;
   status: 'pending' | 'approved' | 'rejected';
-  reviewedBy?: ID;
+  submittedAt: string;
+  reviewedBy?: string;
   reviewedAt?: string;
-  reviewNotes?: string;
-  createdAt: string;
-  updatedAt: string;
+  adminNotes?: string;
 }
 
 // Article Approval types
@@ -71,12 +71,21 @@ export interface Category {
   recentArticles?: Article[];
 }
 
+export interface Tag {
+  id: ID;
+  name: string;
+  slug: string;
+  color?: string;
+  articleCount: number;
+}
+
 // Article types
 export interface Article {
   id: ID;
   slug: string;
   title: string;
   excerpt: string;
+  content?: string; // HTML content from Quill editor
   contentJson: unknown; // tiptap JSON
   author: Pick<User, 'id' | 'name' | 'avatarUrl' | 'handle'>;
   category: Category;
@@ -96,9 +105,12 @@ export interface ArticleFilters {
   query?: string;
   category?: string;
   tag?: string;
+  author?: string;
+  status?: 'draft' | 'published' | 'archived';
   sort?: 'latest' | 'trending' | 'popular';
   page?: number;
   limit?: number;
+  [key: string]: unknown;
 }
 
 export interface ArticleListResponse {
@@ -137,6 +149,7 @@ export interface Bookmark {
   userId: ID;
   article: Article;
   bookmarkedAt: string;
+  createdAt: string;
 }
 
 // Read History types

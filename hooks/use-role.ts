@@ -10,7 +10,7 @@ const mockUser = {
   email: "john@example.com",
   handle: "@johndoe",
   role: "system_admin" as UserRole, // Changed to system_admin for testing
-  status: "active" as const,
+  status: "active" as "active" | "suspended" | "pending_approval",
   joinedAt: "2024-01-01T00:00:00Z",
   stats: {
     articlesPublished: 0,
@@ -64,7 +64,7 @@ export function useRole() {
   };
 
   const isPendingApproval = () => {
-    return user.status === "pending_approval";
+    return user.status === "pending_approval" as const;
   };
 
   return {

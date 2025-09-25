@@ -52,6 +52,19 @@ export const mockCategories: Category[] = [
   },
 ];
 
+// Mock Tags
+export const mockTags = [
+  'AI', 'Machine Learning', 'Data Science', 'Blockchain', 'NLP', 'Healthcare',
+  'Startups', 'Innovation', 'Technology', 'Development', 'Africa', 'Transparency',
+  'Languages', 'Supply Chain', 'Policy', 'Regulation', 'Research', 'Education'
+].map((name, index) => ({
+  id: `tag-${index + 1}`,
+  name,
+  slug: name.toLowerCase().replace(/\s+/g, '-'),
+  color: `hsl(${index * 20}, 70%, 50%)`,
+  articleCount: Math.floor(Math.random() * 50) + 1
+}));
+
 // Mock Articles
 export const mockArticles: Article[] = [
   {
@@ -251,14 +264,16 @@ export const mockBookmarks: Bookmark[] = [
     articleId: 'article-2',
     userId: 'user-1',
     article: mockArticles[1],
-    bookmarkedAt: '2024-01-14T16:20:00Z'
+    bookmarkedAt: '2024-01-14T16:20:00Z',
+    createdAt: '2024-01-14T16:20:00Z'
   },
   {
     id: 'bookmark-2',
     articleId: 'article-3',
     userId: 'user-1',
     article: mockArticles[2],
-    bookmarkedAt: '2024-01-12T11:45:00Z'
+    bookmarkedAt: '2024-01-12T11:45:00Z',
+    createdAt: '2024-01-12T11:45:00Z'
   }
 ];
 

@@ -1,50 +1,35 @@
-"use client";
-
 import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/query-keys';
+import { mockCategories } from '../articles/mock-data';
 import { Category } from '@/lib/types';
-import { mockCategories } from './mock-data';
-
-// Query keys
-export const categoryKeys = {
-  all: ['categories'] as const,
-  lists: () => [...categoryKeys.all, 'list'] as const,
-  details: () => [...categoryKeys.all, 'detail'] as const,
-  detail: (slug: string) => [...categoryKeys.details(), slug] as const,
-};
 
 // Mock API functions
 const mockApi = {
   getCategories: async (): Promise<Category[]> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 200));
     return mockCategories;
   },
-  
-  getCategory: async (slug: string): Promise<Category> => {
+
+  getCategory: async (slug: string): Promise<Category | null> => {
     await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const category = mockCategories.find(c => c.slug === slug);
-    if (!category) {
-      throw new Error('Category not found');
-    }
-    
-    return category;
+    return mockCategories.find(category => category.slug === slug) || null;
   },
 };
 
-// Hooks
-export function useCategories() {
+// Category Hooks
+export const useCategories = () => {
   return useQuery({
-    queryKey: categoryKeys.lists(),
+    queryKey: queryKeys.categories.lists(),
     queryFn: mockApi.getCategories,
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
-}
+};
 
-export function useCategory(slug: string) {
+export const useCategory = (slug: string) => {
   return useQuery({
-    queryKey: categoryKeys.detail(slug),
+    queryKey: queryKeys.categories.bySlug(slug),
     queryFn: () => mockApi.getCategory(slug),
     enabled: !!slug,
+    staleTime: 30 * 60 * 1000,
   });
-}
+};

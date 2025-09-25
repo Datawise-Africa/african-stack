@@ -8,11 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MarkdownEditor } from "@/components/markdown-editor";
+import { QuillEditor } from "@/components/quill-editor";
 import { 
   Save, 
   Eye, 
   Send, 
-  ArrowLeft
+  ArrowLeft,
+  Type,
+  FileText,
+  ToggleLeft,
+  ToggleRight
 } from "lucide-react";
 import Link from "next/link";
 
@@ -27,6 +32,8 @@ export default function NewArticlePage() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [editorType, setEditorType] = useState<"markdown" | "quill">("markdown");
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -208,18 +215,56 @@ export default function NewArticlePage() {
             {/* Article Content */}
             <Card>
               <CardHeader>
-                <CardTitle>Content</CardTitle>
-                <CardDescription>
-                  Write your article content using Markdown. You can preview your content in real-time.
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Content</CardTitle>
+                    <CardDescription>
+                      Choose your preferred editor. Markdown for structured writing, Rich Text for visual editing.
+                    </CardDescription>
+                  </div>
+                  
+                  {/* Editor Type Toggle */}
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant={editorType === "markdown" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setEditorType("markdown")}
+                      className="flex items-center space-x-2"
+                    >
+                      <FileText className="h-4 w-4" />
+                      <span>Markdown</span>
+                    </Button>
+                    <Button
+                      variant={editorType === "quill" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setEditorType("quill")}
+                      className="flex items-center space-x-2"
+                    >
+                      <Type className="h-4 w-4" />
+                      <span>Rich Text</span>
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                <MarkdownEditor
-                  value={formData.content}
-                  onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
-                  placeholder="Start writing your article here... Use Markdown syntax to format your text."
-                  height={500}
-                />
+                {editorType === "markdown" ? (
+                  <MarkdownEditor
+                    value={formData.content}
+                    onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+                    placeholder="Start writing your article here... Use Markdown syntax to format your text."
+                    height={500}
+                  />
+                ) : (
+                  <QuillEditor
+                    value={formData.content}
+                    onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+                    placeholder="Start writing your article here... Use the toolbar to format your text."
+                    showPreview={showPreview}
+                    onPreviewToggle={setShowPreview}
+                    onSave={handleSave}
+                    isSaving={isSaving}
+                  />
+                )}
               </CardContent>
             </Card>
           </div>

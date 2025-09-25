@@ -7,30 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
   Plus, 
-  Edit, 
-  Eye, 
-  Heart, 
-  MessageCircle, 
   Calendar,
   MoreHorizontal,
-  Trash2,
-  ExternalLink,
-  TrendingUp,
-  BarChart3,
   Users,
-  Clock,
   Search,
   Filter,
   Download,
-  Upload,
-  Settings,
-  BookOpen,
-  Target,
-  Zap,
-  Bookmark,
-  History,
   ArrowUp,
-  ArrowDown,
   UserPlus,
   Mail,
   Globe,
@@ -38,13 +21,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useUserProfile } from "@/features/user/hooks";
+import { useCurrentUser } from "@/features/user/hooks";
 
 export default function DashboardAudiencePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterBy, setFilterBy] = useState<"all" | "followers" | "following">("all");
 
-  const { data: userProfile, isLoading } = useUserProfile();
+  const { data: userProfile, isLoading } = useCurrentUser();
 
   // Mock data for followers and following
   const mockFollowers = [

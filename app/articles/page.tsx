@@ -119,14 +119,14 @@ function ArticlesContent() {
         <ArticleListSkeleton />
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {articlesData?.articles.map((article) => (
+          {articlesData?.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))}
         </div>
       )}
 
       {/* Load More */}
-      {articlesData && articlesData.pagination.totalPages > articlesData.pagination.page && (
+      {articlesData && articlesData.length > 0 && (
         <div className="mt-12 text-center">
           <Button 
             variant="outline" 

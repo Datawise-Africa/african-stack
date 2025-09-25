@@ -7,38 +7,28 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
   Plus, 
-  Edit, 
   Eye, 
   Heart, 
   MessageCircle, 
-  Calendar,
   MoreHorizontal,
   Trash2,
   ExternalLink,
   TrendingUp,
-  BarChart3,
-  Users,
   Clock,
   Search,
-  Filter,
   Download,
-  Upload,
-  Settings,
-  BookOpen,
-  Target,
-  Zap,
-  Bookmark,
   History
 } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useReadHistory } from "@/features/user/hooks";
+import { useReadHistory, useCurrentUser } from "@/features/user/hooks";
 
 export default function DashboardHistoryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"recent" | "progress" | "title">("recent");
 
-  const { data: readHistory, isLoading } = useReadHistory();
+  const { data: currentUser } = useCurrentUser();
+  const { data: readHistory, isLoading } = useReadHistory(currentUser?.id || '');
 
   // Filter and sort read history
   const filteredHistory = (readHistory || [])

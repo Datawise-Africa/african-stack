@@ -10,16 +10,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Settings, 
-  Shield,
-  Mail,
   Bell,
-  Database,
   Globe,
   Lock,
   Users,
-  FileText,
-  AlertTriangle
-} from "lucide-react";
+  FileText} from "lucide-react";
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({

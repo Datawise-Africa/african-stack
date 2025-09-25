@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { SharedDashboardLayout } from "@/components/shared-dashboard-layout";
+import { AuthGuard } from "@/components/auth-guard";
 
 export default function AdminLayout({
   children,
@@ -9,8 +10,10 @@ export default function AdminLayout({
   children: ReactNode;
 }) {
   return (
-    <SharedDashboardLayout>
-      {children}
-    </SharedDashboardLayout>
+    <AuthGuard requireAuth={true} allowedRoles={['system_admin']}>
+      <SharedDashboardLayout>
+        {children}
+      </SharedDashboardLayout>
+    </AuthGuard>
   );
 }

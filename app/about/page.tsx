@@ -1,245 +1,254 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { 
-  BookOpen, 
-  Users, 
-  Globe, 
-  Heart, 
-  Target,
-  Award,
-  Lightbulb,
-  ArrowRight
-} from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  ArrowRight, 
+  Globe, 
+  Users, 
+  Zap, 
+  Target, 
+  BookOpen,
+  Mail,
+  ExternalLink
+} from "lucide-react";
 
 export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        {/* Hero Section */}
+        {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            About <span className="text-primary">African Stack</span>
+            About The African Stack
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            We're building the future of tech content in Africa, one article at a time. 
-            Our mission is to amplify African voices in technology and create a thriving 
-            community of innovators, thinkers, and builders.
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            The intellectual and strategic home for Africa's data, AI, and infrastructure movement. 
+            Where we showcase what we're building, reflect on the future, and connect the dots between 
+            innovation, policy, and the real world.
           </p>
         </div>
 
-        {/* Mission & Vision */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        {/* Mission Section */}
+        <section className="mb-16">
           <Card>
-            <CardHeader>
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                <Target className="h-6 w-6 text-primary" />
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    The African Stack isn't just another website — it's a platform for vision, influence, 
+                    and impact. We're building the intellectual foundation for Africa's data-driven future, 
+                    one strategic insight at a time.
+                  </p>
+                  <p className="text-lg text-muted-foreground">
+                    Through our flagship newsletter and curated content, we connect the dots between 
+                    innovation, policy, and real-world impact across African markets.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Target className="h-16 w-16 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Strategic Focus</h3>
+                  <p className="text-muted-foreground">
+                    Data Infrastructure • AI Policy • Innovation Ecosystems
+                  </p>
+                </div>
               </div>
-              <CardTitle>Our Mission</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground leading-relaxed">
-                To democratize access to high-quality tech content and create a platform 
-                where African technologists can share their knowledge, experiences, and 
-                innovations with the world. We believe that great ideas deserve great 
-                platforms, regardless of geography.
-              </p>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                <Lightbulb className="h-6 w-6 text-primary" />
-              </div>
-              <CardTitle>Our Vision</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground leading-relaxed">
-                To become the leading platform for African tech content, fostering a 
-                community where innovation thrives, knowledge is shared freely, and 
-                African technologists are recognized globally for their contributions 
-                to the tech industry.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+        </section>
 
         {/* What We Do */}
-        <div className="mb-16">
+        <section className="mb-16">
           <h2 className="text-3xl font-bold text-center mb-12">What We Do</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center">
+            <Card>
               <CardHeader>
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="h-8 w-8 text-primary" />
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <BookOpen className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Quality Content</CardTitle>
+                <CardTitle>Strategic Analysis</CardTitle>
+                <CardDescription>
+                  Deep insights on data infrastructure, AI policy, and innovation trends
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  We curate and publish high-quality articles on AI, machine learning, 
-                  data science, and innovation from verified experts across Africa.
+                  Our weekly newsletter provides comprehensive analysis of Africa's evolving 
+                  tech landscape, helping leaders make informed decisions.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card>
               <CardHeader>
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-8 w-8 text-primary" />
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle>Community Building</CardTitle>
+                <CardDescription>
+                  Connecting data leaders, AI innovators, and infrastructure builders
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  We foster meaningful connections between technologists, entrepreneurs, 
-                  and innovators across the African continent and beyond.
+                  We foster a community of 2,500+ subscribers across 25+ African countries, 
+                  creating opportunities for collaboration and knowledge sharing.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card>
               <CardHeader>
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Globe className="h-8 w-8 text-primary" />
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Zap className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Global Impact</CardTitle>
+                <CardTitle>Future Vision</CardTitle>
+                <CardDescription>
+                  Showcasing what we're building today and tomorrow's possibilities
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  We amplify African voices in global tech conversations and showcase 
-                  the continent's contributions to technological advancement.
+                  We highlight innovative projects, emerging technologies, and policy 
+                  developments that will shape Africa's digital future.
                 </p>
               </CardContent>
             </Card>
           </div>
-        </div>
+        </section>
 
-        {/* Our Values */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: "Excellence",
-                description: "We maintain the highest standards in everything we do, from content quality to user experience."
-              },
-              {
-                title: "Inclusivity",
-                description: "We believe in creating a platform that welcomes and celebrates diverse perspectives and backgrounds."
-              },
-              {
-                title: "Innovation",
-                description: "We embrace new ideas and technologies, always looking for better ways to serve our community."
-              },
-              {
-                title: "Integrity",
-                description: "We operate with transparency, honesty, and ethical practices in all our interactions."
-              }
-            ].map((value, index) => (
-              <Card key={index}>
-                <CardContent className="p-6">
-                  <h3 className="font-semibold mb-2">{value.title}</h3>
-                  <p className="text-sm text-muted-foreground">{value.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="mb-16">
-          <Card className="bg-gradient-to-r from-primary/5 to-secondary/5">
-            <CardContent className="p-12">
-              <h2 className="text-3xl font-bold text-center mb-8">Our Impact</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        {/* Datawise Africa Connection */}
+        <section className="mb-16">
+          <Card className="bg-primary/5 border-primary/20">
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2">500+</div>
-                  <div className="text-sm text-muted-foreground">Articles Published</div>
+                  <h2 className="text-3xl font-bold mb-4">Powered by Datawise Africa</h2>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    The African Stack is a flagship initiative of Datawise Africa, a leading 
+                    organization dedicated to advancing data-driven solutions across the continent.
+                  </p>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    Through our work at Datawise Africa, we've seen firsthand the transformative 
+                    power of data and AI in solving Africa's unique challenges. The African Stack 
+                    extends this mission by creating a platform for strategic thinking and knowledge sharing.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button asChild>
+                      <Link href="https://datawiseafrica.com" target="_blank">
+                        Visit Datawise Africa
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link href="https://datawiseafrica.com/datalab" target="_blank">
+                        Explore DataLab
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2">10K+</div>
-                  <div className="text-sm text-muted-foreground">Active Readers</div>
-                </div>
-                <div>
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2">50+</div>
-                  <div className="text-sm text-muted-foreground">Expert Authors</div>
-                </div>
-                <div>
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2">15</div>
-                  <div className="text-sm text-muted-foreground">African Countries</div>
+                <div className="text-center">
+                  <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <Globe className="h-16 w-16 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Datawise Africa</h3>
+                  <p className="text-muted-foreground">
+                    Advancing data-driven solutions across Africa
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </section>
 
-        {/* Team Section */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Dr. Sarah Johnson",
-                role: "Founder & CEO",
-                bio: "AI researcher and tech entrepreneur with 10+ years of experience in African tech ecosystems.",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah"
-              },
-              {
-                name: "Michael Chen",
-                role: "Head of Content",
-                bio: "Former tech journalist and content strategist passionate about amplifying African voices in tech.",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=michael"
-              },
-              {
-                name: "Aisha Okafor",
-                role: "Community Manager",
-                bio: "Community builder and developer advocate focused on creating inclusive tech spaces across Africa.",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=aisha"
-              }
-            ].map((member, index) => (
-              <Card key={index} className="text-center">
-                <CardContent className="p-6">
-                  <img
-                    src={member.avatar}
-                    alt={member.name}
-                    className="w-20 h-20 rounded-full mx-auto mb-4"
-                  />
-                  <h3 className="font-semibold mb-1">{member.name}</h3>
-                  <p className="text-sm text-primary mb-3">{member.role}</p>
-                  <p className="text-sm text-muted-foreground">{member.bio}</p>
-                </CardContent>
-              </Card>
-            ))}
+        {/* Leadership */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-12">Leadership</h2>
+          <Card>
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h3 className="text-2xl font-bold mb-4">Felix</h3>
+                  <p className="text-lg text-muted-foreground mb-4">
+                    Felix leads The African Stack initiative, bringing deep expertise in data 
+                    infrastructure, AI policy, and African tech ecosystems. With a background 
+                    in both technical implementation and strategic thinking, Felix is uniquely 
+                    positioned to guide our community through Africa's digital transformation.
+                  </p>
+                  <p className="text-lg text-muted-foreground">
+                    Through Datawise Africa, Felix has worked with governments, startups, and 
+                    international organizations to build data-driven solutions that address 
+                    Africa's most pressing challenges.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-32 h-32 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-16 w-16 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Leading Africa's data and AI movement
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Newsletter Stats */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-12">Our Impact</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">12+</div>
+              <div className="text-sm text-muted-foreground">Newsletter Issues</div>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">2.5K+</div>
+              <div className="text-sm text-muted-foreground">Subscribers</div>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">25+</div>
+              <div className="text-sm text-muted-foreground">African Countries</div>
+            </div>
+            <div>
+              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">50+</div>
+              <div className="text-sm text-muted-foreground">Expert Contributors</div>
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* CTA Section */}
-        <div className="text-center">
-          <Card className="bg-primary/5">
+        <section className="text-center">
+          <Card className="bg-primary/5 border-primary/20">
             <CardContent className="p-12">
-              <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
-              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Ready to be part of Africa's premier tech community? Start sharing your 
-                knowledge or discover amazing content from fellow technologists.
+              <h2 className="text-3xl font-bold mb-4">
+                Join Our Community
+              </h2>
+              <p className="text-xl text-muted-foreground mb-8">
+                Be part of Africa's data and AI movement. Subscribe to our newsletter and 
+                connect with like-minded innovators.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg">
-                  <Link href="/auth/register">
-                    Join African Stack
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                  <Link href="/newsletter/subscribe">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Subscribe to Newsletter
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">
-                  <Link href="/articles">
-                    Browse Articles
+                  <Link href="/newsletter">
+                    Browse Archive
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </section>
       </div>
     </div>
   );
