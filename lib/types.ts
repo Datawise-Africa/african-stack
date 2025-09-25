@@ -1,0 +1,220 @@
+// Core types for the African Stack platform
+
+export type ID = string;
+
+// User types
+export type UserRole = 'user' | 'creator' | 'system_admin';
+
+export interface User {
+  id: ID;
+  name: string;
+  email: string;
+  handle: string;
+  avatarUrl?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  role: UserRole;
+  status: 'active' | 'suspended' | 'pending_approval';
+  joinedAt: string;
+  stats: {
+    articlesPublished: number;
+    totalViews: number;
+    totalReactions: number;
+    totalComments: number;
+    followers: number;
+    following: number;
+  };
+}
+
+export interface UserProfile extends User {
+  recentArticles: Article[];
+  recentBookmarks: Bookmark[];
+}
+
+// Role Request types
+export interface RoleRequest {
+  id: ID;
+  userId: ID;
+  user: Pick<User, 'id' | 'name' | 'handle' | 'avatarUrl'>;
+  requestedRole: UserRole;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewedBy?: ID;
+  reviewedAt?: string;
+  reviewNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Article Approval types
+export interface ArticleApproval {
+  id: ID;
+  articleId: ID;
+  article: Article;
+  status: 'pending' | 'approved' | 'rejected';
+  reviewedBy?: ID;
+  reviewedAt?: string;
+  reviewNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Category types
+export interface Category {
+  id: ID;
+  slug: string;
+  name: string;
+  description?: string;
+  articleCount: number;
+  color?: string;
+  recentArticles?: Article[];
+}
+
+// Article types
+export interface Article {
+  id: ID;
+  slug: string;
+  title: string;
+  excerpt: string;
+  contentJson: unknown; // tiptap JSON
+  author: Pick<User, 'id' | 'name' | 'avatarUrl' | 'handle'>;
+  category: Category;
+  tags: string[];
+  thumbnailUrl?: string;
+  readTimeMins: number;
+  publishedAt?: string;
+  updatedAt?: string;
+  status: 'draft' | 'pending_approval' | 'published' | 'rejected';
+  approvalStatus?: 'pending' | 'approved' | 'rejected';
+  reactionsCount: number;
+  commentsCount: number;
+  views?: number;
+}
+
+export interface ArticleFilters {
+  query?: string;
+  category?: string;
+  tag?: string;
+  sort?: 'latest' | 'trending' | 'popular';
+  page?: number;
+  limit?: number;
+}
+
+export interface ArticleListResponse {
+  articles: Article[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+// Reaction types
+export interface Reaction {
+  id: ID;
+  articleId: ID;
+  userId: ID;
+  type: 'like';
+  createdAt: string;
+}
+
+// Comment types
+export interface Comment {
+  id: ID;
+  articleId: ID;
+  user: Pick<User, 'id' | 'name' | 'avatarUrl'>;
+  body: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+// Bookmark types
+export interface Bookmark {
+  id: ID;
+  articleId: ID;
+  userId: ID;
+  article: Article;
+  bookmarkedAt: string;
+}
+
+// Read History types
+export interface ReadEvent {
+  id: ID;
+  articleId: ID;
+  userId: ID;
+  article: Article;
+  scrolledPct: number;
+  readTimeSpent: number; // in minutes
+  readAt: string;
+}
+
+// API Response types
+export interface ApiResponse<T> {
+  data: T;
+  success: boolean;
+  message?: string;
+}
+
+export interface ApiError {
+  error: {
+    code: string;
+    message: string;
+    details?: Record<string, unknown>;
+  };
+}
+
+// Form types
+export interface LoginForm {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+export interface RegisterForm {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  handle: string;
+  agreeToTerms: boolean;
+}
+
+export interface ArticleForm {
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  tags: string;
+  status: 'draft' | 'published';
+}
+
+// Search types
+export interface SearchResult {
+  articles: Article[];
+  categories: Category[];
+  users: Pick<User, 'id' | 'name' | 'handle' | 'avatarUrl'>[];
+}
+
+// Analytics types
+export interface ArticleAnalytics {
+  articleId: ID;
+  views: number;
+  reactions: number;
+  comments: number;
+  readTime: number;
+  completionRate: number;
+}
+
+// Notification types
+export interface Notification {
+  id: ID;
+  userId: ID;
+  type: 'reaction' | 'comment' | 'follow' | 'article_published';
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  data?: Record<string, unknown>;
+}
