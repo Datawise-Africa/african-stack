@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Moon, Sun, Menu, Search, User, BookOpen, Bookmark, History, Edit, LogOut, BarChart3, Shield, UserPlus, Clock } from "lucide-react";
+import { Moon, Sun, Menu, Search, User, BookOpen, Edit, LogOut, BarChart3, Shield, UserPlus, Clock } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { canCreateArticles, canManageUsers, canRequestCreatorRole } from "@/lib/auth";
+import { useTheme } from "next-themes";
 
 export function Navbar() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
 

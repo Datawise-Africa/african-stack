@@ -78,7 +78,7 @@ export default function NewsletterPage() {
             The African Stack Newsletter
           </h1>
           <p className="text-xl text-muted-foreground mb-6">
-            Strategic insights on Africa's data, AI, and infrastructure movement
+            Strategic insights on Africa&apos;s data, AI, and infrastructure movement
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
@@ -154,7 +154,7 @@ export default function NewsletterPage() {
           <Card className="bg-primary/5 border-primary/20">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold mb-4">
-                Don't Miss the Next Issue
+                Don&apos;t Miss the Next Issue
               </h3>
               <p className="text-muted-foreground mb-6">
                 Join thousands of data leaders, AI innovators, and infrastructure builders 

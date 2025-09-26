@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
   ArrowRight, 
   Globe, 
@@ -23,8 +22,8 @@ export default function AboutPage() {
             About The African Stack
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            The intellectual and strategic home for Africa's data, AI, and infrastructure movement. 
-            Where we showcase what we're building, reflect on the future, and connect the dots between 
+            The intellectual and strategic home for Africa&apos;s data, AI, and infrastructure movement. 
+            Where we showcase what we&apos;re building, reflect on the future, and connect the dots between 
             innovation, policy, and the real world.
           </p>
         </div>
@@ -37,8 +36,8 @@ export default function AboutPage() {
                 <div>
                   <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
                   <p className="text-lg text-muted-foreground mb-6">
-                    The African Stack isn't just another website — it's a platform for vision, influence, 
-                    and impact. We're building the intellectual foundation for Africa's data-driven future, 
+                    The African Stack isn&apos;t just another website — it&apos;s a platform for vision, influence, 
+                    and impact. We&apos;re building the intellectual foundation for Africa&apos;s data-driven future, 
                     one strategic insight at a time.
                   </p>
                   <p className="text-lg text-muted-foreground">
@@ -76,7 +75,7 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Our weekly newsletter provides comprehensive analysis of Africa's evolving 
+                  Our weekly newsletter provides comprehensive analysis of Africa&apos;s evolving 
                   tech landscape, helping leaders make informed decisions.
                 </p>
               </CardContent>
@@ -107,13 +106,13 @@ export default function AboutPage() {
                 </div>
                 <CardTitle>Future Vision</CardTitle>
                 <CardDescription>
-                  Showcasing what we're building today and tomorrow's possibilities
+                  Showcasing what we&apos;re building today and tomorrow&apos;s possibilities
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
                   We highlight innovative projects, emerging technologies, and policy 
-                  developments that will shape Africa's digital future.
+                  developments that will shape Africa&apos;s digital future.
                 </p>
               </CardContent>
             </Card>
@@ -132,8 +131,8 @@ export default function AboutPage() {
                     organization dedicated to advancing data-driven solutions across the continent.
                   </p>
                   <p className="text-lg text-muted-foreground mb-6">
-                    Through our work at Datawise Africa, we've seen firsthand the transformative 
-                    power of data and AI in solving Africa's unique challenges. The African Stack 
+                    Through our work at Datawise Africa, we&apos;ve seen firsthand the transformative 
+                    power of data and AI in solving Africa&apos;s unique challenges. The African Stack 
                     extends this mission by creating a platform for strategic thinking and knowledge sharing.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
@@ -177,12 +176,12 @@ export default function AboutPage() {
                     Felix leads The African Stack initiative, bringing deep expertise in data 
                     infrastructure, AI policy, and African tech ecosystems. With a background 
                     in both technical implementation and strategic thinking, Felix is uniquely 
-                    positioned to guide our community through Africa's digital transformation.
+                    positioned to guide our community through Africa&apos;s digital transformation.
                   </p>
                   <p className="text-lg text-muted-foreground">
                     Through Datawise Africa, Felix has worked with governments, startups, and 
                     international organizations to build data-driven solutions that address 
-                    Africa's most pressing challenges.
+                    Africa&apos;s most pressing challenges.
                   </p>
                 </div>
                 <div className="text-center">
@@ -190,7 +189,7 @@ export default function AboutPage() {
                     <Users className="h-16 w-16 text-muted-foreground" />
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Leading Africa's data and AI movement
+                    Leading Africa&apos;s data and AI movement
                   </p>
                 </div>
               </div>
@@ -229,7 +228,7 @@ export default function AboutPage() {
                 Join Our Community
               </h2>
               <p className="text-xl text-muted-foreground mb-8">
-                Be part of Africa's data and AI movement. Subscribe to our newsletter and 
+                Be part of Africa&apos;s data and AI movement. Subscribe to our newsletter and 
                 connect with like-minded innovators.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

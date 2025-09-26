@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -83,9 +84,11 @@ export default function ProfilePage() {
         {/* Profile Header */}
         <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-8 mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
-            <img
+            <Image
               src={user.avatarUrl}
               alt={user.name}
+              width={96}
+              height={96}
               className="w-24 h-24 rounded-full border-4 border-background shadow-lg"
             />
             <div className="flex-1">

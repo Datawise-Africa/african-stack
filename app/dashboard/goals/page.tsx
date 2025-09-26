@@ -18,16 +18,16 @@ import {
   AlertCircle
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useCurrentUser, useUserArticles } from "@/features/user/hooks";
+// Removed unused useCurrentUser import
 
 export default function DashboardGoalsPage() {
   const [newGoal, setNewGoal] = useState("");
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
-  const { data: userProfile } = useCurrentUser();
-  const { data: articlesData } = useUserArticles(userProfile?.id || '');
+  // Removed unused userProfile
+  // Removed unused articlesData
 
-  const publishedArticles = articlesData?.filter(article => article.status === 'published') || [];
+  // Removed unused publishedArticles
 
   // Mock goals data
   const [goals, setGoals] = useState([

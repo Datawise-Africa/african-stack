@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -72,10 +73,10 @@ export default function DashboardSettingsPage() {
   };
 
   const tabs = [
-    { id: "profile", name: "Profile", icon: User, description: "Manage your profile information" },
-    { id: "notifications", name: "Notifications", icon: Bell, description: "Control your notification preferences" },
-    { id: "privacy", name: "Privacy", icon: Shield, description: "Manage your privacy settings" },
-    { id: "appearance", name: "Appearance", icon: Palette, description: "Customize your experience" }
+    { id: "profile" as const, name: "Profile", icon: User, description: "Manage your profile information" },
+    { id: "notifications" as const, name: "Notifications", icon: Bell, description: "Control your notification preferences" },
+    { id: "privacy" as const, name: "Privacy", icon: Shield, description: "Manage your privacy settings" },
+    { id: "appearance" as const, name: "Appearance", icon: Palette, description: "Customize your experience" }
   ];
 
   return (
@@ -102,7 +103,7 @@ export default function DashboardSettingsPage() {
                     {tabs.map((tab) => (
                       <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
+                        onClick={() => setActiveTab(tab.id)}
                         className={`flex-1 px-6 py-4 text-left hover:bg-muted/50 transition-colors ${
                           activeTab === tab.id ? 'border-b-2 border-primary bg-muted/50' : ''
                         }`}
@@ -130,9 +131,11 @@ export default function DashboardSettingsPage() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex items-center space-x-4">
-                        <img
+                        <Image
                           src={settings.profile.avatarUrl}
                           alt="Profile"
+                          width={64}
+                          height={64}
                           className="w-16 h-16 rounded-full"
                         />
                         <div>

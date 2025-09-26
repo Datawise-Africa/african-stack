@@ -11,7 +11,6 @@ import {
   Users,
   Calendar
 } from "lucide-react";
-import { useCategories } from "@/features/categories/hooks";
 
 const categories = [
   {
@@ -236,10 +235,10 @@ export default function CategoriesPage() {
       {/* CTA Section */}
       <div className="mt-16 text-center bg-muted/30 rounded-2xl p-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">
-          Can't Find What You're Looking For?
+          Can&apos;t Find What You&apos;re Looking For?
         </h2>
         <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-          We're always adding new categories and content. Suggest a topic or contribute an article to help grow our community.
+          We&apos;re always adding new categories and content. Suggest a topic or contribute an article to help grow our community.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild size="lg">

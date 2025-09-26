@@ -82,11 +82,11 @@ export default function Home() {
                   The <span className="text-primary">African Stack</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-2xl mx-auto lg:mx-0">
-                  Building Africa's future in data, infrastructure, and intelligence.
+                  Building Africa&apos;s future in data, infrastructure, and intelligence.
                 </p>
                 <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto lg:mx-0">
-                  The intellectual and strategic home for Africa's data, AI, and infrastructure movement. 
-                  Where we showcase what we're building, reflect on the future, and connect the dots between 
+                  The intellectual and strategic home for Africa&apos;s data, AI, and infrastructure movement. 
+                  Where we showcase what we&apos;re building, reflect on the future, and connect the dots between 
                   innovation, policy, and the real world.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -256,7 +256,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Why The African Stack?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              A platform for vision, influence, and impact in Africa's data and AI ecosystem.
+              A platform for vision, influence, and impact in Africa&apos;s data and AI ecosystem.
             </p>
           </div>
           
@@ -267,7 +267,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-3">Strategic Intelligence</h3>
               <p className="text-muted-foreground">
-                Deep insights on data infrastructure, AI policy, and innovation trends shaping Africa's future.
+                Deep insights on data infrastructure, AI policy, and innovation trends shaping Africa&apos;s future.
               </p>
             </div>
             
@@ -287,7 +287,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-3">Future-Focused</h3>
               <p className="text-muted-foreground">
-                Showcasing what we're building today and reflecting on tomorrow's possibilities.
+                Showcasing what we&apos;re building today and reflecting on tomorrow&apos;s possibilities.
               </p>
             </div>
           </div>
@@ -340,10 +340,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center bg-primary/5 rounded-2xl p-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Stay Connected to Africa's Data Future
+              Stay Connected to Africa&apos;s Data Future
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Join our community of data leaders, AI innovators, and infrastructure builders shaping Africa's tomorrow.
+              Join our community of data leaders, AI innovators, and infrastructure builders shaping Africa&apos;s tomorrow.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6">

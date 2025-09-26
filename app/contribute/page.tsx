@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +27,7 @@ export default function ContributePage() {
             Contribute to <span className="text-primary">The African Stack</span>
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Join our mission to build Africa's intellectual and strategic home for data, AI, and infrastructure. 
+            Join our mission to build Africa&apos;s intellectual and strategic home for data, AI, and infrastructure. 
             Your contributions help shape the future of African technology.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -177,7 +178,7 @@ export default function ContributePage() {
                 Content Guidelines
               </CardTitle>
               <CardDescription>
-                What we're looking for in newsletter contributions
+                What we&apos;re looking for in newsletter contributions
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -248,7 +249,7 @@ export default function ContributePage() {
                     </div>
                     <h4 className="font-medium mb-2">Review & Feedback</h4>
                     <p className="text-sm text-muted-foreground">
-                      We'll review and provide feedback
+                      We&apos;ll review and provide feedback
                     </p>
                   </div>
                   <div className="text-center">
@@ -359,9 +360,11 @@ export default function ContributePage() {
             ].map((contributor, index) => (
               <Card key={index} className="text-center">
                 <CardContent className="pt-6">
-                  <img
+                  <Image
                     src={contributor.avatar}
                     alt={contributor.name}
+                    width={64}
+                    height={64}
                     className="w-16 h-16 rounded-full mx-auto mb-4"
                   />
                   <h3 className="font-semibold mb-1">{contributor.name}</h3>
@@ -385,7 +388,7 @@ export default function ContributePage() {
               </h2>
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Join our community of thought leaders, innovators, and change-makers 
-                who are shaping Africa's digital future.
+                who are shaping Africa&apos;s digital future.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg">

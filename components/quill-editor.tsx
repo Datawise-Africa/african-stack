@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +8,6 @@ import {
   Bold, 
   Italic, 
   Underline, 
-  Strikethrough,
   List,
   ListOrdered,
   Quote,
@@ -19,7 +18,6 @@ import {
   Eye,
   EyeOff,
   Save,
-  FileText,
   Type
 } from "lucide-react";
 

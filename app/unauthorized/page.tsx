@@ -10,7 +10,7 @@ export default function UnauthorizedPage() {
           <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
           <h1 className="text-3xl font-bold mb-2">Access Denied</h1>
           <p className="text-muted-foreground">
-            You don't have permission to access this page.
+            You don&apos;t have permission to access this page.
           </p>
         </div>
 

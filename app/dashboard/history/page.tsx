@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +29,7 @@ export default function DashboardHistoryPage() {
   const [sortBy, setSortBy] = useState<"recent" | "progress" | "title">("recent");
 
   const { data: currentUser } = useCurrentUser();
-  const { data: readHistory, isLoading } = useReadHistory(currentUser?.id || '');
+  const { data: readHistory } = useReadHistory(currentUser?.id || '');
 
   // Filter and sort read history
   const filteredHistory = (readHistory || [])
@@ -61,7 +62,7 @@ export default function DashboardHistoryPage() {
                 <div>
                   <h1 className="text-3xl font-bold">Read History</h1>
                   <p className="text-muted-foreground">
-                    Track your reading progress and discover articles you've enjoyed
+                    Track your reading progress and discover articles you&apos;ve enjoyed
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -151,7 +152,7 @@ export default function DashboardHistoryPage() {
                 <CardHeader>
                   <CardTitle>Read History</CardTitle>
                   <CardDescription>
-                    Articles you've read and your progress
+                    Articles you&apos;ve read and your progress
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -161,9 +162,11 @@ export default function DashboardHistoryPage() {
                         {/* Thumbnail */}
                         {item.article.thumbnailUrl && (
                           <div className="w-48 h-32 relative flex-shrink-0">
-                            <img
+                            <Image
                               src={item.article.thumbnailUrl}
                               alt={item.article.title}
+                              width={192}
+                              height={128}
                               className="w-full h-full object-cover rounded-lg"
                             />
                             <div className="absolute top-2 left-2">
@@ -220,9 +223,11 @@ export default function DashboardHistoryPage() {
 
                           {/* Author Info */}
                           <div className="flex items-center space-x-3 mb-3">
-                            <img
-                              src={item.article.author.avatarUrl}
+                            <Image
+                              src={item.article.author.avatarUrl!}
                               alt={item.article.author.name}
+                              width={24}
+                              height={24}
                               className="w-6 h-6 rounded-full"
                             />
                             <span className="text-sm text-muted-foreground">

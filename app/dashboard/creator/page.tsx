@@ -21,9 +21,9 @@ import { useUserArticles, useCurrentUser } from "@/features/user/hooks";
 import { AuthGuard } from "@/components/auth-guard";
 
 export default function CreatorDashboardPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
-  const [sortBy, setSortBy] = useState<"latest" | "popular" | "views">("latest");
+  const [searchQuery] = useState("");
+  const [statusFilter] = useState<"all" | "published" | "draft">("all");
+  const [sortBy] = useState<"latest" | "popular" | "views">("latest");
 
   const { data: currentUser } = useCurrentUser();
   const { data: articlesData, isLoading: articlesLoading } = useUserArticles(currentUser?.id || '');
@@ -71,7 +71,7 @@ export default function CreatorDashboardPage() {
           <div>
             <h1 className="text-3xl font-bold">Creator Dashboard</h1>
             <p className="text-muted-foreground">
-              Welcome back, {currentUser?.name || "Creator"}! Here's what's happening with your content.
+              Welcome back, {currentUser?.name || "Creator"}! Here&apos;s what&apos;s happening with your content.
             </p>
           </div>
           <div className="flex items-center space-x-2">

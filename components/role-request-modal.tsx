@@ -81,8 +81,8 @@ export function RoleRequestModal({ isOpen, onClose, currentRole }: RoleRequestMo
             <DialogTitle>Request Creator Access</DialogTitle>
           </div>
           <DialogDescription>
-            As a creator, you'll be able to write and publish articles on African Stack. 
-            Please tell us why you'd like to become a creator.
+            As a creator, you&apos;ll be able to write and publish articles on African Stack. 
+            Please tell us why you&apos;d like to become a creator.
           </DialogDescription>
         </DialogHeader>
 
@@ -113,8 +113,8 @@ export function RoleRequestModal({ isOpen, onClose, currentRole }: RoleRequestMo
                 <p className="font-medium">What happens next?</p>
                 <ul className="mt-1 space-y-1 text-muted-foreground">
                   <li>• Our team will review your application</li>
-                  <li>• You'll receive an email notification of the decision</li>
-                  <li>• If approved, you'll gain access to the creator dashboard</li>
+                  <li>• You&apos;ll receive an email notification of the decision</li>
+                  <li>• If approved, you&apos;ll gain access to the creator dashboard</li>
                 </ul>
               </div>
             </div>

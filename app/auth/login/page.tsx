@@ -61,9 +61,9 @@ function LoginForm() {
     try {
       await login(values.email, values.password, values.rememberMe);
       router.push(redirectTo);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      setError(error.message || 'Login failed. Please try again.');
+      setError((error as Error).message || 'Login failed. Please try again.');
     }
   };
 

@@ -24,7 +24,7 @@ export default function UserDashboardPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold">User Dashboard</h1>
           <p className="text-muted-foreground">
-            Welcome back, {user?.name || "User"}! Here's your personal dashboard.
+            Welcome back, {user?.name || "User"}! Here&apos;s your personal dashboard.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ export default function UserDashboardPage() {
                 <Bookmark className="h-8 w-8 text-primary" />
               </div>
               <div className="mt-2 text-sm text-muted-foreground">
-                Articles you've saved
+                Articles you&apos;ve saved
               </div>
             </CardContent>
           </Card>
@@ -55,7 +55,7 @@ export default function UserDashboardPage() {
                 <History className="h-8 w-8 text-primary" />
               </div>
               <div className="mt-2 text-sm text-muted-foreground">
-                Articles you've read
+                Articles you&apos;ve read
               </div>
             </CardContent>
           </Card>
@@ -178,7 +178,7 @@ export default function UserDashboardPage() {
             <CardHeader>
               <CardTitle>Reading History</CardTitle>
               <CardDescription>
-                Articles you've recently read
+                Articles you&apos;ve recently read
               </CardDescription>
             </CardHeader>
             <CardContent>

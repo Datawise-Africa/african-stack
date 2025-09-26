@@ -16,8 +16,6 @@ import {
   ArrowLeft,
   Type,
   FileText,
-  ToggleLeft,
-  ToggleRight
 } from "lucide-react";
 import Link from "next/link";
 
@@ -179,7 +177,7 @@ export default function NewArticlePage() {
               <CardHeader>
                 <CardTitle>Article Title</CardTitle>
                 <CardDescription>
-                  Choose a compelling title that captures your readers' attention
+                  Choose a compelling title that captures your readers&apos; attention
                 </CardDescription>
               </CardHeader>
               <CardContent>

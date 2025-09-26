@@ -11,12 +11,22 @@ import {
   Share2, 
   Mail,
   Globe,
-  TrendingUp,
-  Zap
+  TrendingUp
 } from "lucide-react";
+import { TsFixme } from "@/lib/types";
 
 // Mock newsletter data
-const newsletterIssues: Record<string, any> = {
+const newsletterIssues: Record<string, { 
+  id: string; 
+  title: string; 
+  date: string; 
+  readTime: string; 
+  content: string;
+  category: string;
+  subscribers: string;
+  icon: TsFixme;
+  keyPoints: string[];
+}> = {
   "issue-12": {
     id: "issue-12",
     title: "The Data Infrastructure Revolution in Africa",

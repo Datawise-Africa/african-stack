@@ -148,7 +148,7 @@ export default function ArticlesPage() {
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">Latest Articles</h1>
         <p className="text-xl text-muted-foreground">
-          Discover insights, tutorials, and stories from Africa's tech community
+          Discover insights, tutorials, and stories from Africa&apos;s tech community
         </p>
       </div>
 

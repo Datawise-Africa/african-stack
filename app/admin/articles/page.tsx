@@ -51,8 +51,30 @@ import {
 } from "@tanstack/react-table";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 
+// Mock data type
+type MockArticle = {
+  id: string;
+  title: string;
+  author: string;
+  authorEmail: string;
+  status: string;
+  submittedAt: string;
+  category: string;
+  readTime: number;
+  excerpt: string;
+  content: string;
+  tags: string[];
+  views: number;
+  reactions: number;
+  comments: number;
+  bookmarks: number;
+  publishedAt?: string;
+  rejectedAt?: string;
+  approvedAt?: string;
+};
+
 // Mock data
-const mockArticles = [
+const mockArticles: MockArticle[] = [
   {
     id: "1",
     title: "The Future of AI in Healthcare: A Comprehensive Guide",
@@ -232,7 +254,7 @@ export default function ArticleModeration() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
-  const [selectedArticle, setSelectedArticle] = useState<any>(null);
+  const [selectedArticle, setSelectedArticle] = useState<MockArticle | null>(null);
   const [previewMode, setPreviewMode] = useState(false);
 
   const getStatusBadge = (status: string) => {
@@ -263,7 +285,7 @@ export default function ArticleModeration() {
     );
   };
 
-  const columns: ColumnDef<any>[] = useMemo(
+  const columns: ColumnDef<MockArticle>[] = useMemo(
     () => [
       {
         accessorKey: "title",

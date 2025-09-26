@@ -21,10 +21,9 @@ export default function DashboardAnalyticsPage() {
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "1y">("30d");
 
   const { data: currentUser } = useCurrentUser();
-  const { data: articlesData, isLoading: articlesLoading } = useUserArticles(currentUser?.id || '');
+  const { data: articlesData } = useUserArticles(currentUser?.id || '');
 
   const publishedArticles = articlesData?.filter(article => article.status === 'published') || [];
-  const draftArticles = articlesData?.filter(article => article.status === 'draft') || [];
 
   // Calculate analytics data
   const totalViews = publishedArticles.reduce((sum, article) => sum + (article.views || 0), 0);
@@ -176,7 +175,7 @@ export default function DashboardAnalyticsPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="h-64 flex items-end justify-between space-x-2">
-                      {monthlyData.map((data, index) => (
+                      {monthlyData.map((data) => (
                         <div key={data.month} className="flex flex-col items-center space-y-2">
                           <div 
                             className="w-8 bg-primary rounded-t"

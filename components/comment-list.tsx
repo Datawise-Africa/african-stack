@@ -62,7 +62,7 @@ const mockComments: Comment[] = [
   }
 ];
 
-export function CommentList({ articleId, comments = mockComments }: CommentListProps) {
+export function CommentList({  comments = mockComments }: CommentListProps) {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 

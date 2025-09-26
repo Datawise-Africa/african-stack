@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useAdminUsers, useUpdateUserStatus, useUpdateUserRole } from "@/features/admin/hooks";
+import { useAdminUsers } from "@/features/admin/hooks";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,136 +49,133 @@ import {
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
+import { User } from "@/lib/types";
 
 // Mock data
-const mockUsers = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "creator",
-    status: "active",
-    joinedAt: "2024-01-15T10:30:00Z",
-    articlesCount: 12,
-    lastActive: "2024-01-20T14:22:00Z",
-    views: 1250,
-    reactions: 89
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "user",
-    status: "active",
-    joinedAt: "2024-01-10T09:15:00Z",
-    articlesCount: 0,
-    lastActive: "2024-01-20T16:45:00Z",
-    views: 0,
-    reactions: 0
-  },
-  {
-    id: "3",
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    role: "creator",
-    status: "pending_approval",
-    joinedAt: "2024-01-18T11:20:00Z",
-    articlesCount: 3,
-    lastActive: "2024-01-19T13:10:00Z",
-    views: 450,
-    reactions: 23
-  },
-  {
-    id: "4",
-    name: "Sarah Wilson",
-    email: "sarah@example.com",
-    role: "user",
-    status: "suspended",
-    joinedAt: "2024-01-05T14:45:00Z",
-    articlesCount: 0,
-    lastActive: "2024-01-15T10:30:00Z",
-    views: 0,
-    reactions: 0
-  },
-  {
-    id: "5",
-    name: "Alex Rodriguez",
-    email: "alex@example.com",
-    role: "creator",
-    status: "active",
-    joinedAt: "2024-01-12T08:45:00Z",
-    articlesCount: 8,
-    lastActive: "2024-01-20T11:30:00Z",
-    views: 2100,
-    reactions: 156
-  },
-  {
-    id: "6",
-    name: "Emily Chen",
-    email: "emily@example.com",
-    role: "user",
-    status: "active",
-    joinedAt: "2024-01-08T16:20:00Z",
-    articlesCount: 0,
-    lastActive: "2024-01-20T09:15:00Z",
-    views: 0,
-    reactions: 0
-  },
-  {
-    id: "7",
-    name: "David Kim",
-    email: "david@example.com",
-    role: "creator",
-    status: "pending_approval",
-    joinedAt: "2024-01-19T13:30:00Z",
-    articlesCount: 2,
-    lastActive: "2024-01-19T17:45:00Z",
-    views: 180,
-    reactions: 12
-  },
-  {
-    id: "8",
-    name: "Lisa Brown",
-    email: "lisa@example.com",
-    role: "user",
-    status: "active",
-    joinedAt: "2024-01-14T12:10:00Z",
-    articlesCount: 0,
-    lastActive: "2024-01-20T14:30:00Z",
-    views: 0,
-    reactions: 0
-  },
-  {
-    id: "9",
-    name: "Michael Davis",
-    email: "michael@example.com",
-    role: "creator",
-    status: "active",
-    joinedAt: "2024-01-06T15:45:00Z",
-    articlesCount: 15,
-    lastActive: "2024-01-20T10:20:00Z",
-    views: 3200,
-    reactions: 234
-  },
-  {
-    id: "10",
-    name: "Anna Taylor",
-    email: "anna@example.com",
-    role: "user",
-    status: "suspended",
-    joinedAt: "2024-01-03T11:25:00Z",
-    articlesCount: 0,
-    lastActive: "2024-01-12T08:40:00Z",
-    views: 0,
-    reactions: 0
-  }
-];
+// const mockUsers = [
+//   {
+//     id: "1",
+//     name: "John Doe",
+//     email: "john@example.com",
+//     role: "creator",
+//     status: "active",
+//     joinedAt: "2024-01-15T10:30:00Z",
+//     articlesCount: 12,
+//     lastActive: "2024-01-20T14:22:00Z",
+//     views: 1250,
+//     reactions: 89
+//   },
+//   {
+//     id: "2",
+//     name: "Jane Smith",
+//     email: "jane@example.com",
+//     role: "user",
+//     status: "active",
+//     joinedAt: "2024-01-10T09:15:00Z",
+//     articlesCount: 0,
+//     lastActive: "2024-01-20T16:45:00Z",
+//     views: 0,
+//     reactions: 0
+//   },
+//   {
+//     id: "3",
+//     name: "Mike Johnson",
+//     email: "mike@example.com",
+//     role: "creator",
+//     status: "pending_approval",
+//     joinedAt: "2024-01-18T11:20:00Z",
+//     articlesCount: 3,
+//     lastActive: "2024-01-19T13:10:00Z",
+//     views: 450,
+//     reactions: 23
+//   },
+//   {
+//     id: "4",
+//     name: "Sarah Wilson",
+//     email: "sarah@example.com",
+//     role: "user",
+//     status: "suspended",
+//     joinedAt: "2024-01-05T14:45:00Z",
+//     articlesCount: 0,
+//     lastActive: "2024-01-15T10:30:00Z",
+//     views: 0,
+//     reactions: 0
+//   },
+//   {
+//     id: "5",
+//     name: "Alex Rodriguez",
+//     email: "alex@example.com",
+//     role: "creator",
+//     status: "active",
+//     joinedAt: "2024-01-12T08:45:00Z",
+//     articlesCount: 8,
+//     lastActive: "2024-01-20T11:30:00Z",
+//     views: 2100,
+//     reactions: 156
+//   },
+//   {
+//     id: "6",
+//     name: "Emily Chen",
+//     email: "emily@example.com",
+//     role: "user",
+//     status: "active",
+//     joinedAt: "2024-01-08T16:20:00Z",
+//     articlesCount: 0,
+//     lastActive: "2024-01-20T09:15:00Z",
+//     views: 0,
+//     reactions: 0
+//   },
+//   {
+//     id: "7",
+//     name: "David Kim",
+//     email: "david@example.com",
+//     role: "creator",
+//     status: "pending_approval",
+//     joinedAt: "2024-01-19T13:30:00Z",
+//     articlesCount: 2,
+//     lastActive: "2024-01-19T17:45:00Z",
+//     views: 180,
+//     reactions: 12
+//   },
+//   {
+//     id: "8",
+//     name: "Lisa Brown",
+//     email: "lisa@example.com",
+//     role: "user",
+//     status: "active",
+//     joinedAt: "2024-01-14T12:10:00Z",
+//     articlesCount: 0,
+//     lastActive: "2024-01-20T14:30:00Z",
+//     views: 0,
+//     reactions: 0
+//   },
+//   {
+//     id: "9",
+//     name: "Michael Davis",
+//     email: "michael@example.com",
+//     role: "creator",
+//     status: "active",
+//     joinedAt: "2024-01-06T15:45:00Z",
+//     articlesCount: 15,
+//     lastActive: "2024-01-20T10:20:00Z",
+//     views: 3200,
+//     reactions: 234
+//   },
+//   {
+//     id: "10",
+//     name: "Anna Taylor",
+//     email: "anna@example.com",
+//     role: "user",
+//     status: "suspended",
+//     joinedAt: "2024-01-03T11:25:00Z",
+//     articlesCount: 0,
+//     lastActive: "2024-01-12T08:40:00Z",
+//     views: 0,
+//     reactions: 0
+//   }
+// ];
 
-const roleRequestStats = {
-  pending: 5,
-  approved: 12,
-  rejected: 3
-};
+// Removed unused roleRequestStats
 
 export default function UserManagement() {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -198,8 +195,7 @@ export default function UserManagement() {
     limit: 100
   });
 
-  const updateUserStatus = useUpdateUserStatus();
-  const updateUserRole = useUpdateUserRole();
+  // Removed unused updateUserStatus and updateUserRole
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -227,7 +223,7 @@ export default function UserManagement() {
     }
   };
 
-  const columns: ColumnDef<any>[] = useMemo(
+  const columns: ColumnDef<User>[] = useMemo(
     () => [
       {
         accessorKey: "name",
@@ -415,8 +411,7 @@ export default function UserManagement() {
       {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-          const user = row.original;
+        cell: () => {
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -13,8 +13,6 @@ import {
   XCircle, 
   Clock,
   BarChart3,
-  UserCheck,
-  AlertTriangle
 } from "lucide-react";
 
 // Mock data

@@ -44,9 +44,11 @@ export function ArticleCard({
         {showAuthor && (
           <div className="flex items-center space-x-2 mb-3">
             {article.author.avatarUrl && (
-              <img
+              <Image
                 src={article.author.avatarUrl}
                 alt={article.author.name}
+                width={24}
+                height={24}
                 className="w-6 h-6 rounded-full"
               />
             )}

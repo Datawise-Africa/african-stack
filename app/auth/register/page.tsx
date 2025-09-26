@@ -81,9 +81,9 @@ function RegisterForm() {
     try {
       await register(values.name, values.email, values.password, values.handle);
       router.push('/dashboard');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration error:', error);
-      setError(error.message || 'Registration failed. Please try again.');
+      setError((error as Error).message || 'Registration failed. Please try again.');
     }
   };
 

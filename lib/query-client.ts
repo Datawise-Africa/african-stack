@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient } from '@tanstack/react-query';
+import { TsFixme } from './types';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,7 +11,7 @@ export const queryClient = new QueryClient({
       retry: (failureCount, error) => {
         // Don't retry on 4xx errors
         if (error instanceof Error && 'status' in error) {
-          const status = (error as any).status;
+          const status = (error as TsFixme).status;
           if (status >= 400 && status < 500) {
             return false;
           }

@@ -13,7 +13,7 @@ export function Footer() {
               <span className="text-xl font-bold">African Stack</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Discover the latest AI articles, tech insights, and innovation stories from Africa's tech community.
+              Discover the latest AI articles, tech insights, and innovation stories from Africa&apos;s tech community.
             </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">

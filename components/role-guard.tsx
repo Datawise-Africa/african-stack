@@ -22,7 +22,6 @@ export function RoleGuard({
   requireActive = true 
 }: RoleGuardProps) {
   const { 
-    user, 
     isLoading, 
     hasAnyRole, 
     isActive, 
@@ -79,7 +78,7 @@ export function RoleGuard({
                 <CardTitle>Account Pending Approval</CardTitle>
               </div>
               <CardDescription>
-                Your account is pending approval. You'll receive an email notification once it's reviewed.
+                Your account is pending approval. You&apos;ll receive an email notification once it&apos;s reviewed.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -119,7 +118,7 @@ export function RoleGuard({
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  As a creator, you'll be able to write and publish articles on African Stack. 
+                  As a creator, you&apos;ll be able to write and publish articles on African Stack. 
                   Our team will review your application and get back to you within 24-48 hours.
                 </p>
                 <div className="flex space-x-2">
@@ -147,7 +146,7 @@ export function RoleGuard({
                 <CardTitle>Access Denied</CardTitle>
               </div>
               <CardDescription>
-                You don't have permission to access this feature.
+                You don&apos;t have permission to access this feature.
               </CardDescription>
             </CardHeader>
             <CardContent>

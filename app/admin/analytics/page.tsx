@@ -332,7 +332,7 @@ export default function SystemAnalytics() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {userGrowthData.map((data, index) => (
+                  {userGrowthData.map((data) => (
                     <div key={data.month} className="flex items-center justify-between">
                       <span className="font-medium">{data.month}</span>
                       <div className="flex items-center space-x-4 text-sm">

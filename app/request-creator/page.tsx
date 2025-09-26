@@ -72,7 +72,7 @@ export default function RequestCreatorPage() {
               <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
                 <p className="text-sm text-green-800 dark:text-green-200">
                   Our team will review your application and get back to you within 24-48 hours. 
-                  You'll receive an email notification once your request has been processed.
+                  You&apos;ll receive an email notification once your request has been processed.
                 </p>
               </div>
               <div className="flex space-x-2">
@@ -192,8 +192,8 @@ export default function RequestCreatorPage() {
                       <p className="font-medium">What happens after you submit?</p>
                       <ul className="mt-1 space-y-1 text-muted-foreground">
                         <li>• Our team will review your application within 24-48 hours</li>
-                        <li>• You'll receive an email notification of the decision</li>
-                        <li>• If approved, you'll gain access to the creator dashboard</li>
+                        <li>• You&apos;ll receive an email notification of the decision</li>
+                        <li>• If approved, you&apos;ll gain access to the creator dashboard</li>
                         <li>• You can start writing and publishing articles immediately</li>
                       </ul>
                     </div>
@@ -217,7 +217,7 @@ export default function RequestCreatorPage() {
               <CardHeader>
                 <CardTitle>Creator Benefits</CardTitle>
                 <CardDescription>
-                  What you'll get as a creator
+                  What you&apos;ll get as a creator
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

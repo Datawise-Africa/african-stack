@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +28,7 @@ export default function DashboardAudiencePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterBy, setFilterBy] = useState<"all" | "followers" | "following">("all");
 
-  const { data: userProfile, isLoading } = useCurrentUser();
+  const { data: userProfile } = useCurrentUser();
 
   // Mock data for followers and following
   const mockFollowers = [
@@ -222,9 +223,11 @@ export default function DashboardAudiencePage() {
                   <div className="space-y-4">
                     {filteredUsers.map((user) => (
                       <div key={user.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                        <img
+                        <Image
                           src={user.avatarUrl}
                           alt={user.name}
+                          width={48}
+                          height={48}
                           className="w-12 h-12 rounded-full"
                         />
                         <div className="flex-1 min-w-0">

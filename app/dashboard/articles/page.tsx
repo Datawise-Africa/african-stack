@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useUserArticles, useCurrentUser } from "@/features/user/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,7 +33,7 @@ export default function DashboardArticlesPage() {
   const [sortBy, setSortBy] = useState<"latest" | "popular" | "views">("latest");
 
   const { data: currentUser } = useCurrentUser();
-  const { data: articlesData, isLoading: articlesLoading } = useUserArticles(currentUser?.id || '');
+  const { data: articlesData } = useUserArticles(currentUser?.id || '');
 
   const publishedArticles = articlesData?.filter(article => article.status === 'published') || [];
   const draftArticles = articlesData?.filter(article => article.status === 'draft') || [];
@@ -192,9 +193,11 @@ export default function DashboardArticlesPage() {
                         {/* Thumbnail */}
                         {article.thumbnailUrl && (
                           <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                            <img
+                            <Image
                               src={article.thumbnailUrl}
                               alt={article.title}
+                              width={64}
+                              height={64}
                               className="w-full h-full object-cover"
                             />
                           </div>

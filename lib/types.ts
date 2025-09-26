@@ -1,5 +1,10 @@
 // Core types for the African Stack platform
 
+// Temporary type for areas that need proper typing
+// TODO: Replace with proper types when implementing full functionality
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TsFixme = any;
+
 export type ID = string;
 
 // User types

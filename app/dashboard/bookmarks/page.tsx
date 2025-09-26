@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useBookmarks, useCurrentUser } from "@/features/user/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,7 +27,7 @@ export default function DashboardBookmarksPage() {
   const [sortBy, setSortBy] = useState<"recent" | "popular" | "title">("recent");
 
   const { data: currentUser } = useCurrentUser();
-  const { data: bookmarks, isLoading } = useBookmarks(currentUser?.id || '');
+  const { data: bookmarks } = useBookmarks(currentUser?.id || '');
 
   // Filter and sort bookmarks
   const filteredBookmarks = (bookmarks || [])
@@ -56,7 +57,7 @@ export default function DashboardBookmarksPage() {
                 <div>
                   <h1 className="text-3xl font-bold">My Bookmarks</h1>
                   <p className="text-muted-foreground">
-                    Articles you've saved for later reading
+                    Articles you&apos;ve saved for later reading
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -152,9 +153,11 @@ export default function DashboardBookmarksPage() {
                         {/* Thumbnail */}
                         {bookmark.article.thumbnailUrl && (
                           <div className="w-48 h-32 relative flex-shrink-0">
-                            <img
+                            <Image
                               src={bookmark.article.thumbnailUrl}
                               alt={bookmark.article.title}
+                              width={192}
+                              height={128}
                               className="w-full h-full object-cover rounded-lg"
                             />
                             <div className="absolute top-2 left-2">
@@ -204,9 +207,11 @@ export default function DashboardBookmarksPage() {
 
                           {/* Author Info */}
                           <div className="flex items-center space-x-3 mb-3">
-                            <img
-                              src={bookmark.article.author.avatarUrl}
+                            <Image
+                              src={bookmark.article.author.avatarUrl!}
                               alt={bookmark.article.author.name}
+                              width={24}
+                              height={24}
                               className="w-6 h-6 rounded-full"
                             />
                             <span className="text-sm text-muted-foreground">

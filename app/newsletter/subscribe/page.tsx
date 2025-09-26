@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Mail, CheckCircle, Users, Globe, Zap, Headphones, Clock } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle, Users, Globe, Zap, Headphones } from "lucide-react";
 import Link from "next/link";
 
 export default function NewsletterSubscribePage() {
@@ -60,8 +60,8 @@ export default function NewsletterSubscribePage() {
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
               <h1 className="text-3xl font-bold mb-4">Welcome to The African Stack!</h1>
               <p className="text-lg text-muted-foreground mb-6">
-                You've successfully subscribed to our newsletter. You'll receive our latest insights 
-                on Africa's data, AI, and infrastructure movement.
+                You&apos;ve successfully subscribed to our newsletter. You&apos;ll receive our latest insights 
+                on Africa&apos;s data, AI, and infrastructure movement.
               </p>
               <div className="space-y-4">
                 <Button asChild>
@@ -98,7 +98,7 @@ export default function NewsletterSubscribePage() {
               Join <span className="text-primary">The African Stack</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Get strategic insights on Africa's data, AI, and infrastructure movement delivered to your inbox.
+              Get strategic insights on Africa&apos;s data, AI, and infrastructure movement delivered to your inbox.
             </p>
           </div>
 
@@ -146,7 +146,7 @@ export default function NewsletterSubscribePage() {
                     <div>
                       <Label className="text-base font-medium">Areas of Interest</Label>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Select the topics you're most interested in (optional)
+                        Select the topics you&apos;re most interested in (optional)
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {interestOptions.map((option) => (
@@ -199,7 +199,7 @@ export default function NewsletterSubscribePage() {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                    What You'll Get
+                    What You&apos;ll Get
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -209,7 +209,7 @@ export default function NewsletterSubscribePage() {
                       <div>
                         <h4 className="font-medium text-sm">Weekly Newsletter</h4>
                         <p className="text-xs text-muted-foreground">
-                          Deep analysis of Africa's data and AI landscape
+                          Deep analysis of Africa&apos;s data and AI landscape
                         </p>
                       </div>
                     </div>

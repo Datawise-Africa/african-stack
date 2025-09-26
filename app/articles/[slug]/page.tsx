@@ -1,6 +1,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share2, Clock, Calendar } from "lucide-react";
 import { ArticleCard } from "@/components/article-card";
@@ -75,9 +76,11 @@ export default function ArticlePage({ params }: ArticlePageProps) {
 
           {/* Author Info */}
           <div className="flex items-center space-x-4 mb-6">
-            <img
-              src={article.author.avatarUrl}
+            <Image
+              src={article.author.avatarUrl!}
               alt={article.author.name}
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-full"
             />
             <div>
@@ -152,7 +155,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             <div className="space-y-6">
               <h2>Introduction</h2>
               <p>
-                Africa is experiencing a digital transformation that's reshaping industries and creating new opportunities for innovation. In this article, we explore how AI is being leveraged across the continent to solve unique challenges and drive economic growth.
+                Africa is experiencing a digital transformation that&apos;s reshaping industries and creating new opportunities for innovation. In this article, we explore how AI is being leveraged across the continent to solve unique challenges and drive economic growth.
               </p>
               
               <h2>The Current Landscape</h2>
