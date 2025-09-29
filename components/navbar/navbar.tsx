@@ -2,11 +2,33 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Moon, Sun, Menu, Search, User, BookOpen, Edit, LogOut, BarChart3, Shield, UserPlus, Clock } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Moon,
+  Sun,
+  Menu,
+  Search,
+  User,
+  BookOpen,
+  Edit,
+  LogOut,
+  BarChart3,
+  Shield,
+  UserPlus,
+  Clock,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
-import { canCreateArticles, canManageUsers, canRequestCreatorRole } from "@/lib/auth";
+import {
+  canCreateArticles,
+  canManageUsers,
+  canRequestCreatorRole,
+} from "@/lib/auth";
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -15,19 +37,10 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
 
-  const displayName = user?.name ?? "User";
-  const displayEmail = user?.email ?? "";
   const userInitials = useMemo(() => {
-    const source = displayName.trim() || displayEmail.trim();
-    if (!source) return "U";
-    const parts = source.split(/\s+/).filter(Boolean);
-    const initials = parts
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase() ?? "")
-      .join("");
-    if (initials) return initials;
-    return displayEmail[0]?.toUpperCase() ?? "U";
-  }, [displayEmail, displayName]);
+    const { first_name, last_name } = user ?? {};
+    return `${first_name?.[0] ?? "U"}${last_name?.[0] ?? "N"}`.toUpperCase();
+  }, [user]);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -41,16 +54,28 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/newsletter" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/newsletter"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
               Newsletter
             </Link>
-            <Link href="/articles" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/articles"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
               Articles
             </Link>
-            <Link href="/contribute" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/contribute"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
               Contribute
             </Link>
-            <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link
+              href="/about"
+              className="text-sm font-medium hover:text-primary transition-colors"
+            >
               About
             </Link>
           </div>
@@ -93,79 +118,95 @@ export function Navbar() {
 
             {/* User Menu */}
             {isAuthenticated && user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full p-0">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>{userInitials}</AvatarFallback>
-                  </Avatar>
-                  <span className="sr-only">User menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="flex items-center">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/profile" className="flex items-center">
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                
-                {/* Role-based menu items */}
-                {canCreateArticles(user) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full p-0"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>{userInitials}</AvatarFallback>
+                    </Avatar>
+                    <span className="sr-only">User menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/articles" className="flex items-center">
-                      <Edit className="mr-2 h-4 w-4" />
-                      My Articles
+                    <Link href="/dashboard" className="flex items-center">
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      Dashboard
                     </Link>
                   </DropdownMenuItem>
-                )}
-                
-                {canManageUsers(user) && (
                   <DropdownMenuItem asChild>
-                    <Link href="/admin" className="flex items-center">
-                      <Shield className="mr-2 h-4 w-4" />
-                      Admin Panel
+                    <Link
+                      href="/dashboard/profile"
+                      className="flex items-center"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
                     </Link>
                   </DropdownMenuItem>
-                )}
-                
-                {canRequestCreatorRole(user) && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/request-creator" className="flex items-center">
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Become Creator
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-                
-                {canRequestCreatorRole(user) && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/request-creator/status" className="flex items-center">
-                      <Clock className="mr-2 h-4 w-4" />
-                      View My Requests
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-                
-                <DropdownMenuItem onClick={() => void logout()}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button asChild>
-              <Link href="/auth/login">Sign In</Link>
-            </Button>
-          )}
 
-          {/* Mobile Menu Button */}
+                  {/* Role-based menu items */}
+                  {canCreateArticles(user) && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/dashboard/articles"
+                        className="flex items-center"
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        My Articles
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
+                  {canManageUsers(user) && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin" className="flex items-center">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Panel
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
+                  {canRequestCreatorRole(user) && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/request-creator"
+                        className="flex items-center"
+                      >
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Become Creator
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
+                  {canRequestCreatorRole(user) && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/request-creator/status"
+                        className="flex items-center"
+                      >
+                        <Clock className="mr-2 h-4 w-4" />
+                        View My Requests
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
+                  <DropdownMenuItem onClick={() => void logout()}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild>
+                <Link href="/auth/login">Sign In</Link>
+              </Button>
+            )}
+
+            {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
@@ -182,16 +223,28 @@ export function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden border-t py-4">
             <div className="flex flex-col space-y-4">
-              <Link href="/newsletter" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/newsletter"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
                 Newsletter
               </Link>
-              <Link href="/articles" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/articles"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
                 Articles
               </Link>
-              <Link href="/contribute" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/contribute"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
                 Contribute
               </Link>
-              <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/about"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
                 About
               </Link>
               <div className="pt-4 border-t">

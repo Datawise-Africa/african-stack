@@ -17,22 +17,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {  AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 
 const registerSchema = z
   .object({
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
+    first_name: z.string().min(2, {
+      message: "First name must be at least 2 characters.",
     }),
-    handle: z
-      .string()
-      .min(3, {
-        message: "Username must be at least 3 characters.",
-      })
-      .regex(/^[a-zA-Z0-9_]+$/, {
-        message: "Username can only contain letters, numbers, and underscores.",
-      }),
+    last_name: z.string().min(3, {
+      message: "Last name must be at least 3 characters.",
+    }),
     email: z.string().email({
       message: "Please enter a valid email address.",
     }),
@@ -59,8 +54,8 @@ function RegisterForm() {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
-      handle: "",
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -71,7 +66,7 @@ function RegisterForm() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   }, [isAuthenticated, router]);
 
@@ -79,11 +74,18 @@ function RegisterForm() {
     setError(null);
 
     try {
-      await register(values.name, values.email, values.password, values.handle);
-      router.push('/dashboard');
+      await register(
+        values.first_name,
+        values.email,
+        values.password,
+        values.last_name
+      );
+      router.push("/dashboard");
     } catch (error: unknown) {
-      console.error('Registration error:', error);
-      setError((error as Error).message || 'Registration failed. Please try again.');
+      console.error("Registration error:", error);
+      setError(
+        (error as Error).message || "Registration failed. Please try again."
+      );
     }
   };
 
@@ -119,15 +121,15 @@ function RegisterForm() {
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="first_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
                         autoComplete="name"
-                        placeholder="Enter your full name"
+                        placeholder="Enter your first name"
                         {...field}
                       />
                     </FormControl>
@@ -138,15 +140,15 @@ function RegisterForm() {
 
               <FormField
                 control={form.control}
-                name="handle"
+                name="last_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Last Name</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
-                        autoComplete="username"
-                        placeholder="Choose a unique username"
+                        autoComplete="name"
+                        placeholder="Enter your last name"
                         {...field}
                       />
                     </FormControl>

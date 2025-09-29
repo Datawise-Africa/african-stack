@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Bookmark, Clock } from "lucide-react";
 import { Article } from "@/lib/types";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface ArticleCardProps {
   article: Article;
@@ -23,12 +24,20 @@ export function ArticleCard({
       {/* Thumbnail */}
       {article.thumbnailUrl && (
         <div className="aspect-video relative overflow-hidden">
-          <Image
+          {/* <Image
             src={article.thumbnailUrl}
             alt={article.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
+          /> */}
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>
+              {article.author.first_name.charAt(0).toUpperCase() ||
+                "A" + article.author.last_name.charAt(0).toUpperCase() ||
+                "S"}
+            </AvatarFallback>
+          </Avatar>
           {showCategory && (
             <div className="absolute top-4 left-4">
               <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/90 text-primary-foreground rounded-full">
@@ -44,13 +53,14 @@ export function ArticleCard({
         {showAuthor && (
           <div className="flex items-center space-x-2 mb-3">
             {article.author.first_name && (
-              <Image
-                src={article.author.first_name}
-                alt={article.author.first_name}
-                width={24}
-                height={24}
-                className="w-6 h-6 rounded-full"
-              />
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>
+                  {article.author.first_name.charAt(0).toUpperCase() ||
+                    "A" + article.author.last_name.charAt(0).toUpperCase() ||
+                    "S"}
+                </AvatarFallback>
+              </Avatar>
             )}
             <span className="text-sm text-muted-foreground">
               {article.author.first_name}

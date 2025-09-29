@@ -50,6 +50,7 @@ import { useRole } from "@/hooks/use-role";
 import { useAuth } from "@/contexts/auth-context";
 import type { UserRole } from "@/lib/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 type DashboardNavItem = {
   name: string;
@@ -221,6 +222,34 @@ const adminNavigation: DashboardNavItem[] = [
     roles: ["admin"],
   },
 ];
+
+const dashboardNotifications = [
+  {
+    id: "notif-1",
+    title: "Article published",
+    description: "Your article “Building AI Solutions in Africa” is live.",
+    href: "/articles/building-ai-solutions-africa",
+    time: "2h ago",
+    unread: true,
+  },
+  {
+    id: "notif-2",
+    title: "Draft reminder",
+    description:
+      "Remember to finish “Natural Language Processing for African Languages”.",
+    href: "/dashboard/articles/article-5/edit",
+    time: "1d ago",
+    unread: true,
+  },
+  {
+    id: "notif-3",
+    title: "Collection update",
+    description: "Readers are engaging with your AI Foundations collection.",
+    href: "/dashboard/collections",
+    time: "3d ago",
+    unread: false,
+  },
+] as const;
 const routeLinks: Map<UserRole, DashboardNavItem[]> = new Map();
 routeLinks.set("user", userNavigation);
 routeLinks.set("author", creatorNavigation);
@@ -251,22 +280,12 @@ export function SharedDashboardLayout({
     return currentRoutes;
   }, [userRole]);
 
-  const displayName = user?.name ?? "User";
   const displayEmail = user?.email ?? "";
   const displayRoleLabel = (userRole ?? "").replace("_", " ");
   const displayInitials = useMemo(() => {
-    const basis = displayName.trim() || displayEmail.trim();
-    if (!basis) return "U";
-    const parts = basis.split(/\s+/).filter(Boolean);
-    if (parts.length === 0 && displayEmail) {
-      return displayEmail[0]?.toUpperCase() ?? "U";
-    }
-    const initials = parts
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase() ?? "")
-      .join("");
-    return initials || "U";
-  }, [displayEmail, displayName]);
+    const { first_name, last_name } = user ?? {};
+    return `${first_name?.[0] ?? "F"}${last_name?.[0] ?? "L"}`.toUpperCase();
+  }, [user]);
 
   return (
     <QueryProvider>
@@ -498,12 +517,54 @@ export function SharedDashboardLayout({
 
                 <div className="flex items-center space-x-2">
                   {/* Notifications */}
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Bell className="h-4 w-4" />
-                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-                      3
-                    </span>
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="relative">
+                        <Bell className="h-4 w-4" />
+                        {dashboardNotifications.filter((item) => item.unread).length > 0 && (
+                          <span className="absolute -top-1 -right-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium text-white">
+                            {dashboardNotifications.filter((item) => item.unread).length}
+                          </span>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80">
+                      <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {(dashboardNotifications.length as number) === 0 ? (
+                        <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+                          You&apos;re all caught up.
+                        </div>
+                      ) : (
+                        dashboardNotifications.map((notification) => (
+                          <DropdownMenuItem
+                            asChild
+                            key={notification.id}
+                            className="whitespace-normal p-4"
+                          >
+                            <Link href={notification.href} className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-semibold">
+                                  {notification.title}
+                                </span>
+                                {notification.unread && (
+                                  <Badge variant="default" className="text-[10px] uppercase">
+                                    New
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {notification.description}
+                              </p>
+                              <span className="text-xs text-muted-foreground">
+                                {notification.time}
+                              </span>
+                            </Link>
+                          </DropdownMenuItem>
+                        ))
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
                   {/* User Profile Dropdown */}
                   <DropdownMenu>
@@ -525,7 +586,7 @@ export function SharedDashboardLayout({
                       <DropdownMenuLabel className="font-normal">
                         <div className="flex flex-col space-y-1">
                           <p className="text-sm font-medium leading-none">
-                            {displayName}
+                            {/* {} */}
                           </p>
                           <p className="text-xs leading-none text-muted-foreground">
                             {displayEmail}
