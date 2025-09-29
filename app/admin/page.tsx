@@ -1,19 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useMemo, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Users, 
-  FileText, 
-  TrendingUp, 
-  CheckCircle, 
-  XCircle, 
+import { useCreatorRequests } from "@/features/creator/query";
+import {
+  Users,
+  FileText,
+  TrendingUp,
+  CheckCircle,
+  XCircle,
   Clock,
   BarChart3,
+  RefreshCw,
 } from "lucide-react";
+import { RoleRequestsPanel } from "@/features/admin/role-requests-panel";
 
 // Mock data
 const mockStats = {
@@ -29,23 +38,6 @@ const mockStats = {
     { name: "Data Science", count: 12, growth: 5 },
   ]
 };
-
-const mockRoleRequests = [
-  {
-    id: "1",
-    user: { name: "John Doe", handle: "@johndoe", avatarUrl: "" },
-    reason: "I'm a software engineer with 5 years of experience in AI and want to share my knowledge about machine learning applications in Africa.",
-    status: "pending",
-    createdAt: "2024-01-15T10:30:00Z"
-  },
-  {
-    id: "2", 
-    user: { name: "Sarah Johnson", handle: "@sarahj", avatarUrl: "" },
-    reason: "I run a tech startup in Lagos and want to document our journey and share insights with other entrepreneurs.",
-    status: "pending",
-    createdAt: "2024-01-14T14:20:00Z"
-  }
-];
 
 const mockArticleApprovals = [
   {
@@ -70,6 +62,26 @@ const mockArticleApprovals = [
 
 export default function AdminDashboard() {
   const [selectedTab, setSelectedTab] = useState("overview");
+  const {
+    data: roleRequests = [],
+    isPending: isLoadingRoleRequests,
+    isError: isRoleRequestError,
+    error: roleRequestError,
+    refetch: refetchRoleRequests,
+  } = useCreatorRequests(true, "admin");
+
+  const requestSummary = useMemo(() => {
+    const pending = roleRequests.filter((request) => request.status === "pending");
+    const approved = roleRequests.filter((request) => request.status === "approved");
+    const revoked = roleRequests.filter((request) => request.status === "revoked");
+
+    return {
+      total: roleRequests.length,
+      pending: pending.length,
+      approved: approved.length,
+      revoked: revoked.length,
+    };
+  }, [roleRequests]);
 
   return (
     <div className="p-6">
@@ -210,45 +222,14 @@ export default function AdminDashboard() {
 
           {/* User Management Tab */}
           <TabsContent value="users" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Role Requests</CardTitle>
-                <CardDescription>Users requesting creator access</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {mockRoleRequests.map((request) => (
-                    <div key={request.id} className="border rounded-lg p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <h4 className="font-medium">{request.user.name}</h4>
-                            <Badge variant="outline">{request.user.handle}</Badge>
-                            <Badge variant="secondary">Pending</Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-3">
-                            {request.reason}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Requested {new Date(request.createdAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline">
-                            <XCircle className="w-4 h-4 mr-1" />
-                            Reject
-                          </Button>
-                          <Button size="sm">
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Approve
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <RoleRequestsPanel
+              requests={roleRequests}
+              summary={requestSummary}
+              isLoading={isLoadingRoleRequests}
+              isError={isRoleRequestError}
+              errorMessage={roleRequestError?.message}
+              onRefetch={refetchRoleRequests}
+            />
           </TabsContent>
 
           {/* Content Moderation Tab */}

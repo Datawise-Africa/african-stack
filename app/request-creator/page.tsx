@@ -37,7 +37,7 @@ export default function RequestCreatorPage() {
     isPending: isLoadingRequests,
     isError,
     error,
-  } = useCreatorRequests(Boolean(user));
+  } = useCreatorRequests(Boolean(user), user?.id);
   const submitMutation = useSubmitCreatorRequest();
 
   const pendingRequests = useMemo(
