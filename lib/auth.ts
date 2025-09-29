@@ -1,36 +1,14 @@
 // Authentication utilities and types
-import { apiClient } from './api';
-import { extractCorrectErrorMessage } from './error-utils';
-import type { TsFixme } from './types';
-
-export interface User {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  user_role: 'user' | 'creator' | 'system_admin';
-  // Computed properties for compatibility
-  name: string;
-  handle: string;
-  role: 'user' | 'creator' | 'system_admin';
-  status: 'active' | 'inactive' | 'pending_approval';
-  joinedAt: string;
-  stats: {
-    articlesPublished: number;
-    totalViews: number;
-    totalReactions: number;
-    totalComments: number;
-    followers: number;
-    following: number;
-  };
-}
+import { apiClient } from "./api";
+import { extractCorrectErrorMessage } from "./error-utils";
+import { TsFixme, User } from "./types";
 
 export interface AuthResponse {
   id: string;
   email: string;
   first_name: string;
   last_name: string;
-  user_role: 'user' | 'creator' | 'system_admin';
+  user_role: "user" | "creator" | "system_admin";
   refresh_token: string;
   access_token: string;
 }
@@ -50,9 +28,10 @@ export interface RegisterData {
 
 // Helper function to transform API response to User interface
 function transformAuthResponseToUser(authResponse: AuthResponse): User {
-  const fullName = `${authResponse.first_name} ${authResponse.last_name}`.trim() || 'User';
-  const handle = `@${authResponse.email.split('@')[0]}`;
-  
+  const fullName =
+    `${authResponse.first_name} ${authResponse.last_name}`.trim() || "User";
+  const handle = `@${authResponse.email.split("@")[0]}`;
+
   return {
     id: authResponse.id,
     email: authResponse.email,
@@ -63,58 +42,59 @@ function transformAuthResponseToUser(authResponse: AuthResponse): User {
     name: fullName,
     handle: handle,
     role: authResponse.user_role,
-    status: 'active' as const,
-    joinedAt: new Date().toISOString(),
-    stats: {
-      articlesPublished: 0,
-      totalViews: 0,
-      totalReactions: 0,
-      totalComments: 0,
-      followers: 0,
-      following: 0,
-    },
   };
 }
 
 // Auth API functions - All requests tunneled to external API using axios
 export const authApi = {
-  login: async (credentials: LoginCredentials): Promise<{ user: User; token: string; refreshToken: string }> => {
+  login: async (
+    credentials: LoginCredentials
+  ): Promise<{ user: User; token: string; refreshToken: string }> => {
     try {
       // console.log('Login API credentials:', credentials);
-      
-      const response = await apiClient.post('/auth/login/', credentials);
+
+      const response = await apiClient.post("/auth/login/", credentials);
       const authResponse = response.data as AuthResponse;
-      
+
       // Transform API response to our format
       const user = transformAuthResponseToUser(authResponse);
-      
+
       return {
         user,
         token: authResponse.access_token,
         refreshToken: authResponse.refresh_token,
       };
     } catch (error) {
-      console.error('Login API error:', error);
-      throw new Error(extractCorrectErrorMessage(error, 'Login failed. Please try again.'));
+      console.error("Login API error:", error);
+      throw new Error(
+        extractCorrectErrorMessage(error, "Login failed. Please try again.")
+      );
     }
   },
 
-  register: async (data: RegisterData): Promise<{ user: User; token: string; refreshToken: string }> => {
+  register: async (
+    data: RegisterData
+  ): Promise<{ user: User; token: string; refreshToken: string }> => {
     try {
-      const response = await apiClient.post('/auth/register/', data);
+      const response = await apiClient.post("/auth/register/", data);
       const authResponse = response.data as AuthResponse;
-      
+
       // Transform API response to our format
       const user = transformAuthResponseToUser(authResponse);
-      
+
       return {
         user,
         token: authResponse.access_token,
         refreshToken: authResponse.refresh_token,
       };
     } catch (error) {
-      console.error('Register API error:', error);
-      throw new Error(extractCorrectErrorMessage(error, 'Registration failed. Please try again.'));
+      console.error("Register API error:", error);
+      throw new Error(
+        extractCorrectErrorMessage(
+          error,
+          "Registration failed. Please try again."
+        )
+      );
     }
   },
 
@@ -123,33 +103,41 @@ export const authApi = {
       const token = tokenManager.getToken();
       if (!token) return;
 
-      await apiClient.post('/auth/logout', {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      await apiClient.post(
+        "/auth/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (error) {
-      console.error('Logout API error:', error);
+      console.error("Logout API error:", error);
       // Don't throw error for logout - always clear local state
     }
   },
 
-  refreshToken: async (refreshToken: string): Promise<{ user: User; token: string; refreshToken: string }> => {
+  refreshToken: async (
+    refreshToken: string
+  ): Promise<{ user: User; token: string; refreshToken: string }> => {
     try {
-      const response = await apiClient.post('/auth/refresh', { refreshToken });
+      const response = await apiClient.post("/auth/refresh", { refreshToken });
       const authResponse = response.data as AuthResponse;
-      
+
       // Transform API response to our format
       const user = transformAuthResponseToUser(authResponse);
-      
+
       return {
         user,
         token: authResponse.access_token,
         refreshToken: authResponse.refresh_token,
       };
     } catch (error) {
-      console.error('Refresh token API error:', error);
-      throw new Error(extractCorrectErrorMessage(error, 'Token refresh failed'));
+      console.error("Refresh token API error:", error);
+      throw new Error(
+        extractCorrectErrorMessage(error, "Token refresh failed")
+      );
     }
   },
 
@@ -158,9 +146,9 @@ export const authApi = {
       const token = tokenManager.getToken();
       if (!token) return null;
 
-      const response = await apiClient.get('/auth/me', {
+      const response = await apiClient.get("/auth/me", {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -169,11 +157,11 @@ export const authApi = {
       if (userData.id && userData.email) {
         return transformAuthResponseToUser(userData as AuthResponse);
       }
-      
+
       return null;
     } catch (error: TsFixme) {
-      console.error('Get current user API error:', error);
-      
+      console.error("Get current user API error:", error);
+
       if (error.response?.status === 401) {
         // Token expired, try to refresh
         const refreshToken = tokenManager.getRefreshToken();
@@ -185,7 +173,7 @@ export const authApi = {
               tokenManager.setRefreshToken(refreshResponse.refreshToken);
             }
             return refreshResponse.user;
-          } catch {
+          } catch (refreshError) {
             // Refresh failed, clear tokens
             tokenManager.removeToken();
             return null;
@@ -195,7 +183,7 @@ export const authApi = {
           return null;
         }
       }
-      
+
       return null;
     }
   },
@@ -203,18 +191,20 @@ export const authApi = {
   updateProfile: async (updates: Partial<User>): Promise<User> => {
     try {
       const token = tokenManager.getToken();
-      if (!token) throw new Error('No authentication token');
+      if (!token) throw new Error("No authentication token");
 
-      const response = await apiClient.patch('/auth/profile', updates, {
+      const response = await apiClient.patch("/auth/profile", updates, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       return response.data.user || response.data;
     } catch (error) {
-      console.error('Update profile API error:', error);
-      throw new Error(extractCorrectErrorMessage(error, 'Profile update failed'));
+      console.error("Update profile API error:", error);
+      throw new Error(
+        extractCorrectErrorMessage(error, "Profile update failed")
+      );
     }
   },
 };
@@ -222,40 +212,51 @@ export const authApi = {
 // Token management
 export const tokenManager = {
   setToken: (token: string): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("auth_token", token);
       // Also set cookie for server-side access
-      document.cookie = `auth_token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; secure; samesite=strict`;
+      // Only use secure in production (HTTPS)
+      const isSecure = window.location.protocol === "https:";
+      const secureFlag = isSecure ? "; secure" : "";
+      document.cookie = `auth_token=${token}; path=/; max-age=${
+        7 * 24 * 60 * 60
+      }${secureFlag}; samesite=strict`;
     }
   },
 
   getToken: (): string | null => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('auth_token');
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("auth_token");
     }
     return null;
   },
 
   removeToken: (): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('refresh_token');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("refresh_token");
       // Also remove cookie
-      document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      document.cookie =
+        "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
   },
 
   setRefreshToken: (refreshToken: string): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('refresh_token', refreshToken);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("refresh_token", refreshToken);
       // Also set cookie for server-side access
-      document.cookie = `refresh_token=${refreshToken}; path=/; max-age=${30 * 24 * 60 * 60}; secure; samesite=strict`;
+      // Only use secure in production (HTTPS)
+      const isSecure = window.location.protocol === "https:";
+      const secureFlag = isSecure ? "; secure" : "";
+      document.cookie = `refresh_token=${refreshToken}; path=/; max-age=${
+        30 * 24 * 60 * 60
+      }${secureFlag}; samesite=strict`;
     }
   },
 
   getRefreshToken: (): string | null => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('refresh_token');
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("refresh_token");
     }
     return null;
   },
@@ -272,21 +273,22 @@ export const hasAnyRole = (user: User | null, roles: string[]): boolean => {
 };
 
 export const canCreateArticles = (user: User | null): boolean => {
-  return hasAnyRole(user, ['creator', 'system_admin']);
+  return hasAnyRole(user, ["creator", "system_admin"]);
 };
 
 export const canApproveContent = (user: User | null): boolean => {
-  return hasRole(user, 'system_admin');
+  return hasRole(user, "system_admin");
 };
 
 export const canManageUsers = (user: User | null): boolean => {
-  return hasRole(user, 'system_admin');
+  return hasRole(user, "system_admin");
 };
 
 export const canRequestCreatorRole = (user: User | null): boolean => {
-  return hasRole(user, 'user');
+  return hasRole(user, "user");
 };
 
 export const isActive = (user: User | null): boolean => {
-  return user?.status === 'active';
+  // return user?.status === 'active';
+  return !!user; // Simplified for now
 };

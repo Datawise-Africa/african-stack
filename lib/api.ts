@@ -1,7 +1,6 @@
 // API configuration and base functions
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from "axios";
 import { extractCorrectErrorMessage } from "./error-utils";
-import { TsFixme } from "./types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
@@ -34,8 +33,8 @@ apiClient.interceptors.request.use(
       const token = localStorage.getItem("auth_token");
       if (
         token &&
-        config.url?.includes("login") &&
-        config.url?.includes("register")
+        !config.url?.includes("login") &&
+        !config.url?.includes("register")
       ) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -53,7 +52,7 @@ apiClient.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response) {
       // Server responded with error status
-      const errorData = error.response.data as TsFixme;
+      const errorData = error.response.data as any;
       throw new ApiError(
         error.response.status,
         errorData?.code || "UNKNOWN_ERROR",

@@ -46,6 +46,8 @@ const authRoutes = ['/auth/login', '/auth/register'];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
+  console.log('Middleware - Processing route:', pathname);
+  
   // Check if the route is public
   const isPublicRoute = publicRoutes.some(route => {
     if (route.includes('[') && route.includes(']')) {
@@ -73,14 +75,29 @@ export function middleware(request: NextRequest) {
                 request.headers.get('authorization')?.replace('Bearer ', '');
 
   const isAuthenticated = !!token;
+  
+  console.log('Middleware - Route analysis:', {
+    pathname,
+    isPublicRoute,
+    isProtectedRoute,
+    hasToken: !!token,
+    isAuthenticated,
+  });
 
-  // Redirect authenticated users away from auth pages
-  if (isAuthenticated && authRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Allow public routes without any checks
+  if (isPublicRoute) {
+    // But still redirect authenticated users away from auth pages
+    if (isAuthenticated && authRoutes.includes(pathname)) {
+      console.log('Middleware - Redirecting authenticated user away from auth page');
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    console.log('Middleware - Allowing public route');
+    return NextResponse.next();
   }
 
   // Redirect unauthenticated users to login for protected routes
   if (!isAuthenticated && isProtectedRoute) {
+    console.log('Middleware - Redirecting unauthenticated user to login');
     const loginUrl = new URL('/auth/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
@@ -88,7 +105,7 @@ export function middleware(request: NextRequest) {
 
   // For protected routes, we'll let the client-side AuthGuard handle role-based access
   // since we can't easily decode JWT tokens in middleware without additional setup
-
+  console.log('Middleware - Allowing request to continue');
   return NextResponse.next();
 }
 

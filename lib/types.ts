@@ -8,28 +8,17 @@ export type TsFixme = any;
 export type ID = string;
 
 // User types
-export type UserRole = 'user' | 'creator' | 'system_admin';
+export type UserRole = "user" | "creator" | "system_admin";
 
 export interface User {
-  id: ID;
-  name: string;
+  id: string;
   email: string;
+  first_name: string;
+  last_name: string;
+  user_role: "user" | "creator" | "system_admin";
+  name: string;
   handle: string;
-  avatarUrl?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-  role: UserRole;
-  status: 'active' | 'suspended' | 'pending_approval';
-  joinedAt: string;
-  stats: {
-    articlesPublished: number;
-    totalViews: number;
-    totalReactions: number;
-    totalComments: number;
-    followers: number;
-    following: number;
-  };
+  role: "user" | "creator" | "system_admin";
 }
 
 export interface UserProfile extends User {
@@ -45,7 +34,7 @@ export interface RoleRequest {
   portfolio?: string;
   socialMedia?: string;
   expectedContent: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   submittedAt: string;
   reviewedBy?: string;
   reviewedAt?: string;
@@ -57,7 +46,7 @@ export interface ArticleApproval {
   id: ID;
   articleId: ID;
   article: Article;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   reviewedBy?: ID;
   reviewedAt?: string;
   reviewNotes?: string;
@@ -92,15 +81,15 @@ export interface Article {
   excerpt: string;
   content?: string; // HTML content from Quill editor
   contentJson: unknown; // tiptap JSON
-  author: Pick<User, 'id' | 'name' | 'avatarUrl' | 'handle'>;
+  author: Pick<User, "id" | "first_name" | "last_name" | "handle">;
   category: Category;
   tags: string[];
   thumbnailUrl?: string;
   readTimeMins: number;
   publishedAt?: string;
   updatedAt?: string;
-  status: 'draft' | 'pending_approval' | 'published' | 'rejected';
-  approvalStatus?: 'pending' | 'approved' | 'rejected';
+  status: "draft" | "pending_approval" | "published" | "rejected";
+  approvalStatus?: "pending" | "approved" | "rejected";
   reactionsCount: number;
   commentsCount: number;
   views?: number;
@@ -111,8 +100,8 @@ export interface ArticleFilters {
   category?: string;
   tag?: string;
   author?: string;
-  status?: 'draft' | 'published' | 'archived';
-  sort?: 'latest' | 'trending' | 'popular';
+  status?: "draft" | "published" | "archived";
+  sort?: "latest" | "trending" | "popular";
   page?: number;
   limit?: number;
   [key: string]: unknown;
@@ -133,7 +122,7 @@ export interface Reaction {
   id: ID;
   articleId: ID;
   userId: ID;
-  type: 'like';
+  type: "like";
   createdAt: string;
 }
 
@@ -141,7 +130,7 @@ export interface Reaction {
 export interface Comment {
   id: ID;
   articleId: ID;
-  user: Pick<User, 'id' | 'name' | 'avatarUrl'>;
+  user: Pick<User, "id" | "first_name" | "last_name" | "handle">;
   body: string;
   createdAt: string;
   updatedAt?: string;
@@ -205,14 +194,14 @@ export interface ArticleForm {
   content: string;
   category: string;
   tags: string;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
 }
 
 // Search types
 export interface SearchResult {
   articles: Article[];
   categories: Category[];
-  users: Pick<User, 'id' | 'name' | 'handle' | 'avatarUrl'>[];
+  users: Pick<User, "id" | "first_name" | "last_name" | "handle">[];
 }
 
 // Analytics types
@@ -229,7 +218,7 @@ export interface ArticleAnalytics {
 export interface Notification {
   id: ID;
   userId: ID;
-  type: 'reaction' | 'comment' | 'follow' | 'article_published';
+  type: "reaction" | "comment" | "follow" | "article_published";
   title: string;
   message: string;
   read: boolean;

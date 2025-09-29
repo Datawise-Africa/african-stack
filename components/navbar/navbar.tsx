@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Moon, Sun, Menu, Search, User, BookOpen, Edit, LogOut, BarChart3, Shield, UserPlus, Clock } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/contexts/auth-context";
+// import { useAuth } from "@/contexts/auth-context";
 import { canCreateArticles, canManageUsers, canRequestCreatorRole } from "@/lib/auth";
 import { useTheme } from "next-themes";
 

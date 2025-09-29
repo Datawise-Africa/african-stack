@@ -34,7 +34,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 function LoginForm() {
   const [error, setError] = useState<string | null>(null);
-  const { login, isLoading, isAuthenticated } = useAuth();
+  const { login, isLoading, isAuthenticated, user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/dashboard';
@@ -50,10 +50,31 @@ function LoginForm() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
+    console.log('Login page - Auth state:', { 
+      isAuthenticated, 
+      isLoading, 
+      user: !!user,
+      redirectTo 
+    });
+    
+    // Only redirect if we're not loading and we're actually authenticated
+    if (isAuthenticated && !isLoading && user) {
+      console.log('Login page - Redirecting authenticated user to:', redirectTo);
       router.push(redirectTo);
     }
-  }, [isAuthenticated, router, redirectTo]);
+  }, [isAuthenticated, isLoading, user, router, redirectTo]);
+
+  // Show loading during auth initialization
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const onSubmit = async (values: LoginFormValues) => {
     setError(null);
@@ -61,9 +82,9 @@ function LoginForm() {
     try {
       await login(values.email, values.password, values.rememberMe);
       router.push(redirectTo);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      setError((error as Error).message || 'Login failed. Please try again.');
+      setError(error.message || 'Login failed. Please try again.');
     }
   };
 
