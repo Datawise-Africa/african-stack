@@ -33,7 +33,7 @@ export default function DashboardBookmarksPage() {
   const filteredBookmarks = (bookmarks || [])
     .filter(bookmark => {
       if (searchQuery && !bookmark.article.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
-          !bookmark.article.author.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+          !bookmark.article.author.first_name.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
       }
       return true;
@@ -208,14 +208,14 @@ export default function DashboardBookmarksPage() {
                           {/* Author Info */}
                           <div className="flex items-center space-x-3 mb-3">
                             <Image
-                              src={bookmark.article.author.avatarUrl!}
-                              alt={bookmark.article.author.name}
+                              src={bookmark.article.author.first_name!}
+                              alt={bookmark.article.author.first_name}
                               width={24}
                               height={24}
                               className="w-6 h-6 rounded-full"
                             />
                             <span className="text-sm text-muted-foreground">
-                              {bookmark.article.author.name}
+                              {bookmark.article.author.first_name}
                             </span>
                             <span className="text-muted-foreground">•</span>
                             <span className="text-sm text-muted-foreground">

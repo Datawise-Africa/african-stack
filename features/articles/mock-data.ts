@@ -93,9 +93,10 @@ export const mockArticles: Article[] = [
     },
     author: {
       id: 'author-1',
-      name: 'Dr. Sarah Johnson',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah',
-      handle: 'sarahj'
+      first_name: 'Dr. Sarah',
+      last_name: 'Johnson',
+      handle: 'sarahj',
+
     },
     category: mockCategories[0],
     tags: ['AI', 'Africa', 'Innovation', 'Technology', 'Development'],
@@ -116,8 +117,8 @@ export const mockArticles: Article[] = [
     contentJson: {},
     author: {
       id: 'author-2',
-      name: 'Dr. Michael Chen',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=michael',
+      first_name: 'Dr. Michael',
+      last_name: 'Chen',
       handle: 'michaelc'
     },
     category: mockCategories[1],
@@ -139,8 +140,8 @@ export const mockArticles: Article[] = [
     contentJson: {},
     author: {
       id: 'author-3',
-      name: 'Aisha Okafor',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=aisha',
+      first_name: 'Aisha ',
+      last_name: 'Okafor',
       handle: 'aishao'
     },
     category: mockCategories[2],
@@ -162,8 +163,8 @@ export const mockArticles: Article[] = [
     contentJson: {},
     author: {
       id: 'author-4',
-      name: 'Chinedu Eze',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=chinedu',
+      first_name: 'Chinedu',
+      last_name: 'Eze',
       handle: 'chinedue'
     },
     category: mockCategories[5],
@@ -185,8 +186,8 @@ export const mockArticles: Article[] = [
     contentJson: {},
     author: {
       id: 'author-1',
-      name: 'Dr. Sarah Johnson',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah',
+      first_name: 'Dr. Sarah',
+      last_name: 'Johnson',
       handle: 'sarahj'
     },
     category: mockCategories[0],
@@ -209,8 +210,9 @@ export const mockComments: Comment[] = [
     articleId: 'article-1',
     user: {
       id: 'user-2',
-      name: 'Dr. Michael Chen',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=michael'
+      first_name: 'Dr. Michael',
+      last_name: 'Chen',
+      handle: 'michaelc'
     },
     body: 'Great article! I particularly enjoyed the section on local context understanding. In my experience working with African startups, this is often the most overlooked aspect.',
     createdAt: '2024-01-15T14:30:00Z'
@@ -220,8 +222,9 @@ export const mockComments: Comment[] = [
     articleId: 'article-1',
     user: {
       id: 'user-3',
-      name: 'Aisha Okafor',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=aisha'
+      first_name: 'Aisha',
+      last_name: 'Okafor',
+      handle: 'aishao'
     },
     body: 'The regulatory compliance section really resonates with our experience in Nigeria. The landscape is constantly changing, and it\'s crucial to stay updated.',
     createdAt: '2024-01-15T16:45:00Z'
@@ -231,8 +234,9 @@ export const mockComments: Comment[] = [
     articleId: 'article-1',
     user: {
       id: 'user-4',
-      name: 'Prof. Kwame Asante',
-      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=kwame'
+      first_name: 'Prof. Kwame',
+      last_name: 'Asante',
+      handle: 'kwame'
     },
     body: 'Excellent insights! I\'d love to see more discussion on the role of universities in fostering AI innovation across Africa. We\'re seeing some promising initiatives at our institution.',
     createdAt: '2024-01-16T09:15:00Z'

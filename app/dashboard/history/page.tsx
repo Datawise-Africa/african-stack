@@ -35,7 +35,7 @@ export default function DashboardHistoryPage() {
   const filteredHistory = (readHistory || [])
     .filter(item => {
       if (searchQuery && !item.article.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
-          !item.article.author.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+          !item.article.author.first_name.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
       }
       return true;
@@ -224,14 +224,14 @@ export default function DashboardHistoryPage() {
                           {/* Author Info */}
                           <div className="flex items-center space-x-3 mb-3">
                             <Image
-                              src={item.article.author.avatarUrl!}
-                              alt={item.article.author.name}
+                              src={item.article.author.first_name!}
+                              alt={item.article.author.first_name}
                               width={24}
                               height={24}
                               className="w-6 h-6 rounded-full"
                             />
                             <span className="text-sm text-muted-foreground">
-                              {item.article.author.name}
+                              {item.article.author.first_name}
                             </span>
                             <span className="text-muted-foreground">•</span>
                             <span className="text-sm text-muted-foreground">

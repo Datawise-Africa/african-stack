@@ -77,14 +77,14 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           {/* Author Info */}
           <div className="flex items-center space-x-4 mb-6">
             <Image
-              src={article.author.avatarUrl!}
-              alt={article.author.name}
+              src={article.author.id!}
+              alt={article.author.first_name}
               width={48}
               height={48}
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <div className="font-semibold">{article.author.name}</div>
+              <div className="font-semibold">{article.author.first_name}</div>
               <div className="text-sm text-muted-foreground">@{article.author.handle}</div>
             </div>
             <div className="flex items-center space-x-4 text-sm text-muted-foreground ml-auto">

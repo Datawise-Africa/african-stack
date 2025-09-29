@@ -17,7 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Github, Mail, AlertCircle } from "lucide-react";
+import {  AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 
 const registerSchema = z

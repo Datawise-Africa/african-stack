@@ -22,13 +22,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useCurrentUser } from "@/features/user/hooks";
 
 export default function DashboardAudiencePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterBy, setFilterBy] = useState<"all" | "followers" | "following">("all");
-
-  const { data: userProfile } = useCurrentUser();
 
   // Mock data for followers and following
   const mockFollowers = [
@@ -131,7 +128,7 @@ export default function DashboardAudiencePage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 <Card>
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{userProfile?.stats.followers || 0}</div>
+                    <div className="text-2xl font-bold text-primary">{ 0}</div>
                     <div className="text-sm text-muted-foreground">Total Followers</div>
                     <div className="flex items-center justify-center text-xs text-green-500 mt-1">
                       <ArrowUp className="w-3 h-3 mr-1" />
@@ -141,7 +138,7 @@ export default function DashboardAudiencePage() {
                 </Card>
                 <Card>
                   <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{userProfile?.stats.following || 0}</div>
+                    <div className="text-2xl font-bold text-primary">{ 0}</div>
                     <div className="text-sm text-muted-foreground">Following</div>
                     <div className="flex items-center justify-center text-xs text-muted-foreground mt-1">
                       <Minus className="w-3 h-3 mr-1" />
@@ -152,7 +149,7 @@ export default function DashboardAudiencePage() {
                 <Card>
                   <CardContent className="p-4 text-center">
                     <div className="text-2xl font-bold text-primary">
-                      {userProfile?.stats.followers ? Math.round((userProfile.stats.followers / 1000) * 100) : 0}%
+                      { 0}%
                     </div>
                     <div className="text-sm text-muted-foreground">Engagement Rate</div>
                     <div className="flex items-center justify-center text-xs text-green-500 mt-1">

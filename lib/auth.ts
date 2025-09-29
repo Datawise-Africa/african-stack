@@ -1,7 +1,7 @@
 // Authentication utilities and types
 import { apiClient } from "./api";
 import { extractCorrectErrorMessage } from "./error-utils";
-import { TsFixme, User } from "./types";
+import { type TsFixme, User } from "./types";
 
 export interface AuthResponse {
   id: string;
@@ -173,7 +173,7 @@ export const authApi = {
               tokenManager.setRefreshToken(refreshResponse.refreshToken);
             }
             return refreshResponse.user;
-          } catch (refreshError) {
+          } catch (_refreshError) {
             // Refresh failed, clear tokens
             tokenManager.removeToken();
             return null;

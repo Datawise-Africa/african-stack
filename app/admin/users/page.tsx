@@ -528,7 +528,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {usersData?.users.filter(u => u.role === "creator" && u.status === "active").length || 0}
+              {usersData?.users.filter(u => u.role === "creator").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               +5 new this week
@@ -543,7 +543,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {usersData?.users.filter(u => u.status === "pending_approval").length || 0}
+              {usersData?.users.filter(() => 'pending_approval' === "pending_approval").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               Requires attention
@@ -558,7 +558,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {usersData?.users.filter(u => u.status === "suspended").length || 0}
+              {usersData?.users.filter(() => 'suspended' === "suspended").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               -1 from last week

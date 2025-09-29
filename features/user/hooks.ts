@@ -19,7 +19,7 @@ const mockApi = {
     
     if (filters.status) {
       const statuses = Array.isArray(filters.status) ? filters.status : [filters.status];
-      filteredUsers = filteredUsers.filter(user => statuses.includes(user.status));
+      filteredUsers = filteredUsers.filter(user => statuses.includes(user));
     }
     
     if (filters.search) {

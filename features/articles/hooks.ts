@@ -78,9 +78,9 @@ const mockApi = {
       contentJson: article.contentJson || {},
       author: article.author || {
         id: '1',
-        name: 'John Doe',
+        first_name: 'John Doe',
         handle: '@johndoe',
-        avatarUrl: undefined
+        last_name: 'Smith',
       },
       category: article.category || mockCategories[0],
       tags: article.tags || [],

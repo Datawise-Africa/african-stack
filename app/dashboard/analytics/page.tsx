@@ -151,7 +151,7 @@ export default function DashboardAnalyticsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">Followers</p>
-                        <p className="text-2xl font-bold">{currentUser?.stats.followers || 0}</p>
+                        <p className="text-2xl font-bold">{ 0}</p>
                         <div className="flex items-center text-sm text-green-500 mt-1">
                           <ArrowUp className="w-3 h-3 mr-1" />
                           +5.3% from last month

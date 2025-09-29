@@ -12,11 +12,11 @@ interface ArticleCardProps {
   showActions?: boolean;
 }
 
-export function ArticleCard({ 
-  article, 
-  showAuthor = true, 
+export function ArticleCard({
+  article,
+  showAuthor = true,
   showCategory = true,
-  showActions = true 
+  showActions = true,
 }: ArticleCardProps) {
   return (
     <article className="group bg-background border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
@@ -43,17 +43,17 @@ export function ArticleCard({
         {/* Author */}
         {showAuthor && (
           <div className="flex items-center space-x-2 mb-3">
-            {article.author.avatarUrl && (
+            {article.author.first_name && (
               <Image
-                src={article.author.avatarUrl}
-                alt={article.author.name}
+                src={article.author.first_name}
+                alt={article.author.first_name}
                 width={24}
                 height={24}
                 className="w-6 h-6 rounded-full"
               />
             )}
             <span className="text-sm text-muted-foreground">
-              {article.author.name}
+              {article.author.first_name}
             </span>
             {article.publishedAt && (
               <>
@@ -68,9 +68,7 @@ export function ArticleCard({
 
         {/* Title */}
         <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-          <Link href={`/articles/${article.slug}`}>
-            {article.title}
-          </Link>
+          <Link href={`/articles/${article.slug}`}>{article.title}</Link>
         </h3>
 
         {/* Excerpt */}
@@ -117,7 +115,7 @@ export function ArticleCard({
               </>
             )}
           </div>
-          
+
           {showActions && (
             <Button variant="ghost" size="sm">
               <Bookmark className="w-4 h-4" />

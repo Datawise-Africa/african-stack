@@ -167,7 +167,7 @@ export default function RequestCreatorPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center space-x-2">
-                  <Badge variant="outline">Current Role: {user.role}</Badge>
+                  <Badge variant="outline">Current Role: {user?.user_role}</Badge>
                   <Badge variant="secondary">Requesting: Creator</Badge>
                 </div>
 
