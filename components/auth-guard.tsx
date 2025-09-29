@@ -1,97 +1,114 @@
-// "use client";
+"use client";
 
-// import { useEffect } from 'react';
-// import { useRouter } from 'next/navigation';
-// import { useAuth } from '@/contexts/auth-context';
+import React, { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
-// interface AuthGuardProps {
-//   children: React.ReactNode;
-//   requireAuth?: boolean;
-//   allowedRoles?: string[];
-//   redirectTo?: string;
-//   fallback?: React.ReactNode;
-// }
+import { useAuth } from "@/contexts/auth-context";
 
-// export function AuthGuard({ 
-//   children, 
-//   requireAuth = true, 
-//   allowedRoles = [], 
-//   redirectTo = '/auth/login',
-//   fallback = <div>Loading...</div>
-// }: AuthGuardProps) {
-//   const { user, isLoading, isAuthenticated } = useAuth();
-//   const router = useRouter();
+interface AuthGuardProps {
+  children: React.ReactNode;
+  requireAuth?: boolean;
+  allowedRoles?: string[];
+  redirectTo?: string;
+  fallback?: React.ReactNode;
+}
 
-//   useEffect(() => {
-//     console.log('AuthGuard - isLoading:', isLoading, 'isAuthenticated:', isAuthenticated, 'user:', user);
-    
-//     if (isLoading) return;
+export function AuthGuard({
+  children,
+  requireAuth = true,
+  allowedRoles = [],
+  redirectTo = "/auth/login",
+  fallback = <div>Loading...</div>,
+}: AuthGuardProps) {
+  const { user, isLoading, isAuthenticated } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
-//     // Check if authentication is required
-//     if (requireAuth && !isAuthenticated) {
-//       console.log('AuthGuard - Redirecting to login, requireAuth:', requireAuth, 'isAuthenticated:', isAuthenticated);
-//       router.push(redirectTo);
-//       return;
-//     }
+  useEffect(() => {
+    if (isLoading) return;
 
-//     // Check if user has required role
-//     if (allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
-//       console.log('AuthGuard - Redirecting to unauthorized, user role:', user.role, 'allowed roles:', allowedRoles);
-//       router.push('/unauthorized');
-//       return;
-//     }
-//   }, [user, isLoading, isAuthenticated, requireAuth, allowedRoles, redirectTo, router]);
+    if (requireAuth && !isAuthenticated) {
+      const searchParams = new URLSearchParams();
+      if (pathname) {
+        searchParams.set("redirect", pathname);
+      }
+      const query = searchParams.toString();
+      router.replace(query ? `${redirectTo}?${query}` : redirectTo);
+      return;
+    }
 
-//   // Show loading state
-//   if (isLoading) {
-//     return <>{fallback}</>;
-//   }
+    if (
+      allowedRoles.length > 0 &&
+      user &&
+      !allowedRoles.includes(user.user_role) &&
+      !allowedRoles.includes(user.role)
+    ) {
+      router.replace("/unauthorized");
+    }
+  }, [
+    allowedRoles,
+    isAuthenticated,
+    isLoading,
+    redirectTo,
+    requireAuth,
+    router,
+    pathname,
+    user,
+  ]);
 
-//   // Show unauthorized if user doesn't have required role
-//   if (allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
-//     return <div>Unauthorized</div>;
-//   }
+  if (isLoading) {
+    return <>{fallback}</>;
+  }
 
-//   // Show login redirect if auth required but not authenticated
-//   if (requireAuth && !isAuthenticated) {
-//     // return <div>Redirecting to login...</div>;
-//     router.push('/auth/login');
-//   }
+  if (requireAuth && !isAuthenticated) {
+    return <>{fallback}</>;
+  }
 
-//   return <>{children}</>;
-// }
+  if (
+    allowedRoles.length > 0 &&
+    user &&
+    !allowedRoles.includes(user.user_role) &&
+    !allowedRoles.includes(user.role)
+  ) {
+    return <div>Unauthorized</div>;
+  }
 
-// // Higher-order component for protecting pages
-// export function withAuthGuard<P extends object>(
-//   Component: React.ComponentType<P>,
-//   options: Omit<AuthGuardProps, 'children'> = {}
-// ) {
-//   return function AuthGuardedComponent(props: P) {
-//     return (
-//       <AuthGuard {...options}>
-//         <Component {...props} />
-//       </AuthGuard>
-//     );
-//   };
-// }
+  return <>{children}</>;
+}
 
-// // Role-based guard component
-// interface RoleGuardProps {
-//   children: React.ReactNode;
-//   allowedRoles: string[];
-//   fallback?: React.ReactNode;
-// }
+export function withAuthGuard<P extends object>(
+  Component: React.ComponentType<P>,
+  options: Omit<AuthGuardProps, "children"> = {}
+) {
+  const GuardedComponent = (props: P) => (
+    <AuthGuard {...options}>
+      <Component {...props} />
+    </AuthGuard>
+  );
+  GuardedComponent.displayName = `WithAuthGuard(${Component.displayName || Component.name || "Component"})`;
+  return GuardedComponent;
+}
 
-// export function RoleGuard({ children, allowedRoles, fallback }: RoleGuardProps) {
-//   const { user, isLoading } = useAuth();
+interface RoleGuardProps {
+  children: React.ReactNode;
+  allowedRoles: string[];
+  fallback?: React.ReactNode;
+}
 
-//   if (isLoading) {
-//     return <div>Loading...</div>;
-//   }
+export function RoleGuard({ children, allowedRoles, fallback }: RoleGuardProps) {
+  const { user, isLoading } = useAuth();
 
-//   if (!user || !allowedRoles.includes(user.role)) {
-//     return <>{fallback || <div>Access denied</div>}</>;
-//   }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-//   return <>{children}</>;
-// }
+  if (
+    !user ||
+    (!allowedRoles.includes(user.user_role) &&
+      !allowedRoles.includes(user.role))
+  ) {
+    return <>{fallback || <div>Access denied</div>}</>;
+  }
+
+  return <>{children}</>;
+}

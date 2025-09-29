@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+import { COOKIE } from './lib/constants/cookies';
+
 // Define protected routes and their required roles
 const protectedRoutes = {
   '/dashboard': ['user', 'creator', 'system_admin'],
@@ -71,16 +73,14 @@ export function middleware(request: NextRequest) {
   });
 
   // Get auth token from cookies or headers
-  const token = request.cookies.get('auth_token')?.value || 
-                request.headers.get('authorization')?.replace('Bearer ', '');
-
-  const isAuthenticated = !!token;
+  const sessionCookie = request.cookies.get(COOKIE.SESSION_KEY)?.value;
+  const isAuthenticated = Boolean(sessionCookie);
   
   console.log('Middleware - Route analysis:', {
     pathname,
     isPublicRoute,
     isProtectedRoute,
-    hasToken: !!token,
+    hasSession: Boolean(sessionCookie),
     isAuthenticated,
   });
 

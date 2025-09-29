@@ -1,74 +1,78 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { UserRole } from "@/lib/types";
+import { useCallback, useMemo } from "react";
 
-// Mock user data - in a real app, this would come from auth context
-const mockUser = {
-  id: "1",
-  name: "John Doe",
-  email: "john@example.com",
-  handle: "@johndoe",
-  role: "system_admin" as UserRole, // Changed to system_admin for testing
-  status: "active" as "active" | "suspended" | "pending_approval",
-  joinedAt: "2024-01-01T00:00:00Z",
-  stats: {
-    articlesPublished: 0,
-    totalViews: 0,
-    totalReactions: 0,
-    totalComments: 0,
-    followers: 0,
-    following: 0,
-  }
+import { useAuth } from "@/contexts/auth-context";
+import type { User, UserRole } from "@/lib/types";
+
+type UserStatus = "active" | "suspended" | "pending_approval";
+
+type ExtendedUser = {
+  status?: UserStatus;
 };
 
+type SessionUser = (User & ExtendedUser) | null;
+
 export function useRole() {
-  const [user, setUser] = useState(mockUser);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, isLoading } = useAuth();
 
-  useEffect(() => {
-    // Simulate loading user data
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
+  const resolvedUser = useMemo<SessionUser>(() => {
+    if (!user) return null;
 
-    return () => clearTimeout(timer);
-  }, []);
+    return {
+      ...user,
+      role: user.role ?? user.user_role,
+      user_role: user.user_role ?? user.role,
+    };
+  }, [user]);
 
-  const hasRole = (role: UserRole) => {
-    return user.role === role;
-  };
+  const resolvedRole = resolvedUser?.role ?? resolvedUser?.user_role ?? null;
 
-  const hasAnyRole = (roles: UserRole[]) => {
-    return roles.includes(user.role);
-  };
+  const hasRole = useCallback(
+    (role: UserRole) => resolvedRole === role,
+    [resolvedRole]
+  );
 
-  const canCreateArticles = () => {
-    return user.role === "creator" || user.role === "system_admin";
-  };
+  const hasAnyRole = useCallback(
+    (roles: UserRole[]) => {
+      if (!resolvedRole) return false;
+      return roles.includes(resolvedRole as UserRole);
+    },
+    [resolvedRole]
+  );
 
-  const canApproveContent = () => {
-    return user.role === "system_admin";
-  };
+  const canCreateArticles = useCallback(() => {
+    if (!resolvedRole) return false;
+    return resolvedRole === "creator" || resolvedRole === "system_admin";
+  }, [resolvedRole]);
 
-  const canManageUsers = () => {
-    return user.role === "system_admin";
-  };
+  const canApproveContent = useCallback(() => {
+    return resolvedRole === "system_admin";
+  }, [resolvedRole]);
 
-  const canRequestCreatorRole = () => {
-    return user.role === "user";
-  };
+  const canManageUsers = useCallback(() => {
+    return resolvedRole === "system_admin";
+  }, [resolvedRole]);
 
-  const isActive = () => {
-    return user.status === "active";
-  };
+  const canRequestCreatorRole = useCallback(() => {
+    return resolvedRole === "user";
+  }, [resolvedRole]);
 
-  const isPendingApproval = () => {
-    return user.status === "pending_approval" as const;
-  };
+  const isActive = useCallback(() => {
+    if (!resolvedUser) return false;
+    const status = resolvedUser.status;
+    if (!status) return true;
+    return status === "active";
+  }, [resolvedUser]);
+
+  const isPendingApproval = useCallback(() => {
+    if (!resolvedUser) return false;
+    const status = resolvedUser.status;
+    return status === "pending_approval";
+  }, [resolvedUser]);
 
   return {
-    user,
+    user: resolvedUser,
     isLoading,
     hasRole,
     hasAnyRole,

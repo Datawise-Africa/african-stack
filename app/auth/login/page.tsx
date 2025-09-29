@@ -17,7 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Github, Mail, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 
 const loginSchema = z.object({
@@ -82,9 +82,15 @@ function LoginForm() {
     try {
       await login(values.email, values.password, values.rememberMe);
       router.push(redirectTo);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      setError(error.message || 'Login failed. Please try again.');
+      const message =
+        error instanceof Error
+          ? error.message
+          : typeof error === 'string'
+            ? error
+            : 'Login failed. Please try again.';
+      setError(message);
     }
   };
 
@@ -208,7 +214,7 @@ function LoginForm() {
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          {/* <div className="mt-6 grid grid-cols-2 gap-3">
             <Button
               type="button"
               variant="outline"
@@ -227,7 +233,7 @@ function LoginForm() {
               <Mail className="h-4 w-4 mr-2" />
               Google
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <div className="text-center">

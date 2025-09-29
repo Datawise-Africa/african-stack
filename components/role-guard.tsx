@@ -22,6 +22,7 @@ export function RoleGuard({
   requireActive = true 
 }: RoleGuardProps) {
   const { 
+    user,
     isLoading, 
     hasAnyRole, 
     isActive, 
@@ -35,6 +36,35 @@ export function RoleGuard({
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    if (fallback) {
+      return <>{fallback}</>;
+    }
+
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center space-x-2">
+                <Lock className="w-6 h-6 text-muted-foreground" />
+                <CardTitle>Sign In Required</CardTitle>
+              </div>
+              <CardDescription>
+                Please sign in to access this section of the dashboard.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild>
+                <Link href="/auth/login">Go to Login</Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );

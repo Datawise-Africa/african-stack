@@ -4,15 +4,30 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Moon, Sun, Menu, Search, User, BookOpen, Edit, LogOut, BarChart3, Shield, UserPlus, Clock } from "lucide-react";
-import { useState } from "react";
-// import { useAuth } from "@/contexts/auth-context";
+import { useMemo, useState } from "react";
+import { useAuth } from "@/contexts/auth-context";
 import { canCreateArticles, canManageUsers, canRequestCreatorRole } from "@/lib/auth";
 import { useTheme } from "next-themes";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function Navbar() {
   const { setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
+
+  const displayName = user?.name ?? "User";
+  const displayEmail = user?.email ?? "";
+  const userInitials = useMemo(() => {
+    const source = displayName.trim() || displayEmail.trim();
+    if (!source) return "U";
+    const parts = source.split(/\s+/).filter(Boolean);
+    const initials = parts
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("");
+    if (initials) return initials;
+    return displayEmail[0]?.toUpperCase() ?? "U";
+  }, [displayEmail, displayName]);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -80,8 +95,10 @@ export function Navbar() {
             {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <User className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="rounded-full p-0">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>{userInitials}</AvatarFallback>
+                  </Avatar>
                   <span className="sr-only">User menu</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -136,7 +153,7 @@ export function Navbar() {
                   </DropdownMenuItem>
                 )}
                 
-                <DropdownMenuItem onClick={() => logout()}>
+                <DropdownMenuItem onClick={() => void logout()}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>

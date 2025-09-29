@@ -4,7 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/components/query-provider";
 import { ConditionalLayout } from "@/components/conditional-layout";
-// import { AuthProvider } from "@/contexts/auth-context";
+import { AuthProvider } from "@/contexts/auth-context";
+import { getSessionUser } from "@/lib/sesion";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -38,18 +39,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const sessionUser = await getSessionUser();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${montserrat.variable} ${roboto.variable} antialiased`}
       >
         <QueryProvider>
-          {/* <AuthProvider> */}
+          <AuthProvider initialUser={sessionUser}>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -60,7 +63,7 @@ export default function RootLayout({
                 {children}
               </ConditionalLayout>
             </ThemeProvider>
-          {/* </AuthProvider> */}
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

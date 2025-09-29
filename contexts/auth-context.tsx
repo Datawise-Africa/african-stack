@@ -1,139 +1,208 @@
-// "use client";
+"use client";
 
-// import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-// import { authApi, tokenManager } from '@/lib/auth';
-// import { User } from '@/lib/types';
-// import { verifySession } from '@/lib/sesion';
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
 
-// interface AuthContextType {
-//   user: User | null;
-//   isLoading: boolean;
-//   isAuthenticated: boolean;
-//   login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
-//   logout: () => Promise<void>;
-//   register: (name: string, email: string, password: string, handle: string) => Promise<void>;
-//   refreshUser: () => Promise<void>;
-// }
+import { tokenManager } from "@/lib/auth";
+import { User } from "@/lib/types";
 
-// const AuthContext = createContext<AuthContextType | undefined>(undefined);
+interface AuthContextType {
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
+  logout: () => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    handle: string
+  ) => Promise<void>;
+  refreshUser: () => Promise<void>;
+}
 
-// interface AuthProviderProps {
-//   children: ReactNode;
-// }
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// export async function AuthProvider({ children }: AuthProviderProps) {
+interface AuthProviderProps {
+  children: ReactNode;
+  initialUser?: User | null;
+}
 
-//   // Initialize auth state
-//   useEffect(() => {
-//     const initializeAuth = async () => {
-//       const token = tokenManager.getToken();
-//       console.log('Auth initialization - token exists:', !!token);
-      
-//        if (token) {
-//         try {
-//           console.log('Fetching current user...');
-//           const userData = await authApi.getCurrentUser();
-//           console.log('Current user data:', userData);
-//           setUser(userData);
-//         } catch (error) {
-//           console.error('Failed to get current user:', error);
-//           // Clear invalid tokens and set user to null
-//           tokenManager.removeToken();
-//           setUser(null);
-//         }
-//       }
-//       setIsLoading(false);
-//     };
+async function parseJson<T>(response: Response): Promise<T> {
+  try {
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error("Failed to parse JSON response", error);
+    throw new Error("Unexpected server response");
+  }
+}
 
-//     initializeAuth();
-//   }, []);
+export function AuthProvider({ children, initialUser }: AuthProviderProps) {
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
+  const [isHydrating, setIsHydrating] = useState(initialUser === undefined);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-//   const login = async (email: string, password: string, rememberMe = false) => {
-//     try {
-//       setIsLoading(true);
-//       console.log('Starting login process...');
-//       const response = await authApi.login({ email, password, rememberMe });
-//       console.log('Login response received:', response);
-      
-//       // Store tokens
-//       tokenManager.setToken(response.token);
-//       if (response.refreshToken) {
-//         tokenManager.setRefreshToken(response.refreshToken);
-//       }
-      
-//       console.log('Setting user:', response.user);
-//       setUser(response.user);
-//     } catch (error) {
-//       console.error('Login failed:', error);
-//       throw error;
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
+  const fetchSession = useCallback(async () => {
+    setIsHydrating(true);
 
-//   const register = async (name: string, email: string, password: string, handle: string) => {
-//     try {
-//       setIsLoading(true);
-//       const response = await authApi.register({ name, email, password, handle });
-      
-//       // Store tokens
-//       tokenManager.setToken(response.token);
-//       if (response.refreshToken) {
-//         tokenManager.setRefreshToken(response.refreshToken);
-//       }
-      
-//       setUser(response.user);
-//     } catch (error) {
-//       console.error('Registration failed:', error);
-//       throw error;
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
+    try {
+      const response = await fetch("/api/session", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
-//   const logout = async () => {
-//     try {
-//       await authApi.logout();
-//     } catch (error) {
-//       console.error('Logout error:', error);
-//     } finally {
-//       tokenManager.removeToken();
-//       setUser(null);
-//     }
-//   };
+      if (!response.ok) {
+        if (response.status === 401) {
+          setUser(null);
+          return;
+        }
 
-//   const refreshUser = async () => {
-//     try {
-//       const userData = await authApi.getCurrentUser();
-//       setUser(userData);
-//     } catch (error) {
-//       console.error('Failed to refresh user:', error);
-//       tokenManager.removeToken();
-//       setUser(null);
-//     }
-//   };
+        const data = await parseJson<{ error?: string }>(response);
+        throw new Error(data.error || "Failed to load session");
+      }
 
-//   const value: AuthContextType = {
-//     user,
-//     isLoading,
-//     isAuthenticated,
-//     login,
-//     logout,
-//     register,
-//     refreshUser,
-//   };
+      const data = await parseJson<{ user: User | null }>(response);
+      setUser(data.user ?? null);
+    } catch (error) {
+      console.error("Failed to fetch session", error);
+      setUser(null);
+    } finally {
+      setIsHydrating(false);
+    }
+  }, []);
 
-//   return (
-//     <AuthContext.Provider value={value}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// }
+  useEffect(() => {
+    if (initialUser === undefined) {
+      fetchSession();
+    }
+  }, [initialUser, fetchSession]);
 
-// export function useAuth() {
-//   const context = useContext(AuthContext);
-//   if (context === undefined) {
-//     throw new Error('useAuth must be used within an AuthProvider');
-//   }
-//   return context;
-// }
+  const login = useCallback(
+    async (email: string, password: string, rememberMe = false) => {
+      setIsProcessing(true);
+
+      try {
+        const response = await fetch("/api/session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ email, password, rememberMe }),
+        });
+
+        if (!response.ok) {
+          const data = await parseJson<{ error?: string }>(response);
+          throw new Error(data.error || "Login failed. Please try again.");
+        }
+
+        const data = await parseJson<{
+          user: User;
+          token: string;
+          refreshToken?: string;
+        }>(response);
+
+        setUser(data.user);
+        tokenManager.setToken(data.token);
+        if (data.refreshToken) {
+          tokenManager.setRefreshToken(data.refreshToken);
+        }
+      } finally {
+        setIsProcessing(false);
+      }
+    },
+    []
+  );
+
+  const register = useCallback(
+    async (name: string, email: string, password: string, handle: string) => {
+      setIsProcessing(true);
+
+      try {
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ name, email, password, handle }),
+        });
+
+        if (!response.ok) {
+          const data = await parseJson<{ error?: string }>(response);
+          throw new Error(data.error || "Registration failed. Please try again.");
+        }
+
+        const data = await parseJson<{
+          user: User;
+          token: string;
+          refreshToken?: string;
+        }>(response);
+
+        setUser(data.user);
+        tokenManager.setToken(data.token);
+        if (data.refreshToken) {
+          tokenManager.setRefreshToken(data.refreshToken);
+        }
+      } finally {
+        setIsProcessing(false);
+      }
+    },
+    []
+  );
+
+  const logout = useCallback(async () => {
+    setIsProcessing(true);
+
+    try {
+      await fetch("/api/session", {
+        method: "DELETE",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Failed to log out", error);
+    } finally {
+      tokenManager.removeToken();
+      setUser(null);
+      setIsProcessing(false);
+    }
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    await fetchSession();
+  }, [fetchSession]);
+
+  const value = useMemo<AuthContextType>(
+    () => ({
+      user,
+      isLoading: isHydrating || isProcessing,
+      isAuthenticated: Boolean(user),
+      login,
+      logout,
+      register,
+      refreshUser,
+    }),
+    [user, isHydrating, isProcessing, login, logout, register, refreshUser]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+
+  return context;
+}

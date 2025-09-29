@@ -266,7 +266,7 @@ function RegisterForm() {
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
+          {/* <div className="mt-6 grid grid-cols-2 gap-3">
             <Button
               type="button"
               variant="outline"
@@ -285,7 +285,7 @@ function RegisterForm() {
               <Mail className="h-4 w-4 mr-2" />
               Google
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <div className="text-center">

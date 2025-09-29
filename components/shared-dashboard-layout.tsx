@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -33,21 +33,32 @@ import {
   UserCheck,
   FileText,
   LogOut,
-  UserCircle,
   Bell,
   Home,
   Plus,
   HelpCircle,
   MessageSquare,
-  ChevronDown
+  ChevronDown,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { RoleGuard } from "@/components/role-guard";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/use-role";
+import { useAuth } from "@/contexts/auth-context";
+import type { UserRole } from "@/lib/types";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const creatorNavigation = [
+type DashboardNavItem = {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  description: string;
+  roles: UserRole[];
+};
+
+const creatorNavigation: DashboardNavItem[] = [
   { 
     name: "Overview", 
     href: "/dashboard/creator", 
@@ -120,7 +131,7 @@ const creatorNavigation = [
   }
 ];
 
-const userNavigation = [
+const userNavigation: DashboardNavItem[] = [
   { 
     name: "Overview", 
     href: "/dashboard/user", 
@@ -158,7 +169,7 @@ const userNavigation = [
   }
 ];
 
-const adminNavigation = [
+const adminNavigation: DashboardNavItem[] = [
   { 
     name: "Admin Overview", 
     href: "/admin", 
@@ -212,16 +223,35 @@ export function SharedDashboardLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
   const { user } = useRole();
+  const { logout } = useAuth();
+
+  const userRole = user?.role ?? user?.user_role ?? null;
 
   // Choose navigation based on current route and user role
   const isAdminRoute = pathname.startsWith('/admin');
   const isUserRoute = pathname.startsWith('/dashboard/user');
   const navigation = isAdminRoute ? adminNavigation : isUserRoute ? userNavigation : creatorNavigation;
-  
-  // Filter navigation items based on user role
-  const filteredNavigation = navigation.filter(item => 
-    item.roles.includes(user.role)
-  );
+  const filteredNavigation = useMemo(() => {
+    if (!userRole) return [];
+    return navigation.filter((item) => item.roles.includes(userRole as UserRole));
+  }, [navigation, userRole]);
+
+  const displayName = user?.name ?? "User";
+  const displayEmail = user?.email ?? "";
+  const displayRoleLabel = (userRole ?? "").replace('_', ' ');
+  const displayInitials = useMemo(() => {
+    const basis = displayName.trim() || displayEmail.trim();
+    if (!basis) return "U";
+    const parts = basis.split(/\s+/).filter(Boolean);
+    if (parts.length === 0 && displayEmail) {
+      return displayEmail[0]?.toUpperCase() ?? "U";
+    }
+    const initials = parts
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("");
+    return initials || "U";
+  }, [displayEmail, displayName]);
 
   return (
     <QueryProvider>
@@ -458,20 +488,25 @@ export function SharedDashboardLayout({
                   
                   {/* User Profile Dropdown */}
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                        <UserCircle className="h-6 w-6" />
-                      </Button>
-                    </DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full p-0"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>{displayInitials}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end" forceMount>
                       <DropdownMenuLabel className="font-normal">
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">{user.name}</p>
+                          <p className="text-sm font-medium leading-none">{displayName}</p>
                           <p className="text-xs leading-none text-muted-foreground">
-                            {user.email}
+                            {displayEmail}
                           </p>
                           <p className="text-xs leading-none text-muted-foreground capitalize">
-                            {user.role.replace('_', ' ')}
+                            {displayRoleLabel || ""}
                           </p>
                         </div>
                       </DropdownMenuLabel>
@@ -489,7 +524,10 @@ export function SharedDashboardLayout({
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-600 focus:text-red-600">
+                      <DropdownMenuItem
+                        className="text-red-600 focus:text-red-600"
+                        onClick={() => void logout()}
+                      >
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Log out</span>
                       </DropdownMenuItem>
