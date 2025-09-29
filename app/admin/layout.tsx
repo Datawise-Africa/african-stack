@@ -10,7 +10,7 @@ export default function AdminLayout({
   children: ReactNode;
 }) {
   return (
-    <AuthGuard requireAuth={true} allowedRoles={['system_admin']}>
+    <AuthGuard requireAuth={true} allowedRoles={['admin']}>
       <SharedDashboardLayout>
         {children}
       </SharedDashboardLayout>

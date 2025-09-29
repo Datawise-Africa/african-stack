@@ -44,7 +44,7 @@ export default function DashboardSettingsPage() {
     const fallbackName = [user.first_name, user.last_name].filter(Boolean).join(" ");
     const name = trimmedName || fallbackName || "User";
     const handle = user.handle || (email ? `@${email.split("@")[0]}` : "");
-    const roleLabel = (user.role ?? user.user_role ?? "user").replace(/_/g, " ");
+    const roleLabel = (user.user_role ?? user.user_role ?? "user").replace(/_/g, " ");
 
     const source = name || email || handle;
     const initials = source

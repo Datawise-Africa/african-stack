@@ -21,12 +21,12 @@ export function useRole() {
 
     return {
       ...user,
-      role: user.role ?? user.user_role,
-      user_role: user.user_role ?? user.role,
+      role: user.user_role ?? user.user_role,
+      user_role: user.user_role ?? user.user_role,
     };
   }, [user]);
 
-  const resolvedRole = resolvedUser?.role ?? resolvedUser?.user_role ?? null;
+  const resolvedRole = resolvedUser?.user_role ?? resolvedUser?.user_role ?? null;
 
   const hasRole = useCallback(
     (role: UserRole) => resolvedRole === role,
@@ -43,15 +43,15 @@ export function useRole() {
 
   const canCreateArticles = useCallback(() => {
     if (!resolvedRole) return false;
-    return resolvedRole === "creator" || resolvedRole === "system_admin";
+    return resolvedRole === "author" || resolvedRole === "admin";
   }, [resolvedRole]);
 
   const canApproveContent = useCallback(() => {
-    return resolvedRole === "system_admin";
+    return resolvedRole === "admin";
   }, [resolvedRole]);
 
   const canManageUsers = useCallback(() => {
-    return resolvedRole === "system_admin";
+    return resolvedRole === "admin";
   }, [resolvedRole]);
 
   const canRequestCreatorRole = useCallback(() => {

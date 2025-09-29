@@ -4,11 +4,12 @@ import React, { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useAuth } from "@/contexts/auth-context";
+import { UserRole } from "@/lib/types";
 
 interface AuthGuardProps {
   children: React.ReactNode;
   requireAuth?: boolean;
-  allowedRoles?: string[];
+  allowedRoles?: UserRole[];
   redirectTo?: string;
   fallback?: React.ReactNode;
 }
@@ -41,7 +42,7 @@ export function AuthGuard({
       allowedRoles.length > 0 &&
       user &&
       !allowedRoles.includes(user.user_role) &&
-      !allowedRoles.includes(user.role)
+      !allowedRoles.includes(user.user_role)
     ) {
       router.replace("/unauthorized");
     }
@@ -68,7 +69,7 @@ export function AuthGuard({
     allowedRoles.length > 0 &&
     user &&
     !allowedRoles.includes(user.user_role) &&
-    !allowedRoles.includes(user.role)
+    !allowedRoles.includes(user.user_role)
   ) {
     return <div>Unauthorized</div>;
   }
@@ -105,7 +106,7 @@ export function RoleGuard({ children, allowedRoles, fallback }: RoleGuardProps) 
   if (
     !user ||
     (!allowedRoles.includes(user.user_role) &&
-      !allowedRoles.includes(user.role))
+      !allowedRoles.includes(user.user_role))
   ) {
     return <>{fallback || <div>Access denied</div>}</>;
   }

@@ -132,7 +132,7 @@ export function RoleGuard({
     }
 
     // Default fallback based on what they're trying to access
-    if (allowedRoles.includes("creator") && canRequestCreatorRole()) {
+    if (allowedRoles.includes("author") && canRequestCreatorRole()) {
       return (
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
@@ -143,7 +143,7 @@ export function RoleGuard({
                   <CardTitle>Creator Access Required</CardTitle>
                 </div>
                 <CardDescription>
-                  You need creator access to {allowedRoles.includes("system_admin") ? "access this feature" : "create and manage articles"}.
+                  You need creator access to {allowedRoles.includes("admin") ? "access this feature" : "create and manage articles"}.
                 </CardDescription>
               </CardHeader>
               <CardContent>

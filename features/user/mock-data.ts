@@ -13,8 +13,7 @@ export const mockUsers: User[] = [
     handle: "sarahj",
     first_name: "Sarah",
     last_name: "Johnson",
-    user_role: "creator",
-    role: "system_admin",
+    user_role: "author",
   },
   {
     id: "user-2",
@@ -24,7 +23,6 @@ export const mockUsers: User[] = [
     first_name: "John",
     last_name: "Doe",
     user_role: "user",
-    role: "user",
   },
   {
     id: "user-3",
@@ -33,8 +31,7 @@ export const mockUsers: User[] = [
     handle: "janesmith",
     first_name: "Jane",
     last_name: "Smith",
-    user_role: "creator",
-    role: "creator",
+    user_role: "author",
   },
 ];
 
@@ -45,8 +42,7 @@ export const mockUser: User = {
   handle: "sarahj",
   first_name: "Sarah",
   last_name: "Johnson",
-  user_role: "creator",
-  role: "system_admin",
+  user_role: "author",
 };
 
 export const mockUserProfile: UserProfile = {

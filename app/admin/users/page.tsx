@@ -528,7 +528,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {usersData?.users.filter(u => u.role === "creator").length || 0}
+              {usersData?.users.filter(u => u.user_role === "author").length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               +5 new this week

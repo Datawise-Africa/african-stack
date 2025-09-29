@@ -33,7 +33,7 @@ export default function ProfilePage() {
 
     const email = user.email ?? "";
     const handle = user.handle || (email ? `@${email.split("@")[0]}` : "");
-    const role = (user.role ?? user.user_role ?? "user").replace(/_/g, " ");
+    const role = (user.user_role ?? user.user_role ?? "user").replace(/_/g, " ");
 
     const source = name || email || handle;
     const initials = source

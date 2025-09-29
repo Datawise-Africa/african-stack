@@ -8,17 +8,16 @@ export type TsFixme = any;
 export type ID = string;
 
 // User types
-export type UserRole = "user" | "creator" | "system_admin";
+export type UserRole = "user" | "author" | "admin";
 
 export interface User {
   id: string;
   email: string;
   first_name: string;
   last_name: string;
-  user_role: "user" | "creator" | "system_admin";
+  user_role: UserRole
   name: string;
   handle: string;
-  role: "user" | "creator" | "system_admin";
 }
 
 export interface UserProfile extends User {

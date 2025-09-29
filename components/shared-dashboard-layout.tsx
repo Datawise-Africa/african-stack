@@ -64,70 +64,70 @@ const creatorNavigation: DashboardNavItem[] = [
     href: "/dashboard/creator",
     icon: BarChart3,
     description: "Dashboard overview",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Profile",
     href: "/dashboard/profile",
     icon: User,
     description: "Your profile and stats",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Articles",
     href: "/dashboard/articles",
     icon: BookOpen,
     description: "Manage your articles",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Analytics",
     href: "/dashboard/analytics",
     icon: TrendingUp,
     description: "Performance metrics",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Content Calendar",
     href: "/dashboard/calendar",
     icon: Calendar,
     description: "Plan your content",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Bookmarks",
     href: "/dashboard/bookmarks",
     icon: Bookmark,
     description: "Saved articles",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Read History",
     href: "/dashboard/history",
     icon: History,
     description: "Reading history",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Audience",
     href: "/dashboard/audience",
     icon: Users,
     description: "Manage followers",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Goals",
     href: "/dashboard/goals",
     icon: Target,
     description: "Content goals",
-    roles: ["creator"],
+    roles: ["author"],
   },
   {
     name: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
     description: "Account settings",
-    roles: ["creator"],
+    roles: ["author"],
   },
 ];
 
@@ -175,48 +175,48 @@ const adminNavigation: DashboardNavItem[] = [
     href: "/admin",
     icon: Shield,
     description: "System administration",
-    roles: ["system_admin"],
+    roles: ["admin"],
   },
   {
     name: "User Management",
     href: "/admin/users",
     icon: UserCheck,
     description: "Manage users and roles",
-    roles: ["system_admin"],
+    roles: ["admin"],
   },
   {
     name: "Article Moderation",
     href: "/admin/articles",
     icon: FileText,
     description: "Review and approve articles",
-    roles: ["system_admin"],
+    roles: ["admin"],
   },
   {
     name: "Content Moderation",
     href: "/admin/content",
     icon: FileText,
     description: "Approve articles and content",
-    roles: ["system_admin"],
+    roles: ["admin"],
   },
   {
     name: "System Analytics",
     href: "/admin/analytics",
     icon: TrendingUp,
     description: "Platform-wide analytics",
-    roles: ["system_admin"],
+    roles: ["admin"],
   },
   {
     name: "Settings",
     href: "/admin/settings",
     icon: Settings,
     description: "System settings",
-    roles: ["system_admin"],
+    roles: ["admin"],
   },
 ];
 const routeLinks: Map<UserRole, DashboardNavItem[]> = new Map();
 routeLinks.set("user", userNavigation);
-routeLinks.set("creator", creatorNavigation);
-routeLinks.set("system_admin", adminNavigation);
+routeLinks.set("author", creatorNavigation);
+routeLinks.set("admin", adminNavigation);
 export function SharedDashboardLayout({
   children,
 }: {
@@ -230,10 +230,8 @@ export function SharedDashboardLayout({
 
   const userRole = //user?.role ?? user?.user_role ?? null;
     useMemo(() => {
-      console.log("user changed:", { user });
-
       if (!user) return null;
-      return user.role ?? user.user_role ?? null;
+      return user.user_role ?? user.user_role ?? null;
     }, [user]);
 
   // Choose navigation based on current route and user role
@@ -261,7 +259,6 @@ export function SharedDashboardLayout({
       .join("");
     return initials || "U";
   }, [displayEmail, displayName]);
-  console.log({ userRole, filteredNavigation });
 
   return (
     <QueryProvider>
@@ -271,7 +268,7 @@ export function SharedDashboardLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <RoleGuard allowedRoles={["user", "creator", "system_admin"]}>
+        <RoleGuard allowedRoles={["user", "author", "admin"]}>
           <div className="min-h-screen bg-muted/30 flex">
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (

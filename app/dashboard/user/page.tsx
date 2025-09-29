@@ -80,7 +80,7 @@ export default function UserDashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Your Role</p>
-                  <p className="text-2xl font-bold capitalize">{user?.user_role || user?.role}</p>
+                  <p className="text-2xl font-bold capitalize">{user?.user_role}</p>
                 </div>
                 <Users className="h-8 w-8 text-primary" />
               </div>
@@ -143,7 +143,7 @@ export default function UserDashboardPage() {
                 <div>
                   <p className="font-medium">{user?.name || 'User'}</p>
                   <p className="text-sm text-muted-foreground">{user?.email}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{user?.user_role || user?.role}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{user?.user_role }</p>
                 </div>
               </div>
               <Button asChild variant="outline" className="w-full">

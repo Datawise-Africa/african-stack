@@ -63,7 +63,7 @@ export default function CreatorDashboardPage() {
     : 0;
 
   return (
-    <AuthGuard requireAuth={true} allowedRoles={['creator', 'system_admin']}>
+    <AuthGuard requireAuth={true} allowedRoles={['author', 'admin']}>
       <div className="container mx-auto px-4 py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}

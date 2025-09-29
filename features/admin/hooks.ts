@@ -35,7 +35,7 @@ const mockApi = {
     if (filters.role) {
       const roles = Array.isArray(filters.role) ? filters.role : [filters.role];
       filteredUsers = filteredUsers.filter((user: User) =>
-        roles.includes(user.role)
+        roles.includes(user.user_role)
       );
     }
 
@@ -76,12 +76,12 @@ const mockApi = {
     return user;
   },
 
-  updateUserRole: async (userId: string, role: User["role"]): Promise<User> => {
+  updateUserRole: async (userId: string, role: User["user_role"]): Promise<User> => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const user = mockUsers.find((u) => u.id === userId);
     if (!user) throw new Error("User not found");
 
-    user.role = role;
+    user.user_role = role;
     return user;
   },
 
@@ -191,9 +191,9 @@ const mockApi = {
     const totalUsers = mockUsers.length;
     const activeUsers = mockUsers.length;
     const pendingUsers = 0;
-    const creators = mockUsers.filter((u: User) => u.role === "creator").length;
+    const creators = mockUsers.filter((u: User) => u.user_role === "author").length;
     const admins = mockUsers.filter(
-      (u: User) => u.role === "system_admin"
+      (u: User) => u.user_role === "admin"
     ).length;
 
     const totalArticles = mockArticles.length;
@@ -385,7 +385,7 @@ export const useUpdateUserRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ userId, role }: { userId: string; role: User["role"] }) =>
+    mutationFn: ({ userId, role }: { userId: string; role: User["user_role"] }) =>
       mockApi.updateUserRole(userId, role),
     onSuccess: (updatedUser) => {
       queryClient.setQueryData(

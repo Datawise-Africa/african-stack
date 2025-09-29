@@ -14,7 +14,7 @@ const mockApi = {
     
     if (filters.role) {
       const roles = Array.isArray(filters.role) ? filters.role : [filters.role];
-      filteredUsers = filteredUsers.filter(user => roles.includes(user.role));
+      filteredUsers = filteredUsers.filter(user => roles.includes(user.user_role));
     }
     
     if (filters.status) {

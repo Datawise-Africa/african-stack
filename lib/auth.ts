@@ -1,14 +1,14 @@
 // Authentication utilities and types
 import { apiClient } from "./api";
 import { extractCorrectErrorMessage } from "./error-utils";
-import { type TsFixme, User } from "./types";
+import { type TsFixme, User, UserRole } from "./types";
 
 export interface AuthResponse {
   id: string;
   email: string;
   first_name: string;
   last_name: string;
-  user_role: "user" | "creator" | "system_admin";
+  user_role: UserRole;
   refresh_token: string;
   access_token: string;
 }
@@ -41,7 +41,6 @@ function transformAuthResponseToUser(authResponse: AuthResponse): User {
     // Computed properties for compatibility
     name: fullName,
     handle: handle,
-    role: authResponse.user_role,
   };
 }
 
@@ -263,25 +262,25 @@ export const tokenManager = {
 };
 
 // Role-based access control
-export const hasRole = (user: User | null, role: string): boolean => {
-  return user?.user_role === role || user?.role === role;
+export const hasRole = (user: User | null, role: UserRole): boolean => {
+  return  user?.user_role === role;
 };
 
-export const hasAnyRole = (user: User | null, roles: string[]): boolean => {
+export const hasAnyRole = (user: User | null, roles: UserRole[]): boolean => {
   if (!user) return false;
-  return roles.includes(user.user_role) || roles.includes(user.role);
+  return roles.includes(user.user_role) || roles.includes(user.user_role);
 };
 
 export const canCreateArticles = (user: User | null): boolean => {
-  return hasAnyRole(user, ["creator", "system_admin"]);
+  return hasAnyRole(user, ["author", "admin"]);
 };
 
 export const canApproveContent = (user: User | null): boolean => {
-  return hasRole(user, "system_admin");
+  return hasRole(user, "admin");
 };
 
 export const canManageUsers = (user: User | null): boolean => {
-  return hasRole(user, "system_admin");
+  return hasRole(user, "admin");
 };
 
 export const canRequestCreatorRole = (user: User | null): boolean => {
