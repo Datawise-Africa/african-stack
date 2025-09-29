@@ -59,161 +59,164 @@ type DashboardNavItem = {
 };
 
 const creatorNavigation: DashboardNavItem[] = [
-  { 
-    name: "Overview", 
-    href: "/dashboard/creator", 
-    icon: BarChart3, 
+  {
+    name: "Overview",
+    href: "/dashboard/creator",
+    icon: BarChart3,
     description: "Dashboard overview",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Profile", 
-    href: "/dashboard/profile", 
-    icon: User, 
+  {
+    name: "Profile",
+    href: "/dashboard/profile",
+    icon: User,
     description: "Your profile and stats",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Articles", 
-    href: "/dashboard/articles", 
-    icon: BookOpen, 
+  {
+    name: "Articles",
+    href: "/dashboard/articles",
+    icon: BookOpen,
     description: "Manage your articles",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Analytics", 
-    href: "/dashboard/analytics", 
-    icon: TrendingUp, 
+  {
+    name: "Analytics",
+    href: "/dashboard/analytics",
+    icon: TrendingUp,
     description: "Performance metrics",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Content Calendar", 
-    href: "/dashboard/calendar", 
-    icon: Calendar, 
+  {
+    name: "Content Calendar",
+    href: "/dashboard/calendar",
+    icon: Calendar,
     description: "Plan your content",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Bookmarks", 
-    href: "/dashboard/bookmarks", 
-    icon: Bookmark, 
+  {
+    name: "Bookmarks",
+    href: "/dashboard/bookmarks",
+    icon: Bookmark,
     description: "Saved articles",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Read History", 
-    href: "/dashboard/history", 
-    icon: History, 
+  {
+    name: "Read History",
+    href: "/dashboard/history",
+    icon: History,
     description: "Reading history",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Audience", 
-    href: "/dashboard/audience", 
-    icon: Users, 
+  {
+    name: "Audience",
+    href: "/dashboard/audience",
+    icon: Users,
     description: "Manage followers",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Goals", 
-    href: "/dashboard/goals", 
-    icon: Target, 
+  {
+    name: "Goals",
+    href: "/dashboard/goals",
+    icon: Target,
     description: "Content goals",
-    roles: ['creator'] 
+    roles: ["creator"],
   },
-  { 
-    name: "Settings", 
-    href: "/dashboard/settings", 
-    icon: Settings, 
+  {
+    name: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
     description: "Account settings",
-    roles: ['creator'] 
-  }
+    roles: ["creator"],
+  },
 ];
 
 const userNavigation: DashboardNavItem[] = [
-  { 
-    name: "Overview", 
-    href: "/dashboard/user", 
-    icon: BarChart3, 
+  {
+    name: "Overview",
+    href: "/dashboard/user",
+    icon: BarChart3,
     description: "Your dashboard",
-    roles: ['user'] 
+    roles: ["user"],
   },
-  { 
-    name: "Profile", 
-    href: "/dashboard/profile", 
-    icon: User, 
+  {
+    name: "Profile",
+    href: "/dashboard/profile",
+    icon: User,
     description: "Your profile and stats",
-    roles: ['user'] 
+    roles: ["user"],
   },
-  { 
-    name: "Bookmarks", 
-    href: "/dashboard/bookmarks", 
-    icon: Bookmark, 
+  {
+    name: "Bookmarks",
+    href: "/dashboard/bookmarks",
+    icon: Bookmark,
     description: "Saved articles",
-    roles: ['user'] 
+    roles: ["user"],
   },
-  { 
-    name: "Read History", 
-    href: "/dashboard/history", 
-    icon: History, 
+  {
+    name: "Read History",
+    href: "/dashboard/history",
+    icon: History,
     description: "Reading history",
-    roles: ['user'] 
+    roles: ["user"],
   },
-  { 
-    name: "Settings", 
-    href: "/dashboard/settings", 
-    icon: Settings, 
+  {
+    name: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
     description: "Account settings",
-    roles: ['user'] 
-  }
+    roles: ["user"],
+  },
 ];
 
 const adminNavigation: DashboardNavItem[] = [
-  { 
-    name: "Admin Overview", 
-    href: "/admin", 
-    icon: Shield, 
+  {
+    name: "Admin Overview",
+    href: "/admin",
+    icon: Shield,
     description: "System administration",
-    roles: ['system_admin'] 
+    roles: ["system_admin"],
   },
-  { 
-    name: "User Management", 
-    href: "/admin/users", 
-    icon: UserCheck, 
+  {
+    name: "User Management",
+    href: "/admin/users",
+    icon: UserCheck,
     description: "Manage users and roles",
-    roles: ['system_admin'] 
+    roles: ["system_admin"],
   },
-  { 
-    name: "Article Moderation", 
-    href: "/admin/articles", 
-    icon: FileText, 
+  {
+    name: "Article Moderation",
+    href: "/admin/articles",
+    icon: FileText,
     description: "Review and approve articles",
-    roles: ['system_admin'] 
+    roles: ["system_admin"],
   },
-  { 
-    name: "Content Moderation", 
-    href: "/admin/content", 
-    icon: FileText, 
+  {
+    name: "Content Moderation",
+    href: "/admin/content",
+    icon: FileText,
     description: "Approve articles and content",
-    roles: ['system_admin'] 
+    roles: ["system_admin"],
   },
-  { 
-    name: "System Analytics", 
-    href: "/admin/analytics", 
-    icon: TrendingUp, 
+  {
+    name: "System Analytics",
+    href: "/admin/analytics",
+    icon: TrendingUp,
     description: "Platform-wide analytics",
-    roles: ['system_admin'] 
+    roles: ["system_admin"],
   },
-  { 
-    name: "Settings", 
-    href: "/admin/settings", 
-    icon: Settings, 
+  {
+    name: "Settings",
+    href: "/admin/settings",
+    icon: Settings,
     description: "System settings",
-    roles: ['system_admin'] 
-  }
+    roles: ["system_admin"],
+  },
 ];
-
+const routeLinks: Map<UserRole, DashboardNavItem[]> = new Map();
+routeLinks.set("user", userNavigation);
+routeLinks.set("creator", creatorNavigation);
+routeLinks.set("system_admin", adminNavigation);
 export function SharedDashboardLayout({
   children,
 }: {
@@ -225,20 +228,26 @@ export function SharedDashboardLayout({
   const { user } = useRole();
   const { logout } = useAuth();
 
-  const userRole = user?.role ?? user?.user_role ?? null;
+  const userRole = //user?.role ?? user?.user_role ?? null;
+    useMemo(() => {
+      console.log("user changed:", { user });
+
+      if (!user) return null;
+      return user.role ?? user.user_role ?? null;
+    }, [user]);
 
   // Choose navigation based on current route and user role
-  const isAdminRoute = pathname.startsWith('/admin');
-  const isUserRoute = pathname.startsWith('/dashboard/user');
-  const navigation = isAdminRoute ? adminNavigation : isUserRoute ? userNavigation : creatorNavigation;
+  const isAdminRoute = pathname.startsWith("/admin");
+
   const filteredNavigation = useMemo(() => {
     if (!userRole) return [];
-    return navigation.filter((item) => item.roles.includes(userRole as UserRole));
-  }, [navigation, userRole]);
+    const currentRoutes = routeLinks.get(userRole!) ?? [];
+    return currentRoutes;
+  }, [userRole]);
 
   const displayName = user?.name ?? "User";
   const displayEmail = user?.email ?? "";
-  const displayRoleLabel = (userRole ?? "").replace('_', ' ');
+  const displayRoleLabel = (userRole ?? "").replace("_", " ");
   const displayInitials = useMemo(() => {
     const basis = displayName.trim() || displayEmail.trim();
     if (!basis) return "U";
@@ -252,6 +261,7 @@ export function SharedDashboardLayout({
       .join("");
     return initials || "U";
   }, [displayEmail, displayName]);
+  console.log({ userRole, filteredNavigation });
 
   return (
     <QueryProvider>
@@ -261,22 +271,24 @@ export function SharedDashboardLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <RoleGuard allowedRoles={['user', 'creator', 'system_admin']}>
+        <RoleGuard allowedRoles={["user", "creator", "system_admin"]}>
           <div className="min-h-screen bg-muted/30 flex">
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (
-              <div 
+              <div
                 className="fixed inset-0 z-50 bg-black/50 lg:hidden"
                 onClick={() => setSidebarOpen(false)}
               />
             )}
 
             {/* Sidebar */}
-            <div className={cn(
-              "fixed inset-y-0 left-0 z-50 w-64 bg-background border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:fixed lg:inset-y-0 lg:left-0",
-              sidebarOpen ? "translate-x-0" : "-translate-x-full",
-              sidebarCollapsed && "lg:w-16"
-            )}>
+            <div
+              className={cn(
+                "fixed inset-y-0 left-0 z-50 w-64 bg-background border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:fixed lg:inset-y-0 lg:left-0",
+                sidebarOpen ? "translate-x-0" : "-translate-x-full",
+                sidebarCollapsed && "lg:w-16"
+              )}
+            >
               <div className="flex h-full flex-col">
                 {/* Sidebar header */}
                 <div className="flex h-16 items-center justify-between px-4 border-b">
@@ -327,9 +339,7 @@ export function SharedDashboardLayout({
                     title={sidebarCollapsed ? "Back to Homepage" : undefined}
                   >
                     <Home className="h-4 w-4 flex-shrink-0" />
-                    {!sidebarCollapsed && (
-                      <span>Back to Homepage</span>
-                    )}
+                    {!sidebarCollapsed && <span>Back to Homepage</span>}
                   </Link>
                 </div>
 
@@ -343,7 +353,9 @@ export function SharedDashboardLayout({
                         href={item.href}
                         className={cn(
                           "flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
-                          isActive ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground",
+                          isActive
+                            ? "bg-muted text-foreground"
+                            : "text-muted-foreground hover:text-foreground",
                           sidebarCollapsed && "justify-center"
                         )}
                         title={sidebarCollapsed ? item.name : undefined}
@@ -371,7 +383,7 @@ export function SharedDashboardLayout({
                         Quick Actions
                       </p>
                     )}
-                    
+
                     {/* New Article Button (for creators) */}
                     {!isAdminRoute && (
                       <Link
@@ -383,9 +395,7 @@ export function SharedDashboardLayout({
                         title={sidebarCollapsed ? "New Article" : undefined}
                       >
                         <Plus className="h-4 w-4 flex-shrink-0" />
-                        {!sidebarCollapsed && (
-                          <span>New Article</span>
-                        )}
+                        {!sidebarCollapsed && <span>New Article</span>}
                       </Link>
                     )}
 
@@ -452,10 +462,12 @@ export function SharedDashboardLayout({
             </div>
 
             {/* Main content */}
-            <div className={cn(
-              "flex-1 flex flex-col min-w-0",
-              sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
-            )}>
+            <div
+              className={cn(
+                "flex-1 flex flex-col min-w-0",
+                sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
+              )}
+            >
               {/* Top bar */}
               <div className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:px-6">
                 <div className="flex items-center space-x-4">
@@ -469,14 +481,16 @@ export function SharedDashboardLayout({
                   </Button>
                   <div>
                     <h1 className="text-lg font-semibold">
-                      {filteredNavigation.find(item => item.href === pathname)?.name || "Dashboard"}
+                      {filteredNavigation.find((item) => item.href === pathname)
+                        ?.name || "Dashboard"}
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                      {filteredNavigation.find(item => item.href === pathname)?.description || "Manage your content"}
+                      {filteredNavigation.find((item) => item.href === pathname)
+                        ?.description || "Manage your content"}
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   {/* Notifications */}
                   <Button variant="ghost" size="icon" className="relative">
@@ -485,23 +499,29 @@ export function SharedDashboardLayout({
                       3
                     </span>
                   </Button>
-                  
+
                   {/* User Profile Dropdown */}
                   <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="relative h-8 w-8 rounded-full p-0"
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="relative h-8 w-8 rounded-full p-0"
+                      >
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback>{displayInitials}</AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-56"
+                      align="end"
+                      forceMount
                     >
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback>{displayInitials}</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" align="end" forceMount>
                       <DropdownMenuLabel className="font-normal">
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">{displayName}</p>
+                          <p className="text-sm font-medium leading-none">
+                            {displayName}
+                          </p>
                           <p className="text-xs leading-none text-muted-foreground">
                             {displayEmail}
                           </p>
@@ -512,13 +532,23 @@ export function SharedDashboardLayout({
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href={isAdminRoute ? "/admin/settings" : "/dashboard/settings"} className="flex items-center">
+                        <Link
+                          href={
+                            isAdminRoute
+                              ? "/admin/settings"
+                              : "/dashboard/settings"
+                          }
+                          className="flex items-center"
+                        >
                           <Settings className="mr-2 h-4 w-4" />
                           <span>Settings</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href={isAdminRoute ? "/admin" : "/dashboard/profile"} className="flex items-center">
+                        <Link
+                          href={isAdminRoute ? "/admin" : "/dashboard/profile"}
+                          className="flex items-center"
+                        >
                           <User className="mr-2 h-4 w-4" />
                           <span>Profile</span>
                         </Link>
@@ -537,9 +567,7 @@ export function SharedDashboardLayout({
               </div>
 
               {/* Page content */}
-              <main className="flex-1 overflow-auto">
-                {children}
-              </main>
+              <main className="flex-1 overflow-auto">{children}</main>
             </div>
           </div>
         </RoleGuard>
