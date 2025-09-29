@@ -72,6 +72,15 @@ export interface Tag {
   articleCount: number;
 }
 
+export interface Collection {
+  id: ID;
+  name: string;
+  description?: string;
+  coverImageUrl?: string;
+  articleCount: number;
+  updatedAt: string;
+}
+
 // Article types
 export interface Article {
   id: ID;
@@ -92,6 +101,8 @@ export interface Article {
   reactionsCount: number;
   commentsCount: number;
   views?: number;
+  collectionId?: ID;
+  collection?: Pick<Collection, "id" | "name">;
 }
 
 export interface ArticleFilters {

@@ -1,4 +1,4 @@
-import { Article, Category, Comment, Reaction, Bookmark, ReadEvent } from '@/lib/types';
+import { Article, Category, Comment, Reaction, Bookmark, ReadEvent, Collection } from '@/lib/types';
 
 // Mock Categories
 export const mockCategories: Category[] = [
@@ -65,6 +65,33 @@ export const mockTags = [
   articleCount: Math.floor(Math.random() * 50) + 1
 }));
 
+export const mockCollections: Collection[] = [
+  {
+    id: 'collection-1',
+    name: 'AI Foundations',
+    description: 'Core concepts and applications of artificial intelligence tailored for African innovators.',
+    coverImageUrl: 'https://picsum.photos/seed/ai-foundations/800/400',
+    articleCount: 3,
+    updatedAt: '2024-01-18T09:00:00Z',
+  },
+  {
+    id: 'collection-2',
+    name: 'Healthcare Transformation',
+    description: 'Machine learning and data science breakthroughs improving healthcare outcomes across the continent.',
+    coverImageUrl: 'https://picsum.photos/seed/healthcare/800/400',
+    articleCount: 2,
+    updatedAt: '2024-01-14T11:30:00Z',
+  },
+  {
+    id: 'collection-3',
+    name: 'Blockchain & Transparency',
+    description: 'Building trust and resilient supply chains with distributed technologies.',
+    coverImageUrl: 'https://picsum.photos/seed/blockchain/800/400',
+    articleCount: 1,
+    updatedAt: '2024-01-12T16:45:00Z',
+  },
+];
+
 // Mock Articles
 export const mockArticles: Article[] = [
   {
@@ -108,6 +135,8 @@ export const mockArticles: Article[] = [
     reactionsCount: 42,
     commentsCount: 8,
     views: 1200,
+    collectionId: 'collection-1',
+    collection: { id: 'collection-1', name: 'AI Foundations' },
   },
   {
     id: 'article-2',
@@ -131,6 +160,8 @@ export const mockArticles: Article[] = [
     reactionsCount: 28,
     commentsCount: 5,
     views: 890,
+    collectionId: 'collection-2',
+    collection: { id: 'collection-2', name: 'Healthcare Transformation' },
   },
   {
     id: 'article-3',
@@ -154,6 +185,8 @@ export const mockArticles: Article[] = [
     reactionsCount: 35,
     commentsCount: 12,
     views: 1100,
+    collectionId: 'collection-1',
+    collection: { id: 'collection-1', name: 'AI Foundations' },
   },
   {
     id: 'article-4',
@@ -177,6 +210,8 @@ export const mockArticles: Article[] = [
     reactionsCount: 22,
     commentsCount: 7,
     views: 750,
+    collectionId: 'collection-3',
+    collection: { id: 'collection-3', name: 'Blockchain & Transparency' },
   },
   {
     id: 'article-5',
@@ -198,6 +233,8 @@ export const mockArticles: Article[] = [
     updatedAt: '2024-01-16T09:15:00Z',
     status: 'draft',
     reactionsCount: 0,
+    collectionId: 'collection-1',
+    collection: { id: 'collection-1', name: 'AI Foundations' },
     commentsCount: 0,
     views: 0,
   },

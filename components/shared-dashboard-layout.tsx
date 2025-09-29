@@ -39,6 +39,7 @@ import {
   HelpCircle,
   MessageSquare,
   ChevronDown,
+  Layers,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
@@ -78,6 +79,13 @@ const creatorNavigation: DashboardNavItem[] = [
     href: "/dashboard/articles",
     icon: BookOpen,
     description: "Manage your articles",
+    roles: ["author"],
+  },
+  {
+    name: "Collections",
+    href: "/dashboard/collections",
+    icon: Layers,
+    description: "Organise your article series",
     roles: ["author"],
   },
   {
