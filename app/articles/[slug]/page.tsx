@@ -1,7 +1,6 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share2, Clock, Calendar } from "lucide-react";
 import { ArticleCard } from "@/components/article-card";

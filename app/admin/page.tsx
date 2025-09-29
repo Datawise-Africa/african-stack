@@ -20,7 +20,6 @@ import {
   XCircle,
   Clock,
   BarChart3,
-  RefreshCw,
 } from "lucide-react";
 import { RoleRequestsPanel } from "@/features/admin/role-requests-panel";
 
