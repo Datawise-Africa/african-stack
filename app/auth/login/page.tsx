@@ -3,9 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,28 +17,17 @@ import {
 } from "@/components/ui/form";
 import { AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-
-const loginSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
-  rememberMe: z.boolean(),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import { loginFormResolver } from "@/lib/schema/auth-schema";
 
 function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { login, isLoading, isAuthenticated, user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || '/dashboard';
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm({
+    resolver: loginFormResolver,
     defaultValues: {
       email: "",
       password: "",
@@ -50,16 +37,19 @@ function LoginForm() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    console.log('Login page - Auth state:', { 
-      isAuthenticated, 
-      isLoading, 
+    console.log("Login page - Auth state:", {
+      isAuthenticated,
+      isLoading,
       user: !!user,
-      redirectTo 
+      redirectTo,
     });
-    
+
     // Only redirect if we're not loading and we're actually authenticated
     if (isAuthenticated && !isLoading && user) {
-      console.log('Login page - Redirecting authenticated user to:', redirectTo);
+      console.log(
+        "Login page - Redirecting authenticated user to:",
+        redirectTo
+      );
       router.push(redirectTo);
     }
   }, [isAuthenticated, isLoading, user, router, redirectTo]);
@@ -76,23 +66,23 @@ function LoginForm() {
     );
   }
 
-  const onSubmit = async (values: LoginFormValues) => {
+  const onSubmit = form.handleSubmit(async (values) => {
     setError(null);
-    
+
     try {
       await login(values.email, values.password, values.rememberMe);
       router.push(redirectTo);
     } catch (error: unknown) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       const message =
         error instanceof Error
           ? error.message
-          : typeof error === 'string'
-            ? error
-            : 'Login failed. Please try again.';
+          : typeof error === "string"
+          ? error
+          : "Login failed. Please try again.";
       setError(message);
     }
-  };
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -119,7 +109,7 @@ function LoginForm() {
 
         {/* Login Form */}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-6">
+          <form onSubmit={onSubmit} className="mt-8 space-y-6">
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -139,7 +129,7 @@ function LoginForm() {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="password"
@@ -191,11 +181,7 @@ function LoginForm() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign in"}
             </Button>
           </form>

@@ -1,34 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, UserPlus, CheckCircle, AlertCircle, Star, Clock, Eye } from "lucide-react";
+import {
+  ArrowLeft,
+  UserPlus,
+  CheckCircle,
+  AlertCircle,
+  Star,
+  Clock,
+  Eye,
+} from "lucide-react";
 import Link from "next/link";
 import { useRole } from "@/hooks/use-role";
+import {
+  useCreatorRequests,
+  useSubmitCreatorRequest,
+} from "@/features/creator/query";
 
 export default function RequestCreatorPage() {
   const { user, canRequestCreatorRole } = useRole();
   const [reason, setReason] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const {
+    data: requests = [],
+    isPending: isLoadingRequests,
+    isError,
+    error,
+  } = useCreatorRequests(Boolean(user));
+  const submitMutation = useSubmitCreatorRequest();
+
+  const pendingRequests = useMemo(
+    () => requests.filter((request) => request.status === "pending"),
+    [requests]
+  );
 
   const handleSubmit = async () => {
     if (!reason.trim()) return;
-    
-    setIsSubmitting(true);
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log("Role request submitted:", { reason });
+      await submitMutation.mutateAsync(reason.trim());
       setIsSubmitted(true);
     } catch (error) {
       console.error("Failed to submit role request:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -40,7 +64,8 @@ export default function RequestCreatorPage() {
             <CardHeader>
               <CardTitle>Access Denied</CardTitle>
               <CardDescription>
-                You already have creator access or are not eligible to request it.
+                You already have creator access or are not eligible to request
+                it.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -71,8 +96,9 @@ export default function RequestCreatorPage() {
             <CardContent className="space-y-4">
               <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
                 <p className="text-sm text-green-800 dark:text-green-200">
-                  Our team will review your application and get back to you within 24-48 hours. 
-                  You&apos;ll receive an email notification once your request has been processed.
+                  Our team will review your application and get back to you
+                  within 24-48 hours. You&apos;ll receive an email notification
+                  once your request has been processed.
                 </p>
               </div>
               <div className="flex space-x-2">
@@ -121,33 +147,81 @@ export default function RequestCreatorPage() {
                     Track the status of your creator role applications
                   </CardDescription>
                 </div>
-                <Link href="/request-creator/status">
-                  <Button variant="outline">
-                    <Eye className="h-4 w-4 mr-2" />
-                    View All Requests
-                  </Button>
-                </Link>
+                {requests.length > 0 && (
+                  <Link href="/request-creator/status">
+                    <Button variant="outline">
+                      <Eye className="h-4 w-4 mr-2" />
+                      View All Requests
+                    </Button>
+                  </Link>
+                )}
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Clock className="h-5 w-5 text-yellow-600" />
-                    <div>
-                      <p className="font-medium">Creator Role Request #1</p>
-                      <p className="text-sm text-muted-foreground">Submitted 2 days ago</p>
+              {isLoadingRequests ? (
+                <div className="flex flex-col items-center justify-center py-8 text-sm text-muted-foreground">
+                  <div className="animate-spin h-6 w-6 border-b-2 border-primary rounded-full mb-3" />
+                  Loading your requests...
+                </div>
+              ) : isError ? (
+                <div className="flex items-center space-x-3 rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <span>{error?.message ?? "Failed to load creator role requests."}</span>
+                </div>
+              ) : requests.length === 0 ? (
+                <div className="text-center py-4 text-sm text-muted-foreground">
+                  You have not submitted any creator requests yet.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {requests.map((request) => {
+                    const submittedOn = new Date(request.created_at).toLocaleDateString();
+                    const badgeVariant =
+                      request.status === "approved"
+                        ? "default"
+                        : request.status === "revoked"
+                        ? "destructive"
+                        : "secondary";
+                    const badgeLabel =
+                      request.status === "pending"
+                        ? "Pending review"
+                        : request.status === "approved"
+                        ? "Approved"
+                        : "Revoked";
+
+                    return (
+                      <div
+                        key={request.id}
+                        className="flex flex-col gap-3 rounded-lg border p-4 md:flex-row md:items-center md:justify-between"
+                      >
+                        <div className="flex items-start gap-3">
+                          <Clock className="mt-1 h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <p className="font-medium">
+                              Submitted on {submittedOn}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {request.reason}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="space-y-1 text-right">
+                          <Badge variant={badgeVariant}>{badgeLabel}</Badge>
+                          <p className="text-xs text-muted-foreground">
+                            Updated {new Date(request.updated_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {pendingRequests.length > 0 && (
+                    <div className="text-center py-4 text-sm text-muted-foreground">
+                      You have {pendingRequests.length} pending request{pendingRequests.length > 1 ? "s" : ""}.
+                      Check back for updates or view all your requests.
                     </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Pending Review</Badge>
+                  )}
                 </div>
-                
-                <div className="text-center py-4">
-                  <p className="text-sm text-muted-foreground">
-                    You have 1 pending request. Check back for updates or view all your requests.
-                  </p>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -167,12 +241,16 @@ export default function RequestCreatorPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center space-x-2">
-                  <Badge variant="outline">Current Role: {user?.user_role}</Badge>
+                  <Badge variant="outline">
+                    Current Role: {user?.user_role}
+                  </Badge>
                   <Badge variant="secondary">Requesting: Creator</Badge>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="reason">Why do you want to become a creator?</Label>
+                  <Label htmlFor="reason">
+                    Why do you want to become a creator?
+                  </Label>
                   <Textarea
                     id="reason"
                     placeholder="Tell us about your background, expertise, and what kind of content you plan to create. Be specific about your experience and how you can contribute to the African tech community..."
@@ -189,23 +267,39 @@ export default function RequestCreatorPage() {
                   <div className="flex items-start space-x-2">
                     <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-medium">What happens after you submit?</p>
+                      <p className="font-medium">
+                        What happens after you submit?
+                      </p>
                       <ul className="mt-1 space-y-1 text-muted-foreground">
-                        <li>• Our team will review your application within 24-48 hours</li>
-                        <li>• You&apos;ll receive an email notification of the decision</li>
-                        <li>• If approved, you&apos;ll gain access to the creator dashboard</li>
-                        <li>• You can start writing and publishing articles immediately</li>
+                        <li>
+                          • Our team will review your application within 24-48
+                          hours
+                        </li>
+                        <li>
+                          • You&apos;ll receive an email notification of the
+                          decision
+                        </li>
+                        <li>
+                          • If approved, you&apos;ll gain access to the creator
+                          dashboard
+                        </li>
+                        <li>
+                          • You can start writing and publishing articles
+                          immediately
+                        </li>
                       </ul>
                     </div>
                   </div>
                 </div>
 
-                <Button 
-                  onClick={handleSubmit} 
-                  disabled={!reason.trim() || isSubmitting}
+                <Button
+                  onClick={handleSubmit}
+                  disabled={!reason.trim() || submitMutation.isPending}
                   className="w-full"
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
+                  {submitMutation.isPending
+                    ? "Submitting..."
+                    : "Submit Application"}
                 </Button>
               </CardContent>
             </Card>
@@ -263,26 +357,32 @@ export default function RequestCreatorPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Requirements</CardTitle>
-                <CardDescription>
-                  What we look for in creators
-                </CardDescription>
+                <CardDescription>What we look for in creators</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2" />
-                  <p className="text-sm">Relevant experience in tech, business, or related fields</p>
+                  <p className="text-sm">
+                    Relevant experience in tech, business, or related fields
+                  </p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2" />
-                  <p className="text-sm">Clear writing ability and communication skills</p>
+                  <p className="text-sm">
+                    Clear writing ability and communication skills
+                  </p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2" />
-                  <p className="text-sm">Commitment to sharing valuable content</p>
+                  <p className="text-sm">
+                    Commitment to sharing valuable content
+                  </p>
                 </div>
                 <div className="flex items-start space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2" />
-                  <p className="text-sm">Understanding of African tech ecosystem</p>
+                  <p className="text-sm">
+                    Understanding of African tech ecosystem
+                  </p>
                 </div>
               </CardContent>
             </Card>

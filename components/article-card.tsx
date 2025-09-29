@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Bookmark, Clock } from "lucide-react";
 import { Article } from "@/lib/types";

@@ -6,21 +6,16 @@ import { createSession } from "@/lib/sesion";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password, handle } = await request.json();
+    const payload = await request.json();
 
-    if (!name || !email || !password || !handle) {
-      return NextResponse.json(
-        { error: "All fields are required." },
-        { status: 400 }
-      );
-    }
+    // if (!name || !email || !password || !handle) {
+    //   return NextResponse.json(
+    //     { error: "All fields are required." },
+    //     { status: 400 }
+    //   );
+    // }
 
-    const response = await authApi.register({
-      name,
-      email,
-      password,
-      handle,
-    });
+    const response = await authApi.register(payload);
 
     await createSession({
       user: response.user,

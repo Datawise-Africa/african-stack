@@ -12,19 +12,19 @@ import React, {
 
 import { tokenManager } from "@/lib/auth";
 import { User } from "@/lib/types";
+import { RegisterFormValues } from "@/lib/schema/auth-schema";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
-  logout: () => Promise<void>;
-  register: (
-    name: string,
+  login: (
     email: string,
     password: string,
-    handle: string
+    rememberMe?: boolean
   ) => Promise<void>;
+  logout: () => Promise<void>;
+  register: (payload: RegisterFormValues) => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
@@ -87,45 +87,46 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     }
   }, [initialUser, fetchSession]);
 
-  const login = useCallback(
-    async (email: string, password: string, rememberMe = false) => {
-      setIsProcessing(true);
+  const login = useCallback(async (email: string, password: string) => {
+    setIsProcessing(true);
 
-      try {
-        const response = await fetch("/api/session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ email, password, rememberMe }),
-        });
+    try {
+      const response = await fetch("/api/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
 
-        if (!response.ok) {
-          const data = await parseJson<{ error?: string }>(response);
-          throw new Error(data.error || "Login failed. Please try again.");
-        }
-
-        const data = await parseJson<{
-          user: User;
-          token: string;
-          refreshToken?: string;
-        }>(response);
-
-        setUser(data.user);
-        tokenManager.setToken(data.token);
-        if (data.refreshToken) {
-          tokenManager.setRefreshToken(data.refreshToken);
-        }
-      } finally {
-        setIsProcessing(false);
+      if (!response.ok) {
+        const data = await parseJson<{ error?: string }>(response);
+        throw new Error(data.error || "Login failed. Please try again.");
       }
-    },
-    []
-  );
+
+      const data = await parseJson<{
+        user: User;
+        token: string;
+        refreshToken?: string;
+      }>(response);
+
+      setUser(data.user);
+      tokenManager.setToken(data.token);
+      if (data.refreshToken) {
+        tokenManager.setRefreshToken(data.refreshToken);
+      }
+    } finally {
+      setIsProcessing(false);
+    }
+  }, []);
 
   const register = useCallback(
-    async (name: string, email: string, password: string, handle: string) => {
+    async ({
+      agreeToTerms: _,
+      confirmPassword: __,
+      ...rest
+    }: RegisterFormValues) => {
       setIsProcessing(true);
 
       try {
@@ -135,12 +136,14 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ name, email, password, handle }),
+          body: JSON.stringify(rest),
         });
 
         if (!response.ok) {
           const data = await parseJson<{ error?: string }>(response);
-          throw new Error(data.error || "Registration failed. Please try again.");
+          throw new Error(
+            data.error || "Registration failed. Please try again."
+          );
         }
 
         const data = await parseJson<{

@@ -3,9 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,40 +17,15 @@ import {
 } from "@/components/ui/form";
 import { AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-
-const registerSchema = z
-  .object({
-    first_name: z.string().min(2, {
-      message: "First name must be at least 2 characters.",
-    }),
-    last_name: z.string().min(3, {
-      message: "Last name must be at least 3 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-    password: z.string().min(8, {
-      message: "Password must be at least 8 characters.",
-    }),
-    confirmPassword: z.string(),
-    agreeToTerms: z.boolean().refine((val) => val === true, {
-      message: "You must agree to the terms and conditions.",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type RegisterFormValues = z.infer<typeof registerSchema>;
+import { registerFormResolver } from "@/lib/schema/auth-schema";
 
 function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const { register, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm({
+    resolver: registerFormResolver,
     defaultValues: {
       first_name: "",
       last_name: "",
@@ -70,16 +43,11 @@ function RegisterForm() {
     }
   }, [isAuthenticated, router]);
 
-  const onSubmit = async (values: RegisterFormValues) => {
+  const onSubmit = form.handleSubmit(async (values) => {
     setError(null);
 
     try {
-      await register(
-        values.first_name,
-        values.email,
-        values.password,
-        values.last_name
-      );
+      await register(values);
       router.push("/dashboard");
     } catch (error: unknown) {
       console.error("Registration error:", error);
@@ -87,7 +55,7 @@ function RegisterForm() {
         (error as Error).message || "Registration failed. Please try again."
       );
     }
-  };
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -114,10 +82,7 @@ function RegisterForm() {
 
         {/* Registration Form */}
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-8 space-y-6"
-          >
+          <form onSubmit={onSubmit} className="mt-8 space-y-6">
             <div className="space-y-4">
               <FormField
                 control={form.control}
@@ -128,9 +93,10 @@ function RegisterForm() {
                     <FormControl>
                       <Input
                         type="text"
-                        autoComplete="name"
+                        autoComplete="given-name"
                         placeholder="Enter your first name"
                         {...field}
+                        aria-autocomplete="inline"
                       />
                     </FormControl>
                     <FormMessage />
@@ -147,7 +113,7 @@ function RegisterForm() {
                     <FormControl>
                       <Input
                         type="text"
-                        autoComplete="name"
+                        autoComplete="family-name"
                         placeholder="Enter your last name"
                         {...field}
                       />
