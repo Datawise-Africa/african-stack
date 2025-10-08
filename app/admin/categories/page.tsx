@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 
 import {
@@ -20,7 +21,7 @@ import {
   getDefaultCategoryFormValues,
   mapCategoryToFormValues,
 } from "./_utils/form-utils";
-import type { CategoryFormValues, StatusMessage } from "./_types";
+import type { CategoryFormValues } from "./_types";
 import { PAGE_SIZE_OPTIONS } from "./_types";
 
 const DEFAULT_PAGE_SIZE = PAGE_SIZE_OPTIONS[1]; // 20
@@ -30,7 +31,6 @@ export default function AdminCategoriesPage() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
-  const [status, setStatus] = useState<StatusMessage | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,48 +55,30 @@ export default function AdminCategoriesPage() {
 
   const createCategory = useCreateCategoryMutation({
     onSuccess: (created) => {
-      setStatus({
-        type: "success",
-        message: `Category “${created.name}” created successfully.`,
-      });
+      toast.success(`Category “${created.name}” created successfully.`);
       closeDialog();
     },
     onError: (err) => {
-      setStatus({
-        type: "error",
-        message: err.message || "Failed to create category.",
-      });
+      toast.error(err.message || "Failed to create category.");
     },
   });
 
   const updateCategory = useUpdateCategoryMutation({
     onSuccess: (updated) => {
-      setStatus({
-        type: "success",
-        message: `Category “${updated.name}” updated successfully.`,
-      });
+      toast.success(`Category “${updated.name}” updated successfully.`);
       closeDialog();
     },
     onError: (err) => {
-      setStatus({
-        type: "error",
-        message: err.message || "Failed to update category.",
-      });
+      toast.error(err.message || "Failed to update category.");
     },
   });
 
   const deleteCategory = useDeleteCategoryMutation({
     onSuccess: () => {
-      setStatus({
-        type: "success",
-        message: "Category deleted successfully.",
-      });
+      toast.success("Category deleted successfully.");
     },
     onError: (err) => {
-      setStatus({
-        type: "error",
-        message: err.message || "Failed to delete category.",
-      });
+      toast.error(err.message || "Failed to delete category.");
     },
   });
 
@@ -124,15 +106,19 @@ export default function AdminCategoriesPage() {
     }, 0);
   }, [categoriesData]);
 
+  useEffect(() => {
+    if (isError && error) {
+      toast.error(error.message || "Failed to load categories.");
+    }
+  }, [isError, error]);
+
   const openForCreate = () => {
-    setStatus(null);
     setSelectedCategory(null);
     form.reset(getDefaultCategoryFormValues());
     setDialogOpen(true);
   };
 
   const openForEdit = (category: Category) => {
-    setStatus(null);
     setSelectedCategory(category);
     form.reset(mapCategoryToFormValues(category));
     setDialogOpen(true);
@@ -159,7 +145,10 @@ export default function AdminCategoriesPage() {
     const confirmed = window.confirm(
       `Are you sure you want to delete the category “${category.name}”? This action cannot be undone.`
     );
-    if (!confirmed) return;
+    if (!confirmed) {
+      toast("Deletion cancelled", { icon: "⚠️" });
+      return;
+    }
     deleteCategory.mutate(category.id);
   };
 
@@ -204,18 +193,6 @@ export default function AdminCategoriesPage() {
         isPending={isPending}
         isRefetching={isRefetching}
       />
-
-      {status && (
-        <div
-          className={`rounded-md border px-4 py-3 text-sm ${
-            status.type === "success"
-              ? "border-green-200 bg-green-50 text-green-800"
-              : "border-red-200 bg-red-50 text-red-800"
-          }`}
-        >
-          {status.message}
-        </div>
-      )}
 
       <CategoryTable
         data={categoriesList}

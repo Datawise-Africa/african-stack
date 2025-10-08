@@ -157,12 +157,22 @@ async function deleteCategory(id: string | number): Promise<void> {
   await apiClient.delete(`${CATEGORIES_ENDPOINT}${id}/`);
 }
 
+const normalizeListParams = (params?: CategoryListParams) => ({
+  page: params?.page ?? undefined,
+  limit: params?.limit ?? undefined,
+  search: params?.search ?? undefined,
+});
+
+export const buildCategoriesListKey = (
+  params?: CategoryListParams
+) => [...queryKeys.categories.lists(), normalizeListParams(params)] as const;
+
 export const useCategoriesQuery = <TData = CategoryListResult>(
   params?: CategoryListParams,
-  options?: UseQueryOptions<CategoryListResult, ApiError, TData>
+  options?: Omit<UseQueryOptions<CategoryListResult, ApiError, TData>, "queryKey" | "queryFn">
 ): UseQueryResult<TData, ApiError> =>
   useQuery<CategoryListResult, ApiError, TData>({
-    queryKey: [...queryKeys.categories.lists(), params ?? {}],
+    queryKey: buildCategoriesListKey(params),
     queryFn: () => fetchCategories(params),
     staleTime: 5 * 60 * 1000,
     ...options,
@@ -203,13 +213,13 @@ export const useCreateCategoryMutation = (
 
   return useMutation<Category, ApiError, CategoryPayload>({
     mutationFn: createCategory,
-    onSuccess: (category, variables, context) => {
+    onSuccess: (category, variables, result, context) => {
       invalidateLists();
       queryClient.setQueryData(
         queryKeys.categories.detail(category.id),
         category
       );
-      options?.onSuccess?.(category, variables, context);
+      options?.onSuccess?.(category, variables, result, context);
     },
     ...options,
   });
@@ -245,13 +255,13 @@ export const useUpdateCategoryMutation = (
     { id: string | number; data: CategoryPayload; method?: "PATCH" | "PUT" }
   >({
     mutationFn: updateCategory,
-    onSuccess: (category, variables, context) => {
+    onSuccess: (category, variables, result, context) => {
       invalidateLists();
       queryClient.setQueryData(
         queryKeys.categories.detail(category.id),
         category
       );
-      options?.onSuccess?.(category, variables, context);
+      options?.onSuccess?.(category, variables, result, context);
     },
     ...options,
   });
@@ -275,12 +285,12 @@ export const useDeleteCategoryMutation = (
 
   return useMutation<void, ApiError, string | number>({
     mutationFn: deleteCategory,
-    onSuccess: (data, id, context) => {
+    onSuccess: (data, id, result, context) => {
       invalidateLists();
       queryClient.removeQueries({
         queryKey: queryKeys.categories.detail(String(id)),
       });
-      options?.onSuccess?.(data, id, context);
+      options?.onSuccess?.(data, id, result, context);
     },
     ...options,
   });

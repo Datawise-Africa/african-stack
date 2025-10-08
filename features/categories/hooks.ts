@@ -9,6 +9,7 @@ import {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  buildCategoriesListKey,
   type CategoryListParams,
   type CategoryListResult,
 } from "./query";
@@ -23,9 +24,8 @@ export const useCategories = (
   options?: CategoriesQueryOptions<Category[]>
 ): UseQueryResult<Category[], ApiError> =>
   useCategoriesQueryBase<Category[]>(params, {
-      select: (result) => result.data,
-      ...(options ?? {}),
-      queryKey: []
+    select: (result) => result.data,
+    ...(options ?? {}),
   });
 
 export const usePaginatedCategories = (
@@ -34,7 +34,6 @@ export const usePaginatedCategories = (
 ): UseQueryResult<CategoryListResult, ApiError> =>
   useCategoriesQueryBase(params, {
     ...(options ?? {}),
-    queryKey: [], // Provide a default or appropriate queryKey value
   });
 
 export { useCategoryQuery as useCategory };
@@ -47,12 +46,7 @@ export {
 
 export type { CategoryListParams, CategoryListResult };
 
-const baseListKey = queryKeys.categories.lists();
-
 export const categoriesQueryKeys = {
   ...queryKeys.categories,
-  listWithParams: (params?: CategoryListParams) =>
-    params
-      ? ([...baseListKey, params] as const)
-      : baseListKey,
+  listWithParams: (params?: CategoryListParams) => buildCategoriesListKey(params),
 };

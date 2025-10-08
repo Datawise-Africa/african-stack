@@ -6,6 +6,7 @@ import { QueryProvider } from "@/components/query-provider";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { AuthProvider } from "@/contexts/auth-context";
 import { getSessionUser } from "@/lib/sesion";
+import { ToasterProvider } from "@/components/toaster-provider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -62,6 +63,7 @@ export default async function RootLayout({
               <ConditionalLayout>
                 {children}
               </ConditionalLayout>
+              <ToasterProvider />
             </ThemeProvider>
           </AuthProvider>
         </QueryProvider>
