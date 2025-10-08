@@ -1,0 +1,84 @@
+name: PR Validation Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  lint_code:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run ESLint
+        run: npm lint
+
+  security_scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run Build
+        run: pnpm build
+
+  # check_debug_code:
+  #   name: Ensure No Debugging Code
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Ensure no console.logs
+  #       run: |
+  #         if grep -r "console.log" src/; then 
+  #           echo "::error::Debugging code found! Remove console.log statements."
+  #           exit 1
+  #         fi
+
+  pr_notification:
+    name: PR Checks Notification
+    runs-on: ubuntu-latest
+    needs: [lint_code, security_scan]
+    if: always()
+    steps:
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "channel": "code-reviews",
+              "text": "PR Checks ${{ job.status }} for #${{ github.event.pull_request.number }} - *${{ github.event.pull_request.title }}* by ${{ github.actor }}",
+              "attachments": [
+                {
+                  "color": "#36a64f",
+                  "title": "Pull Request Checks Completed",
+                  "title_link": "${{ github.event.pull_request.html_url }}",
+                  "fields": [
+                    {
+                      "title": "Branch",
+                      "value": "${{ github.head_ref }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Author",
+                      "value": "${{ github.actor }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Status",
+                      "value": "${{ needs.*.result }}",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
