@@ -41,6 +41,15 @@ export const queryKeys = {
     bySlug: (slug: string) => [...queryKeys.categories.details(), 'slug', slug] as const,
   },
 
+  // Collections
+  collections: {
+    all: ['collections'] as const,
+    lists: () => [...queryKeys.collections.all, 'list'] as const,
+    list: (filters: Record<string, unknown>) => [...queryKeys.collections.lists(), filters] as const,
+    details: () => [...queryKeys.collections.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.collections.details(), id] as const,
+  },
+
   // Tags
   tags: {
     all: ['tags'] as const,

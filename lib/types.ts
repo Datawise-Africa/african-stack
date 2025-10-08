@@ -79,7 +79,8 @@ export interface Collection {
   description?: string;
   coverImageUrl?: string;
   articleCount: number;
-  updatedAt: string;
+  updatedAt?: string;
+  createdAt?: string;
 }
 
 // Article types
