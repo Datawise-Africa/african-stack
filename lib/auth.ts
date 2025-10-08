@@ -1,7 +1,7 @@
 // Authentication utilities and types
 import { apiClient } from "./api";
 import { extractCorrectErrorMessage } from "./error-utils";
-import { type TsFixme, User, UserRole } from "./types";
+import { User, UserRole } from "./types";
 
 export interface AuthResponse {
   id: string;
@@ -158,10 +158,16 @@ export const authApi = {
       }
 
       return null;
-    } catch (error: TsFixme) {
+    } catch (error: unknown) {
       console.error("Get current user API error:", error);
 
-      if (error.response?.status === 401) {
+      const status =
+        typeof error === "object" && error !== null && "response" in error
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (error as any).response?.status
+          : undefined;
+
+      if (status === 401) {
         // Token expired, try to refresh
         const refreshToken = tokenManager.getRefreshToken();
         if (refreshToken) {
@@ -172,7 +178,7 @@ export const authApi = {
               tokenManager.setRefreshToken(refreshResponse.refreshToken);
             }
             return refreshResponse.user;
-          } catch (_refreshError) {
+          } catch {
             // Refresh failed, clear tokens
             tokenManager.removeToken();
             return null;

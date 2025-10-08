@@ -62,6 +62,7 @@ export interface Category {
   articleCount: number;
   color?: string;
   recentArticles?: Article[];
+  thumbnail?: string | null;
 }
 
 export interface Tag {

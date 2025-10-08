@@ -114,8 +114,18 @@ export const api = {
 
   // Categories
   categories: {
-    list: () => apiRequest("/categories"),
-    get: (slug: string) => apiRequest(`/categories/${slug}`),
+    list: (params?: Record<string, unknown>) =>
+      apiRequest("/blogs/categories/", { params }),
+    get: (id: string | number) =>
+      apiRequest(`/blogs/categories/${id}/`),
+    create: (data: unknown) =>
+      apiRequest("/blogs/categories/", { method: "POST", data }),
+    update: (id: string | number, data: unknown) =>
+      apiRequest(`/blogs/categories/${id}/`, { method: "PUT", data }),
+    partialUpdate: (id: string | number, data: unknown) =>
+      apiRequest(`/blogs/categories/${id}/`, { method: "PATCH", data }),
+    delete: (id: string | number) =>
+      apiRequest(`/blogs/categories/${id}/`, { method: "DELETE" }),
   },
 
   // Reactions

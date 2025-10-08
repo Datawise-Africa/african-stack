@@ -201,6 +201,13 @@ const adminNavigation: DashboardNavItem[] = [
     roles: ["admin"],
   },
   {
+    name: "Categories",
+    href: "/admin/categories",
+    icon: Layers,
+    description: "Create and manage blog categories",
+    roles: ["admin"],
+  },
+  {
     name: "Content Moderation",
     href: "/admin/content",
     icon: FileText,
