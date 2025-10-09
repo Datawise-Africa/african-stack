@@ -8,6 +8,7 @@ import {
   type CollectionListParams,
   type CollectionListResult,
   type CollectionWithArticles,
+  useCreateCollectionMutation,
 } from "./query";
 
 type CollectionsQueryOptions<TData> = Omit<
@@ -33,6 +34,7 @@ export const usePaginatedCollections = (
   });
 
 export { useCollectionsQueryBase as useCollectionsQuery };
+export { useCreateCollectionMutation };
 
 export type {
   CollectionListParams,

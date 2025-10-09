@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Layers,
   Plus,
@@ -11,6 +11,7 @@ import {
   RefreshCw,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
@@ -20,14 +21,27 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
+import {
   usePaginatedCollections,
+  useCreateCollectionMutation,
   type CollectionWithArticles,
 } from "@/features/collections/hooks";
+import {
+  CreateCollectionDialog,
+  type CreateCollectionFormValues,
+} from "@/features/collections/components/create-collection-dialog";
 
 const PAGE_SIZE = 6;
 
 export default function CollectionsPage() {
   const [page, setPage] = useState(1);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [expandedCollections, setExpandedCollections] = useState<Record<string, boolean>>({});
 
   const {
     data,
@@ -37,6 +51,38 @@ export default function CollectionsPage() {
     refetch,
     isRefetching,
   } = usePaginatedCollections({ page, limit: PAGE_SIZE });
+
+  const createCollectionMutation = useCreateCollectionMutation({
+    onSuccess: (collection) => {
+      toast.success(`Collection “${collection.name}” created successfully.`);
+      setCreateDialogOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to create collection.");
+    },
+  });
+
+  const isCreating = createCollectionMutation.isPending;
+
+  const handleCreateCollectionSubmit = useCallback(
+    (values: CreateCollectionFormValues) => {
+      createCollectionMutation.mutate({
+        name: values.name,
+        description: values.description,
+      });
+    },
+    [createCollectionMutation]
+  );
+
+  const handleCollectionToggle = useCallback(
+    (collectionId: string, open: boolean) => {
+      setExpandedCollections((previous) => ({
+        ...previous,
+        [collectionId]: open,
+      }));
+    },
+    []
+  );
 
   const collections = useMemo(
     () => data?.data ?? ([] as CollectionWithArticles[]),
@@ -88,7 +134,10 @@ export default function CollectionsPage() {
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Refresh
               </Button>
-              <Button disabled>
+              <Button
+                onClick={() => setCreateDialogOpen(true)}
+                disabled={isCreating}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 New collection
               </Button>
@@ -171,71 +220,98 @@ export default function CollectionsPage() {
                 }
 
                 const collection = collectionItem as CollectionWithArticles;
+                const isExpanded = expandedCollections[collection.id] ?? false;
 
                 return (
-                  <Card key={collection.id}>
-                    <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <CardTitle>{collection.name}</CardTitle>
-                        {collection.description && (
-                          <CardDescription>{collection.description}</CardDescription>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>
-                        Updated {new Date(collection.updatedAt ?? collection.createdAt ?? Date.now()).toLocaleDateString()}
-                      </span>
-                      <Separator orientation="vertical" />
-                      <span>{collection.articleCount} articles</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {collection.articles.length === 0 ? (
-                      <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
-                        No articles have been added to this collection yet.
-                      </div>
-                    ) : (
-                      <div className="grid gap-3">
-                        {collection.articles.map((article) => (
-                          <div
-                            key={article.id}
-                            className="flex items-start justify-between rounded-md border p-4"
-                          >
-                            <div className="mr-4 flex-1">
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Badge variant="secondary">{article.status}</Badge>
-                                <span>
-                                  {new Date(
-                                    article.publishedAt || article.updatedAt || '1970-01-01'
-                                  ).toLocaleDateString()}
-                                </span>
-                              </div>
-                              <Link
-                                href={`/dashboard/articles/${article.id}/edit`}
-                                className="mt-1 inline-flex items-center font-medium hover:text-primary"
-                              >
-                                {article.title}
-                                <ArrowRight className="ml-2 h-3 w-3" />
-                              </Link>
-                              <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                                {article.excerpt}
-                              </p>
-                            </div>
-                            <div className="text-right text-xs text-muted-foreground">
-                              <p>{article.readTimeMins} min read</p>
-                              <p>{article.views?.toLocaleString() ?? 0} views</p>
-                            </div>
+                  <Collapsible
+                    key={collection.id}
+                    open={isExpanded}
+                    onOpenChange={(open) => handleCollectionToggle(collection.id, open)}
+                  >
+                    <Card>
+                      <CardHeader className="space-y-3">
+                        <div className="space-y-1">
+                          <CardTitle>{collection.name}</CardTitle>
+                          {collection.description && (
+                            <CardDescription>{collection.description}</CardDescription>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                            <span>
+                              Updated{" "}
+                              {new Date(collection.updatedAt ?? collection.createdAt ?? Date.now()).toLocaleDateString()}
+                            </span>
+                            <Separator orientation="vertical" />
+                            <span>{collection.articleCount} articles</span>
                           </div>
-                        ))}
-                      </div>
-                    )}
-                    <div className="flex justify-end">
-                      <Button variant="outline" size="sm" disabled>
-                        Manage collection
-                      </Button>
-                    </div>
-                  </CardContent>
-                  </Card>
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="flex items-center gap-2"
+                            >
+                              {isExpanded ? "Hide articles" : "Show articles"}
+                              <ChevronDown
+                                className={cn(
+                                  "h-4 w-4 transition-transform duration-200",
+                                  isExpanded ? "rotate-180" : "rotate-0"
+                                )}
+                              />
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </CardHeader>
+                      <CollapsibleContent>
+                        <CardContent className="space-y-4">
+                          {collection.articles.length === 0 ? (
+                            <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
+                              No articles have been added to this collection yet.
+                            </div>
+                          ) : (
+                            <div className="grid gap-3">
+                              {collection.articles.map((article) => (
+                                <div
+                                  key={article.id}
+                                  className="flex items-start justify-between rounded-md border p-4"
+                                >
+                                  <div className="mr-4 flex-1">
+                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                      <Badge variant="secondary">{article.status}</Badge>
+                                      <span>
+                                        {new Date(
+                                          article.publishedAt || article.updatedAt || "1970-01-01"
+                                        ).toLocaleDateString()}
+                                      </span>
+                                    </div>
+                                    <Link
+                                      href={`/dashboard/articles/${article.id}/edit`}
+                                      className="mt-1 inline-flex items-center font-medium hover:text-primary"
+                                    >
+                                      {article.title}
+                                      <ArrowRight className="ml-2 h-3 w-3" />
+                                    </Link>
+                                    <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                                      {article.excerpt}
+                                    </p>
+                                  </div>
+                                  <div className="text-right text-xs text-muted-foreground">
+                                    <p>{article.readTimeMins} min read</p>
+                                    <p>{article.views?.toLocaleString() ?? 0} views</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div className="flex justify-end">
+                            <Button variant="outline" size="sm" disabled>
+                              Manage collection
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
                 );
               })}
             </div>
@@ -268,6 +344,12 @@ export default function CollectionsPage() {
           </div>
         </div>
       </div>
+      <CreateCollectionDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        onSubmit={handleCreateCollectionSubmit}
+        isSubmitting={isCreating}
+      />
     </AuthGuard>
   );
 }

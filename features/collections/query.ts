@@ -1,6 +1,9 @@
 import {
+  useMutation,
   useQuery,
   useQueryClient,
+  type UseMutationOptions,
+  type UseMutationResult,
   type UseQueryOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
@@ -9,7 +12,7 @@ import { apiClient, ApiError } from "@/lib/api";
 import { queryKeys } from "@/lib/query-keys";
 import type { Collection, Article } from "@/lib/types";
 
-const COLLECTIONS_ENDPOINT = "/blogs/collections/";
+export const COLLECTIONS_ENDPOINT = "/blogs/collections/";
 
 export type CollectionListParams = {
   page?: number;
@@ -61,7 +64,14 @@ type CollectionListResponse = {
 
 export type ArticleSummary = Pick<
   Article,
-  "id" | "title" | "excerpt" | "status" | "readTimeMins" | "views" | "publishedAt" | "updatedAt"
+  | "id"
+  | "title"
+  | "excerpt"
+  | "status"
+  | "readTimeMins"
+  | "views"
+  | "publishedAt"
+  | "updatedAt"
 >;
 
 export type CollectionWithArticles = Collection & {
@@ -87,7 +97,15 @@ const normalizeArticle = (article: RawArticle): ArticleSummary => {
   };
 };
 
-const normalizeCollection = (collection: RawCollection): CollectionWithArticles => {
+export type CollectionPayload = {
+  name: string;
+  description?: string | null;
+  articleIds?: Array<string | number>;
+};
+
+const normalizeCollection = (
+  collection: RawCollection
+): CollectionWithArticles => {
   const id = String(collection.id);
   const name = collection.name ?? collection.title ?? "Unnamed Collection";
   const description = collection.description ?? undefined;
@@ -95,8 +113,8 @@ const normalizeCollection = (collection: RawCollection): CollectionWithArticles 
     typeof collection.article_count === "number"
       ? collection.article_count
       : typeof collection.articles_count === "number"
-        ? collection.articles_count
-        : collection.articles?.length ?? 0;
+      ? collection.articles_count
+      : collection.articles?.length ?? 0;
 
   return {
     id,
@@ -117,9 +135,8 @@ const normalizeListParams = (params?: CollectionListParams) => ({
   search: params?.search ?? undefined,
 });
 
-export const buildCollectionsListKey = (
-  params?: CollectionListParams
-) => [...queryKeys.collections.lists(), normalizeListParams(params)] as const;
+export const buildCollectionsListKey = (params?: CollectionListParams) =>
+  [...queryKeys.collections.lists(), normalizeListParams(params)] as const;
 
 async function fetchCollections(
   params: CollectionListParams = {}
@@ -148,9 +165,38 @@ async function fetchCollections(
   };
 }
 
+const extractRawCollection = (
+  payload: RawCollection | { data?: RawCollection }
+): RawCollection => {
+  if (payload && "data" in payload && payload.data) {
+    return payload.data;
+  }
+  return payload as RawCollection;
+};
+
+async function createCollection(
+  payload: CollectionPayload
+): Promise<CollectionWithArticles> {
+  const response = await apiClient.post<
+    RawCollection | { data: RawCollection }
+  >(COLLECTIONS_ENDPOINT, {
+    name: payload.name,
+    title: payload.name,
+    description: payload.description,
+    articles: Array.isArray(payload.articleIds)
+      ? payload.articleIds
+      : undefined,
+  });
+
+  return normalizeCollection(extractRawCollection(response.data));
+}
+
 export const useCollectionsQuery = <TData = CollectionListResult>(
   params?: CollectionListParams,
-  options?: Omit<UseQueryOptions<CollectionListResult, ApiError, TData>, "queryKey" | "queryFn">
+  options?: Omit<
+    UseQueryOptions<CollectionListResult, ApiError, TData>,
+    "queryKey" | "queryFn"
+  >
 ): UseQueryResult<TData, ApiError> =>
   useQuery<CollectionListResult, ApiError, TData>({
     queryKey: buildCollectionsListKey(params),
@@ -159,7 +205,52 @@ export const useCollectionsQuery = <TData = CollectionListResult>(
     ...options,
   });
 
-export const invalidateCollections = (queryClient: ReturnType<typeof useQueryClient>) => {
-  queryClient.invalidateQueries({ queryKey: queryKeys.collections.all, exact: false });
-  queryClient.invalidateQueries({ queryKey: queryKeys.collections.lists(), exact: false });
+export const invalidateCollections = (
+  queryClient: ReturnType<typeof useQueryClient>
+) => {
+  queryClient.invalidateQueries({
+    queryKey: queryKeys.collections.all,
+    exact: false,
+  });
+  queryClient.invalidateQueries({
+    queryKey: queryKeys.collections.lists(),
+    exact: false,
+  });
+};
+
+export const useCreateCollectionMutation = (
+  options?: UseMutationOptions<
+    CollectionWithArticles,
+    ApiError,
+    CollectionPayload
+  >
+): UseMutationResult<CollectionWithArticles, ApiError, CollectionPayload> => {
+  const queryClient = useQueryClient();
+
+  const invalidate = () => {
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.collections.all,
+      exact: false,
+    });
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.collections.lists(),
+      exact: false,
+    });
+  };
+
+  return useMutation<CollectionWithArticles, ApiError, CollectionPayload>({
+    mutationFn: createCollection,
+    onSuccess: (collection, variables, result, context) => {
+      invalidate();
+      queryClient.setQueryData(
+        queryKeys.collections.detail(collection.id),
+        collection
+      );
+      options?.onSuccess?.(collection, variables, result, context);
+    },
+    onError: (error, variables, result, context) => {
+      options?.onError?.(error, variables, result, context);
+    },
+    ...options,
+  });
 };
