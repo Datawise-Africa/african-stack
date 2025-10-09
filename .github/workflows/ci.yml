@@ -14,20 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: pnpm install
+        run: corepack pnpm install
       - name: Run ESLint
-        run: npm lint
+        run: corepack pnpm lint
 
   security_scan:
     name: Security Scan
     runs-on: ubuntu-latest
     steps:
+      - name: Export Session Secret
+        run: echo "SESSION_SECRET=$(openssl rand -base64 32)" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: pnpm install
+        run: corepack pnpm install
       - name: Run Build
-        run: pnpm build
+        run: corepack pnpm build
+    env:
+      CI: true
 
   # check_debug_code:
   #   name: Ensure No Debugging Code
