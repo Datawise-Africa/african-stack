@@ -22,12 +22,16 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     steps:
+      - name: Export Session Secret
+        run: echo "SESSION_SECRET=$(openssl rand -base64 32)" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Install dependencies
         run: corepack pnpm install
       - name: Run Build
         run: corepack pnpm build
+    env:
+      CI: true
 
   # check_debug_code:
   #   name: Ensure No Debugging Code
