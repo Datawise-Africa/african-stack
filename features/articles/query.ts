@@ -29,7 +29,7 @@ export type ArticleListParams = {
 };
 
 type RawCategory = {
-  id?: string | number;
+  id?: number;
   name?: string;
   slug?: string;
   description?: string | null;
@@ -103,7 +103,7 @@ export type ArticleUpdatePayload = Partial<ArticlePayload>;
 const fallbackCategory = (partial?: RawCategory | string | null): Category => {
   if (!partial) {
     return {
-      id: "",
+      id: 0,
       name: "Uncategorised",
       slug: "uncategorised",
       description: "",
@@ -115,7 +115,7 @@ const fallbackCategory = (partial?: RawCategory | string | null): Category => {
 
   if (typeof partial === "string") {
     return {
-      id: partial,
+      id: Number(partial),
       name: partial,
       slug: partial.toString().toLowerCase(),
       description: "",
@@ -126,7 +126,7 @@ const fallbackCategory = (partial?: RawCategory | string | null): Category => {
   }
 
   return {
-    id: String(partial.id ?? partial.slug ?? ""),
+    id: (partial.id ?? 0),
     name: partial.name ?? "Uncategorised",
     slug: partial.slug ?? String(partial.id ?? "uncategorised"),
     description: partial.description ?? "",

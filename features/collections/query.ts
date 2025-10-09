@@ -35,7 +35,7 @@ type RawArticle = {
 };
 
 type RawCollection = {
-  id: string | number;
+  id:  number;
   name?: string;
   title?: string;
   description?: string | null;
@@ -107,7 +107,7 @@ export type CollectionPayload = {
 const normalizeCollection = (
   collection: RawCollection
 ): CollectionWithArticles => {
-  const id = String(collection.id);
+  const id = (collection.id);
   const name = collection.name ?? collection.title ?? "Unnamed Collection";
   const description = collection.description ?? undefined;
   const articleCount =
@@ -244,7 +244,7 @@ export const useCreateCollectionMutation = (
     onSuccess: (collection, variables, result, context) => {
       invalidate();
       queryClient.setQueryData(
-        queryKeys.collections.detail(collection.id),
+        queryKeys.collections.detail(''+collection.id),
         collection
       );
       options?.onSuccess?.(collection, variables, result, context);
