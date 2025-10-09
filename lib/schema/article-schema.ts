@@ -26,7 +26,10 @@ export const articleSchema = z.object({
       }
       return undefined;
     }),
-  tagsInput: z.string().optional().default(""),
+  tags: z
+    .array(z.string().trim().min(1, "Tags cannot be empty string."))
+    .optional()
+    .default([]),
 });
 
 export const articleFormResolver = zodResolver(articleSchema);

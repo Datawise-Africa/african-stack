@@ -20,5 +20,5 @@ export const getDefaultArticleFormValues = (): ArticleFormValues => ({
   thumbnailUrl: "",
   categoryId: "",
   readTimeMins: undefined,
-  tagsInput: "",
+  tags: [],
 });

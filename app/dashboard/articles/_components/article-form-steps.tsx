@@ -26,6 +26,7 @@ import { TiptapEditor } from "@/components/tiptap-editor";
 import { createFormStep } from "@/hooks/use-multistep-form";
 import type { Category, Collection } from "@/lib/types";
 import { estimateReadTime } from "../_utils/form-utils";
+import { TagInput } from "@/components/ui/tag-input";
 import { useEffect } from "react";
 
 export const DEFAULT_CONTENT_HTML = "<p></p>";
@@ -33,7 +34,10 @@ export const DEFAULT_CONTENT_HTML = "<p></p>";
 export const articleFormSchema = z.object({
   title: z.string().min(4, "Add a descriptive title."),
   excerpt: z.string().min(20, "Write an excerpt with at least 20 characters."),
-  tagsInput: z.string().optional().default(""),
+  tags: z
+    .array(z.string().trim().min(1, "Tags cannot be empty."))
+    .optional()
+    .default([]),
   thumbnailUrl: z
     .string()
     .optional()
@@ -63,7 +67,7 @@ export type ArticleFormValues = z.infer<typeof articleFormSchema>;
 export const articleDefaultValues: ArticleFormValues = {
   title: "",
   excerpt: "",
-  tagsInput: "",
+  tags: [],
   thumbnailUrl: "",
   categoryId: "",
   collectionId: "",
@@ -116,13 +120,17 @@ function StoryBasicsStep({ form }: StepComponentProps) {
       />
       <FormField
         control={form.control}
-        name="tagsInput"
+        name="tags"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Tags</FormLabel>
-            <Input placeholder="AI, Innovation, Startups" {...field} />
+            <TagInput
+              value={field.value ?? []}
+              onChange={(next) => field.onChange(next)}
+              placeholder="Add tag and press Enter"
+            />
             <p className="text-xs text-muted-foreground">
-              Separate tags with commas to improve discovery.
+              Press Enter to add each tag. Tags help with discovery.
             </p>
             <FormMessage />
           </FormItem>
@@ -325,8 +333,8 @@ export function buildArticleSteps({ categories, collections }: BuildStepsArgs) {
       title: "Story basics",
       description: "Craft a headline, summary, and discovery tags.",
       Icon: Sparkles,
-      fields: ["title", "excerpt", "tagsInput"],
-      render: (form) => <StoryBasicsStep form={form} />,
+      fields: ["title", "excerpt", "tags"],
+      render: (form) => <StoryBasicsStep form={form} />, 
       schema: articleFormSchema,
     }),
     createFormStep({

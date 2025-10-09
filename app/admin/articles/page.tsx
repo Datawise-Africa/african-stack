@@ -49,6 +49,7 @@ import {
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
+import { RichTextRenderer } from "@/components/rich-text-renderer";
 
 // Mock data type
 type MockArticle = {
@@ -562,7 +563,7 @@ export default function ArticleModeration() {
             </CardHeader>
             <CardContent>
               <div className="prose max-w-none">
-                <MarkdownRenderer content={selectedArticle.content} />
+                <RichTextRenderer html={selectedArticle.content} />
               </div>
             </CardContent>
           </Card>

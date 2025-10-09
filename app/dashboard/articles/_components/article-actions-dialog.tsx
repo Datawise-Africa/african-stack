@@ -96,6 +96,19 @@ export function ArticleActionsDialog({
           <Badge variant="outline">{article.readTimeMins ?? 0} min</Badge>
         </div>
 
+        {!!article.tags?.length && (
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Tags</p>
+            <div className="flex flex-wrap gap-2">
+              {article.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="space-y-2">
           <p className="text-sm font-medium">Preview</p>
           <div className="rounded-md border bg-background p-3">

@@ -8,9 +8,6 @@ import {
   type ArticleFormValues,
 } from "../_types";
 
-const mapTagsToInput = (tags?: string[]): string =>
-  Array.isArray(tags) ? tags.join(", ") : "";
-
 export const estimateReadTime = (html: string | undefined): number => {
   if (!html) return 1;
   const text = html
@@ -38,7 +35,7 @@ export const mapArticleToFormValues = (
     thumbnailUrl: article.thumbnailUrl ?? "",
     categoryId: article.category?.id ?? "",
     readTimeMins: article.readTimeMins,
-    tagsInput: mapTagsToInput(article.tags),
+    tags: article.tags ?? [],
   };
 };
 
@@ -55,10 +52,6 @@ export const buildArticlePayload = (
     thumbnail: values.thumbnailUrl?.trim() || undefined,
     categoryId: values.categoryId || undefined,
     readTimeMins: readTime,
-    tags:
-      values.tagsInput
-        ?.split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag.length > 0) ?? [],
+    tags: (values.tags ?? []).map((tag) => tag.trim()).filter(Boolean),
   };
 };
