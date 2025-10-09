@@ -53,6 +53,22 @@ import { Badge } from "@/components/ui/badge";
 import type { Article } from "@/lib/types";
 import { ARTICLE_PAGE_SIZE_OPTIONS } from "../_types";
 
+const DEFAULT_STATUS_OPTIONS: Array<{ label: string; value: string }> = [
+  { label: "All statuses", value: "" },
+  { label: "Published", value: "published" },
+  { label: "Draft", value: "draft" },
+];
+
+const DEFAULT_ACTION_PERMISSIONS = {
+  preview: true,
+  edit: true,
+  changeStatus: true,
+  delete: true,
+  create: true,
+};
+
+type ArticleTableActionPermissions = Partial<typeof DEFAULT_ACTION_PERMISSIONS>;
+
 export type ArticleTableProps = {
   data: Article[];
   isLoading: boolean;
@@ -68,6 +84,8 @@ export type ArticleTableProps = {
   };
   search: string;
   statusFilter: string;
+  statusOptions?: Array<{ label: string; value: string }>;
+  actionPermissions?: ArticleTableActionPermissions;
   onSearch: (value: string) => void;
   onStatusChange: (status: string) => void;
   onRefresh: () => void;
@@ -89,6 +107,8 @@ export function ArticleTable({
   meta,
   search,
   statusFilter,
+  statusOptions = DEFAULT_STATUS_OPTIONS,
+  actionPermissions,
   onSearch,
   onStatusChange,
   onRefresh,
@@ -103,6 +123,23 @@ export function ArticleTable({
 }: ArticleTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pageInput, setPageInput] = useState("");
+  const statusSelectOptions =
+    statusOptions && statusOptions.length > 0
+      ? statusOptions
+      : DEFAULT_STATUS_OPTIONS;
+  const mergedActionPermissions = {
+    ...DEFAULT_ACTION_PERMISSIONS,
+    ...(actionPermissions ?? {}),
+  };
+  const {
+    preview: allowPreview,
+    edit: allowEdit,
+    changeStatus: allowChangeStatus,
+    delete: allowDelete,
+    create: allowCreate,
+  } = mergedActionPermissions;
+  const hasRowActions =
+    allowPreview || allowEdit || allowChangeStatus || allowDelete;
 
   const columns = useMemo<ColumnDef<Article>[]>(() => {
     return [
@@ -198,49 +235,73 @@ export function ArticleTable({
         header: () => <span className="sr-only">Actions</span>,
         enableSorting: false,
         enableHiding: false,
-        cell: ({ row }) => (
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onPreview(row.original)}
-              aria-label="Preview article"
-              disabled={isLoading}
-            >
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onEdit(row.original)}
-              aria-label="Edit article"
-              disabled={isLoading}
-            >
-              <Pen className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onChangeStatus(row.original)}
-              aria-label="Toggle status"
-              disabled={isLoading}
-            >
-              <RefreshCw className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onDelete(row.original)}
-              aria-label="Delete article"
-              disabled={isLoading}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        ),
+        cell: ({ row }) => {
+          if (!hasRowActions) {
+            return null;
+          }
+          return (
+            <div className="flex items-center gap-1">
+              {allowPreview && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onPreview(row.original)}
+                  aria-label="Preview article"
+                  disabled={isLoading}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+              )}
+              {allowEdit && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onEdit(row.original)}
+                  aria-label="Edit article"
+                  disabled={isLoading}
+                >
+                  <Pen className="h-4 w-4" />
+                </Button>
+              )}
+              {allowChangeStatus && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onChangeStatus(row.original)}
+                  aria-label="Toggle status"
+                  disabled={isLoading}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              )}
+              {allowDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onDelete(row.original)}
+                  aria-label="Delete article"
+                  disabled={isLoading}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          );
+        },
       },
     ];
-  }, [onChangeStatus, onDelete, onEdit, onPreview]);
+  }, [
+    allowChangeStatus,
+    allowDelete,
+    allowEdit,
+    allowPreview,
+    hasRowActions,
+    isLoading,
+    onChangeStatus,
+    onDelete,
+    onEdit,
+    onPreview,
+  ]);
 
   const table = useReactTable({
     data,
@@ -278,10 +339,12 @@ export function ArticleTable({
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
-          <Button onClick={onCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            New article
-          </Button>
+          {allowCreate && (
+            <Button onClick={onCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              New article
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -302,9 +365,14 @@ export function ArticleTable({
               value={statusFilter}
               onChange={(event) => onStatusChange(event.target.value)}
             >
-              <option value="">All statuses</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
+              {statusSelectOptions.map((option) => (
+                <option
+                  key={`${option.value || "all-statuses"}`}
+                  value={option.value}
+                >
+                  {option.label}
+                </option>
+              ))}
             </select>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
