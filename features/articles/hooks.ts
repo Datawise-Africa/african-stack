@@ -75,7 +75,6 @@ const mockApi = {
       title: article.title || 'Untitled',
       excerpt: article.excerpt || '',
       content: article.content || '',
-      contentJson: article.contentJson || {},
       author: article.author || {
         id: '1',
         first_name: 'John Doe',

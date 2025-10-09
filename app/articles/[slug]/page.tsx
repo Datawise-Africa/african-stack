@@ -7,7 +7,7 @@ import { ArticleCard } from "@/components/article-card";
 import { CommentList } from "@/components/comment-list";
 import { ReactionButton } from "@/components/reaction-button";
 import { BookmarkButton } from "@/components/bookmark-button";
-import { QuillViewer } from "@/components/quill-editor";
+import { RichTextRenderer } from "@/components/rich-text-renderer";
 import { useArticle } from "@/features/articles/hooks";
 import { useArticleComments } from "@/features/interactions/hooks";
 import { mockArticles } from "@/features/articles/mock-data";
@@ -134,98 +134,14 @@ export default function ArticlePage({ params }: PageProps) {
 
         {/* Article Content */}
         <div className="prose prose-lg max-w-none mb-12">
-          {/* Check if content is HTML (from Quill) */}
-          {article.content && article.content.includes("<") ? (
-            <QuillViewer content={article.content} />
-          ) : article.contentJson &&
-            typeof article.contentJson === "object" &&
-            "content" in article.contentJson &&
-            Array.isArray(article.contentJson.content) ? (
-            <div className="space-y-6">
-              {article.contentJson.content.map(
-                (node: Record<string, unknown>, index: number) => {
-                  if (node.type === "heading") {
-                    const level =
-                      (node.attrs as Record<string, unknown>)?.level || 2;
-                    return (
-                      <div
-                        key={index}
-                        className={`font-bold ${
-                          level === 1
-                            ? "text-3xl"
-                            : level === 2
-                            ? "text-2xl"
-                            : "text-xl"
-                        }`}
-                      >
-                        {String(
-                          (node.content as Record<string, unknown>[])?.[0]
-                            ?.text || ""
-                        )}
-                      </div>
-                    );
-                  }
-                  if (node.type === "paragraph") {
-                    return (
-                      <p key={index}>
-                        {String(
-                          (node.content as Record<string, unknown>[])?.[0]
-                            ?.text || ""
-                        )}
-                      </p>
-                    );
-                  }
-                  return null;
-                }
-              )}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <h2>Introduction</h2>
-              <p>
-                Africa is experiencing a digital transformation that&apos;s
-                reshaping industries and creating new opportunities for
-                innovation. In this article, we explore how AI is being
-                leveraged across the continent to solve unique challenges and
-                drive economic growth.
+          <RichTextRenderer
+            html={article.content}
+            emptyFallback={
+              <p className="text-muted-foreground">
+                This article does not have any content to display yet.
               </p>
-
-              <h2>The Current Landscape</h2>
-              <p>
-                From fintech solutions in Nigeria to agricultural AI in Kenya,
-                African developers are creating solutions that are both globally
-                competitive and locally relevant. The key is understanding the
-                unique challenges and opportunities that exist in African
-                markets.
-              </p>
-
-              <h2>Key Success Factors</h2>
-              <p>
-                <strong>1. Local Context Understanding:</strong> Understanding
-                the specific needs and challenges of African markets is crucial
-                for building successful AI solutions.
-              </p>
-              <p>
-                <strong>2. Scalable Technology Architecture:</strong> Building
-                solutions that can scale across different African countries with
-                varying infrastructure levels.
-              </p>
-              <p>
-                <strong>3. Community Engagement:</strong> Involving local
-                communities in the development process ensures solutions are
-                culturally appropriate and widely adopted.
-              </p>
-              <p>
-                <strong>4. Regulatory Compliance:</strong> Navigating the
-                complex regulatory landscape across different African countries.
-              </p>
-              <p>
-                <strong>5. Sustainable Business Models:</strong> Creating
-                business models that are financially viable while providing
-                value to local communities.
-              </p>
-            </div>
-          )}
+            }
+          />
         </div>
 
         {/* Tags */}

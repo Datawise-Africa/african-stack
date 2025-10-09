@@ -89,8 +89,7 @@ export interface Article {
   slug: string;
   title: string;
   excerpt: string;
-  content?: string; // HTML content from Quill editor
-  contentJson: unknown; // tiptap JSON
+  content?: string; // HTML content rendered from Tiptap editor
   author: Pick<User, "id" | "first_name" | "last_name" | "handle">;
   category: Category;
   tags: string[];

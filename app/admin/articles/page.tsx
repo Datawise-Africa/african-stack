@@ -49,7 +49,6 @@ import {
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
 
 // Mock data type
 type MockArticle = {

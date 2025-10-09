@@ -99,25 +99,7 @@ export const mockArticles: Article[] = [
     slug: 'building-ai-solutions-africa',
     title: 'Building AI Solutions in Africa: Challenges and Opportunities',
     excerpt: 'Learn how African developers are creating innovative AI solutions that address local challenges and drive economic growth across the continent.',
-    contentJson: {
-      type: 'doc',
-      content: [
-        {
-          type: 'heading',
-          attrs: { level: 2 },
-          content: [{ type: 'text', text: 'Introduction' }]
-        },
-        {
-          type: 'paragraph',
-          content: [
-            {
-              type: 'text',
-              text: 'Africa is experiencing a digital transformation that\'s reshaping industries and creating new opportunities for innovation. In this article, we explore how AI is being leveraged across the continent to solve unique challenges and drive economic growth.'
-            }
-          ]
-        }
-      ]
-    },
+    content: '<h2>Introduction</h2><p>Africa is experiencing a digital transformation that is reshaping industries and unlocking bold innovation. This roundup highlights the people and platforms proving that AI designed for local realities can scale globally.</p>',
     author: {
       id: 'author-1',
       first_name: 'Dr. Sarah',
@@ -143,7 +125,6 @@ export const mockArticles: Article[] = [
     slug: 'machine-learning-healthcare-africa',
     title: 'Machine Learning in Healthcare: African Perspectives',
     excerpt: 'Exploring how ML is transforming healthcare delivery across Africa, from diagnostic tools to treatment optimization.',
-    contentJson: {},
     author: {
       id: 'author-2',
       first_name: 'Dr. Michael',
@@ -154,6 +135,7 @@ export const mockArticles: Article[] = [
     tags: ['ML', 'Healthcare', 'Africa'],
     thumbnailUrl: 'https://picsum.photos/800/400?random=2',
     readTimeMins: 6,
+    content: '<p>Clinicians are pairing machine learning with mobile diagnostics to accelerate screening, triage, and care coordination across remote communities while respecting local practice.</p>',
     publishedAt: '2024-01-10T14:30:00Z',
     updatedAt: '2024-01-10T14:30:00Z',
     status: 'published',
@@ -168,7 +150,6 @@ export const mockArticles: Article[] = [
     slug: 'data-science-startups-africa',
     title: 'Data Science Startups: The African Advantage',
     excerpt: 'Why African data science startups are uniquely positioned for global success and what makes them different.',
-    contentJson: {},
     author: {
       id: 'author-3',
       first_name: 'Aisha ',
@@ -179,6 +160,7 @@ export const mockArticles: Article[] = [
     tags: ['Data Science', 'Startups', 'Africa'],
     thumbnailUrl: 'https://picsum.photos/800/400?random=3',
     readTimeMins: 7,
+    content: '<p>Data science founders across Africa are embedding analytics into agriculture, logistics, and fintech, translating domain insight into compelling tools for fast-growing markets.</p>',
     publishedAt: '2024-01-08T09:15:00Z',
     updatedAt: '2024-01-08T09:15:00Z',
     status: 'published',
@@ -193,7 +175,6 @@ export const mockArticles: Article[] = [
     slug: 'blockchain-supply-chain-africa',
     title: 'Blockchain for Supply Chain Transparency in Africa',
     excerpt: 'How blockchain technology is revolutionizing supply chain management and reducing fraud in African markets.',
-    contentJson: {},
     author: {
       id: 'author-4',
       first_name: 'Chinedu',
@@ -204,6 +185,7 @@ export const mockArticles: Article[] = [
     tags: ['Blockchain', 'Supply Chain', 'Transparency'],
     thumbnailUrl: 'https://picsum.photos/800/400?random=4',
     readTimeMins: 8,
+    content: '<p>Distributed ledgers are helping manufacturers and cooperatives verify inventory, pricing, and partner trust—strengthening supply chains from farm to port.</p>',
     publishedAt: '2024-01-07T13:20:00Z',
     updatedAt: '2024-01-07T13:20:00Z',
     status: 'published',
@@ -218,7 +200,6 @@ export const mockArticles: Article[] = [
     slug: 'draft-article-nlp',
     title: 'Natural Language Processing for African Languages',
     excerpt: 'Exploring the challenges and opportunities in developing NLP solutions for the diverse languages spoken across Africa.',
-    contentJson: {},
     author: {
       id: 'author-1',
       first_name: 'Dr. Sarah',
@@ -229,6 +210,7 @@ export const mockArticles: Article[] = [
     tags: ['NLP', 'Languages', 'AI'],
     thumbnailUrl: 'https://picsum.photos/800/400?random=5',
     readTimeMins: 6,
+    content: '<p>This draft explores inclusive approaches to language models, from community-led corpora to low-resource benchmarks that celebrate linguistic diversity.</p>',
     publishedAt: undefined,
     updatedAt: '2024-01-16T09:15:00Z',
     status: 'draft',
