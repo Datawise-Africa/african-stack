@@ -7,19 +7,20 @@ import { toast } from "react-hot-toast";
 import {
   useArticlesQuery,
   useUpdateArticleMutation,
+  useDeleteArticleMutation,
   type ArticleListParams,
 } from "@/features/articles/query";
 import type { Article } from "@/lib/types";
 
 import { ArticleStatsCards } from "./_components/article-stats-cards";
 import { ArticleTable } from "./_components/article-table";
-import { ArticleActionsDialog } from "./_components/article-actions-dialog";
+import { ArticlePreviewDialog } from "./_components/article-preview-dialog";
 import { ARTICLE_PAGE_SIZE_OPTIONS } from "./_types";
 
 export default function DashboardArticlesPage() {
   const router = useRouter();
-  const [actionsOpen, setActionsOpen] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewArticle, setPreviewArticle] = useState<Article | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(ARTICLE_PAGE_SIZE_OPTIONS[0]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,11 +47,16 @@ export default function DashboardArticlesPage() {
   const updateArticleStatus = useUpdateArticleMutation({
     onSuccess: (article) => {
       toast.success(`Article "${article.title}" updated.`);
-      setSelectedArticle((current) =>
-        current && current.id === article.id ? article : current
-      );
     },
     onError: (err) => toast.error(err.message || "Failed to update article."),
+  });
+
+  const deleteArticle = useDeleteArticleMutation({
+    onSuccess: () => {
+      toast.success("Article deleted.");
+      setPreviewOpen(false);
+    },
+    onError: (err) => toast.error(err.message || "Failed to delete article."),
   });
 
   const articles = articlesResult?.data ?? [];
@@ -63,17 +69,31 @@ export default function DashboardArticlesPage() {
       articles.length
     : 0;
 
-  const handleOpenActions = (article: Article) => {
-    setSelectedArticle(article);
-    setActionsOpen(true);
+  const handlePreview = (article: Article) => {
+    setPreviewArticle(article);
+    setPreviewOpen(true);
   };
 
-  const handleStatusChange = (status: Article["status"]) => {
-    if (!selectedArticle) return;
+  const handleEdit = (article: Article) => {
+    router.push(`/dashboard/articles/${article.id}/edit`);
+  };
+
+  const handleToggleStatus = (article: Article) => {
+    const nextStatus = article.status === "published" ? "draft" : "published";
     updateArticleStatus.mutate({
-      id: selectedArticle.id,
-      data: { status },
+      id: article.id,
+      data: { status: nextStatus },
     });
+  };
+
+  const handleDelete = (article: Article) => {
+    const confirmed = window.confirm(
+      `Delete article "${article.title}"? This cannot be undone.`
+    );
+    if (!confirmed) return;
+    deleteArticle.mutate(article.id);
+    setPreviewOpen(false);
+    setPreviewArticle(null);
   };
 
   const handlePageChange = (nextPage: number) => {
@@ -89,8 +109,6 @@ export default function DashboardArticlesPage() {
     setPageSize(size);
     setPage(1);
   };
-
-  const isMutatingStatus = updateArticleStatus.isPending;
 
   return (
     <div className="space-y-6 p-6">
@@ -127,18 +145,19 @@ export default function DashboardArticlesPage() {
         }}
         onRefresh={refetch}
         onCreate={() => router.push("/dashboard/articles/new")}
-        onOpenArticle={handleOpenActions}
+        onPreview={handlePreview}
+        onEdit={handleEdit}
+        onChangeStatus={handleToggleStatus}
+        onDelete={handleDelete}
         onPageChange={handlePageChange}
         pageSize={pageSize}
         onPageSizeChange={handlePageSizeChange}
       />
 
-      <ArticleActionsDialog
-        open={actionsOpen}
-        article={selectedArticle}
-        isUpdating={isMutatingStatus}
-        onOpenChange={(open) => setActionsOpen(open)}
-        onChangeStatus={handleStatusChange}
+      <ArticlePreviewDialog
+        open={previewOpen}
+        article={previewArticle}
+        onOpenChange={setPreviewOpen}
       />
     </div>
   );

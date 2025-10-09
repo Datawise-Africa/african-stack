@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { BookOpenCheck, Eye, Palette, Sparkles } from "lucide-react";
@@ -27,7 +28,6 @@ import { createFormStep } from "@/hooks/use-multistep-form";
 import type { Category, Collection } from "@/lib/types";
 import { estimateReadTime } from "../_utils/form-utils";
 import { TagInput } from "@/components/ui/tag-input";
-import { useEffect } from "react";
 import { articleFormSchema } from "../_types";
 
 export const DEFAULT_CONTENT_HTML = "<p></p>";

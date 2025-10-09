@@ -16,8 +16,11 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Columns3,
+  Eye,
+  Pen,
   Plus,
   RefreshCw,
+  Trash2,
 } from "lucide-react";
 
 import {
@@ -69,7 +72,10 @@ export type ArticleTableProps = {
   onStatusChange: (status: string) => void;
   onRefresh: () => void;
   onCreate: () => void;
-  onOpenArticle: (article: Article) => void;
+  onPreview: (article: Article) => void;
+  onEdit: (article: Article) => void;
+  onChangeStatus: (article: Article) => void;
+  onDelete: (article: Article) => void;
   onPageChange: (page: number) => void;
   pageSize: number;
   onPageSizeChange: (size: number) => void;
@@ -87,7 +93,10 @@ export function ArticleTable({
   onStatusChange,
   onRefresh,
   onCreate,
-  onOpenArticle,
+  onPreview,
+  onEdit,
+  onChangeStatus,
+  onDelete,
   onPageChange,
   pageSize,
   onPageSizeChange,
@@ -190,17 +199,48 @@ export function ArticleTable({
         enableSorting: false,
         enableHiding: false,
         cell: ({ row }) => (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onOpenArticle(row.original)}
-          >
-            Manage
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onPreview(row.original)}
+              aria-label="Preview article"
+              disabled={isLoading}
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(row.original)}
+              aria-label="Edit article"
+              disabled={isLoading}
+            >
+              <Pen className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onChangeStatus(row.original)}
+              aria-label="Toggle status"
+              disabled={isLoading}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onDelete(row.original)}
+              aria-label="Delete article"
+              disabled={isLoading}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         ),
       },
     ];
-  }, [onOpenArticle]);
+  }, [onChangeStatus, onDelete, onEdit, onPreview]);
 
   const table = useReactTable({
     data,
