@@ -22,8 +22,8 @@ export const getDefaultArticleFormValues = (): ArticleFormValues => ({
   contentHtml: "<p></p>",
   status: "draft",
   thumbnailUrl: "",
-  category: "",
-  collection: "",
+  category: undefined,
+  collection: undefined,
   readTimeMins: undefined,
   tags: [],
 });

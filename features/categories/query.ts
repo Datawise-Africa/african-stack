@@ -21,7 +21,7 @@ export type CategoryListParams = {
 };
 
 type RawCategory = {
-  id: number | string;
+  id: number ;
   title: string;
   description?: string | null;
   slug?: string | null;
@@ -68,13 +68,13 @@ const slugify = (value: string) =>
     .replace(/-+/g, "-");
 
 const normalizeCategory = (category: RawCategory): Category => {
-  const id = String(category.id);
+  const id = (category.id);
   const title = category.title ?? "";
   const description = category.description ?? undefined;
   const slug =
     (typeof category.slug === "string" && category.slug.length > 0
       ? category.slug
-      : slugify(title)) || id;
+      : slugify(title)) || ''+id;
 
   const count =
     typeof category.article_count === "number"
@@ -216,7 +216,7 @@ export const useCreateCategoryMutation = (
     onSuccess: (category, variables, result, context) => {
       invalidateLists();
       queryClient.setQueryData(
-        queryKeys.categories.detail(category.id),
+        queryKeys.categories.detail(''+category.id),
         category
       );
       options?.onSuccess?.(category, variables, result, context);
@@ -258,7 +258,7 @@ export const useUpdateCategoryMutation = (
     onSuccess: (category, variables, result, context) => {
       invalidateLists();
       queryClient.setQueryData(
-        queryKeys.categories.detail(category.id),
+        queryKeys.categories.detail(''+category.id),
         category
       );
       options?.onSuccess?.(category, variables, result, context);

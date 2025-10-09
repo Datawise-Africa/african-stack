@@ -55,7 +55,7 @@ export interface ArticleApproval {
 
 // Category types
 export interface Category {
-  id: ID;
+  id: number;
   slug: string;
   name: string;
   description?: string;
@@ -74,7 +74,7 @@ export interface Tag {
 }
 
 export interface Collection {
-  id: ID;
+  id: number;
   name: string;
   description?: string;
   coverImageUrl?: string;
@@ -103,7 +103,7 @@ export interface Article {
   reactionsCount: number;
   commentsCount: number;
   views?: number;
-  collectionId?: ID;
+  collectionId?: number;
   collection?: Pick<Collection, "id" | "name">;
 }
 
