@@ -219,7 +219,7 @@ export default function DashboardBookmarksPage() {
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold mb-2">
                           <Link
-                            href={`/articles/${bookmark.article.slug}`}
+                            href={`/articles/${bookmark.article.id}`}
                             className="hover:text-primary transition-colors"
                           >
                             {bookmark.article.title}
@@ -238,7 +238,7 @@ export default function DashboardBookmarksPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
-                            <Link href={`/articles/${bookmark.article.slug}`}>
+                            <Link href={`/articles/${bookmark.article.id}`}>
                               <ExternalLink className="w-4 h-4 mr-2" />
                               Read Article
                             </Link>
@@ -269,7 +269,7 @@ export default function DashboardBookmarksPage() {
                       <span className="text-muted-foreground">•</span>
                       <span className="text-sm text-muted-foreground">
                         {new Date(
-                          bookmark.article.publishedAt!
+                          bookmark.article.published_at!
                         ).toLocaleDateString()}
                       </span>
                     </div>

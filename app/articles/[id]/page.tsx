@@ -4,38 +4,50 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share2, Clock, Calendar } from "lucide-react";
 import { ArticleCard } from "@/components/article-card";
+import { ArticleListSkeleton } from "@/components/article-list-skeleton";
 import { CommentList } from "@/components/comment-list";
 import { ReactionButton } from "@/components/reaction-button";
 import { BookmarkButton } from "@/components/bookmark-button";
-import { QuillViewer } from "@/components/quill-editor";
+import { RichTextRenderer } from "@/components/rich-text-renderer";
 import { useArticle } from "@/features/articles/hooks";
 import { useArticleComments } from "@/features/interactions/hooks";
-import { mockArticles } from "@/features/articles/mock-data";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-// Get related articles (excluding current article)
-const getRelatedArticles = (currentSlug: string) => {
-  return mockArticles
-    .filter(
-      (article) =>
-        article.slug !== currentSlug && article.status === "published"
-    )
-    .slice(0, 2);
-};
+import { usePublishedArticlesQuery } from "@/features/articles/query";
 
 type PageProps = {
   params: Promise<{
-    slug: string;
+    id: string;
   }>;
 };
 
 export default function ArticlePage({ params }: PageProps) {
   const resolvedParams = React.use(params);
-  const { data: article, isLoading, error } = useArticle(resolvedParams.slug);
+  const articleId = resolvedParams.id;
+  const {
+    data: article,
+    isPending,
+    isError,
+    error,
+  } = useArticle(articleId);
   useArticleComments(article?.id || "");
 
-  if (isLoading) {
+  const categorySlug = article?.category?.slug;
+  const {
+    data: relatedResult,
+    isPending: isRelatedPending,
+  } = usePublishedArticlesQuery(
+    {
+      category: categorySlug,
+      limit: 4,
+      page: 1,
+    },
+    {
+      enabled: !!categorySlug,
+    }
+  );
+
+  if (isPending) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -54,11 +66,18 @@ export default function ArticlePage({ params }: PageProps) {
     );
   }
 
-  if (error || !article) {
+  if (isError || error || !article) {
     notFound();
+    return null;
   }
 
-  const relatedArticles = getRelatedArticles(article.slug);
+  const relatedArticles =
+    relatedResult?.data
+      ?.filter(
+        (related) =>
+          related.id !== article.id && related.status === "published"
+      )
+      .slice(0, 2) ?? [];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -92,14 +111,14 @@ export default function ArticlePage({ params }: PageProps) {
             <div>
               <div className="font-semibold">{article.author.first_name}</div>
               <div className="text-sm text-muted-foreground">
-                @{article.author.handle}
+                {article.author.handle}
               </div>
             </div>
             <div className="flex items-center space-x-4 text-sm text-muted-foreground ml-auto">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1" />
-                {article.publishedAt
-                  ? new Date(article.publishedAt).toLocaleDateString()
+                {article.published_at
+                  ? new Date(article.published_at).toLocaleDateString()
                   : "Draft"}
               </div>
               <div className="flex items-center">
@@ -134,98 +153,14 @@ export default function ArticlePage({ params }: PageProps) {
 
         {/* Article Content */}
         <div className="prose prose-lg max-w-none mb-12">
-          {/* Check if content is HTML (from Quill) */}
-          {article.content && article.content.includes("<") ? (
-            <QuillViewer content={article.content} />
-          ) : article.contentJson &&
-            typeof article.contentJson === "object" &&
-            "content" in article.contentJson &&
-            Array.isArray(article.contentJson.content) ? (
-            <div className="space-y-6">
-              {article.contentJson.content.map(
-                (node: Record<string, unknown>, index: number) => {
-                  if (node.type === "heading") {
-                    const level =
-                      (node.attrs as Record<string, unknown>)?.level || 2;
-                    return (
-                      <div
-                        key={index}
-                        className={`font-bold ${
-                          level === 1
-                            ? "text-3xl"
-                            : level === 2
-                            ? "text-2xl"
-                            : "text-xl"
-                        }`}
-                      >
-                        {String(
-                          (node.content as Record<string, unknown>[])?.[0]
-                            ?.text || ""
-                        )}
-                      </div>
-                    );
-                  }
-                  if (node.type === "paragraph") {
-                    return (
-                      <p key={index}>
-                        {String(
-                          (node.content as Record<string, unknown>[])?.[0]
-                            ?.text || ""
-                        )}
-                      </p>
-                    );
-                  }
-                  return null;
-                }
-              )}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <h2>Introduction</h2>
-              <p>
-                Africa is experiencing a digital transformation that&apos;s
-                reshaping industries and creating new opportunities for
-                innovation. In this article, we explore how AI is being
-                leveraged across the continent to solve unique challenges and
-                drive economic growth.
+          <RichTextRenderer
+            html={article.content}
+            emptyFallback={
+              <p className="text-muted-foreground">
+                This article does not have any content to display yet.
               </p>
-
-              <h2>The Current Landscape</h2>
-              <p>
-                From fintech solutions in Nigeria to agricultural AI in Kenya,
-                African developers are creating solutions that are both globally
-                competitive and locally relevant. The key is understanding the
-                unique challenges and opportunities that exist in African
-                markets.
-              </p>
-
-              <h2>Key Success Factors</h2>
-              <p>
-                <strong>1. Local Context Understanding:</strong> Understanding
-                the specific needs and challenges of African markets is crucial
-                for building successful AI solutions.
-              </p>
-              <p>
-                <strong>2. Scalable Technology Architecture:</strong> Building
-                solutions that can scale across different African countries with
-                varying infrastructure levels.
-              </p>
-              <p>
-                <strong>3. Community Engagement:</strong> Involving local
-                communities in the development process ensures solutions are
-                culturally appropriate and widely adopted.
-              </p>
-              <p>
-                <strong>4. Regulatory Compliance:</strong> Navigating the
-                complex regulatory landscape across different African countries.
-              </p>
-              <p>
-                <strong>5. Sustainable Business Models:</strong> Creating
-                business models that are financially viable while providing
-                value to local communities.
-              </p>
-            </div>
-          )}
+            }
+          />
         </div>
 
         {/* Tags */}
@@ -251,11 +186,19 @@ export default function ArticlePage({ params }: PageProps) {
         {/* Related Articles */}
         <div>
           <h3 className="text-2xl font-bold mb-6">Related Articles</h3>
-          <div className="grid gap-6 md:grid-cols-2">
-            {relatedArticles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
+          {isRelatedPending ? (
+            <ArticleListSkeleton />
+          ) : relatedArticles.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2">
+              {relatedArticles.map((related) => (
+                <ArticleCard key={related.id} article={related} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">
+              No related articles available right now.
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -49,7 +49,7 @@ export default function DashboardCalendarPage() {
   const getArticlesForDate = (day: number) => {
     const date = new Date(year, month, day);
     return publishedArticles.filter(article => {
-      const articleDate = new Date(article.publishedAt!);
+      const articleDate = new Date(article.published_at!);
       return articleDate.toDateString() === date.toDateString();
     });
   };
@@ -215,7 +215,7 @@ export default function DashboardCalendarPage() {
                 <CardContent>
                   <div className="space-y-4">
                     {publishedArticles
-                      .sort((a, b) => new Date(b.publishedAt!).getTime() - new Date(a.publishedAt!).getTime())
+                      .sort((a, b) => new Date(b.published_at!).getTime() - new Date(a.published_at!).getTime())
                       .slice(0, 5)
                       .map(article => (
                         <div key={article.id} className="flex items-center space-x-4 p-4 border rounded-lg">
@@ -225,14 +225,14 @@ export default function DashboardCalendarPage() {
                           <div className="flex-1">
                             <h3 className="font-semibold mb-1">
                               <Link 
-                                href={`/articles/${article.slug}`}
+                                href={`/articles/${article.id}`}
                                 className="hover:text-primary transition-colors"
                               >
                                 {article.title}
                               </Link>
                             </h3>
                             <p className="text-sm text-muted-foreground">
-                              Published on {new Date(article.publishedAt!).toLocaleDateString()}
+                              Published on {new Date(article.published_at!).toLocaleDateString()}
                             </p>
                           </div>
                           <div className="flex items-center space-x-4 text-sm text-muted-foreground">

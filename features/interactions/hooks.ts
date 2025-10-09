@@ -95,8 +95,10 @@ const mockApi = {
     return updatedComment;
   },
 
-  deleteComment: async (commentId: string): Promise<void> => {
+  deleteComment: async (_commentId: string): Promise<void> => {
     await new Promise(resolve => setTimeout(resolve, 300));
+    console.log(_commentId);
+    
     // Mock deletion
   },
 

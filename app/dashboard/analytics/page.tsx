@@ -237,7 +237,7 @@ export default function DashboardAnalyticsPage() {
                         <div className="flex-1 min-w-0">
                           <h3 className="font-semibold truncate">
                             <Link 
-                              href={`/articles/${article.slug}`}
+                              href={`/articles/${article.id}`}
                               className="hover:text-primary transition-colors"
                             >
                               {article.title}
