@@ -143,7 +143,7 @@ export default function ContentModeration() {
 
   const articles = articlesResult?.data ?? [];
   const meta = articlesResult?.meta;
-  const statsArticles = statsResult?.data ?? [];
+  const statsArticles = useMemo(() => statsResult?.data ?? [], [statsResult?.data]);
   const statsMeta = statsResult?.meta;
 
   const computedStats = useMemo(() => {

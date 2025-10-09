@@ -122,11 +122,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   }, []);
 
   const register = useCallback(
-    async ({
-      agreeToTerms: _,
-      confirmPassword: __,
-      ...rest
-    }: RegisterFormValues) => {
+    async (rest: RegisterFormValues) => {
       setIsProcessing(true);
 
       try {

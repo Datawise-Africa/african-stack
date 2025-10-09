@@ -68,10 +68,10 @@ const mockApi = {
     };
   },
 
-  updateUserStatus: async (userId: string, status: string): Promise<User> => {
+  updateUserStatus: async (userId: string, _status: string): Promise<User> => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const user = mockUsers.find((u) => u.id === userId);
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error("User not found"+_status);
 
     return user;
   },
@@ -176,7 +176,7 @@ const mockApi = {
   ): Promise<Article> => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const article = mockArticles.find((a) => a.id === articleId);
-    if (!article) throw new Error("Article not found");
+    if (!article) throw new Error("Article not found"+_reason);
 
     article.approvalStatus = "rejected";
     article.status = "rejected";

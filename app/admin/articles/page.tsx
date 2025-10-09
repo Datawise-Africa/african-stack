@@ -82,7 +82,7 @@ export default function AdminArticlesPage() {
     onError: (err) => toast.error(err.message || "Failed to update article."),
   });
 
-  const articles = articlesResult?.data ?? [];
+  const articles = useMemo(() => articlesResult?.data ?? [], [articlesResult?.data]);
   const meta = articlesResult?.meta;
 
   const publishedCount = useMemo(

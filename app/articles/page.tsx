@@ -21,10 +21,9 @@ function ArticlesContent() {
     data: articlesResult,
     isPending,
     isError,
-    error,
     isFetching,
   } = useArticles(filters);
-  const articles = articlesResult?.data ?? [];
+  const articles = useMemo(() => articlesResult?.data ?? [], [articlesResult?.data]);
   const meta = articlesResult?.meta;
   const [displayedArticles, setDisplayedArticles] = useState<Article[]>([]);
 
