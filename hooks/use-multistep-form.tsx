@@ -38,7 +38,7 @@ export function useMultistepForm<TSchema extends z.ZodType<any, any>>(
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<zod.infer<typeof config.schema>>({
-    resolver: zodResolver(config.schema),
+    resolver: zodResolver(config.schema) as any, // Use `as any` to avoid type issues with resolver
     defaultValues: config.defaultValues as any, // Use `as any` to avoid type issues with default values
     mode: "onChange",
   });
@@ -49,7 +49,7 @@ export function useMultistepForm<TSchema extends z.ZodType<any, any>>(
 
   const validateCurrentStep = useCallback(async () => {
     const fieldsToValidate = currentStep.fields;
-    const isValid = await form.trigger(fieldsToValidate as Path<TSchema>[]);
+    const isValid = await form.trigger(fieldsToValidate as Path<z.infer<typeof config.schema>>[]);
     return isValid;
   }, [form, currentStep]);
 

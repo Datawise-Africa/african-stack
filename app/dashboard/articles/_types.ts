@@ -1,6 +1,10 @@
 "use client";
 
-import { articleFormResolver, type ArticleSchemaValues,articleSchema } from "@/lib/schema/article-schema";
+import {
+  articleFormResolver,
+  type ArticleSchemaValues,
+  articleSchema,
+} from "@/lib/schema/article-schema";
 
 export const ARTICLE_STATUS_OPTIONS = [
   { label: "Draft", value: "draft" },
@@ -18,7 +22,8 @@ export const getDefaultArticleFormValues = (): ArticleFormValues => ({
   contentHtml: "<p></p>",
   status: "draft",
   thumbnailUrl: "",
-  categoryId: "",
+  category: "",
+  collection: "",
   readTimeMins: undefined,
   tags: [],
 });

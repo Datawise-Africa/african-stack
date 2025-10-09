@@ -30,10 +30,11 @@ export const mapArticleToFormValues = (
     excerpt: article.excerpt ?? "",
     contentHtml: article.content ?? "<p></p>",
     status:
-      ARTICLE_STATUS_OPTIONS.find((opt) => opt.value === article.status)?.value ??
-      "draft",
+      ARTICLE_STATUS_OPTIONS.find((opt) => opt.value === article.status)
+        ?.value ?? "draft",
     thumbnailUrl: article.thumbnailUrl ?? "",
-    categoryId: article.category?.id ?? "",
+    category: article.category?.id ?? "",
+    collection: article.collection?.id ?? "",
     readTimeMins: article.readTimeMins,
     tags: article.tags ?? [],
   };
@@ -50,7 +51,7 @@ export const buildArticlePayload = (
     content: values.contentHtml,
     status: values.status,
     thumbnail: values.thumbnailUrl?.trim() || undefined,
-    categoryId: values.categoryId || undefined,
+    categoryId: values.category || undefined,
     readTimeMins: readTime,
     tags: (values.tags ?? []).map((tag) => tag.trim()).filter(Boolean),
   };

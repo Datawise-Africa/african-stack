@@ -2,19 +2,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 export const articleSchema = z.object({
-  title: z.string().min(4, "Title must be at least 4 characters."),
-  excerpt: z.string().min(20, "Excerpt should contain at least 20 characters."),
-  contentHtml: z.string().min(1, "Content cannot be empty."),
-  status: z.enum(["draft", "published"]),
+  title: z.string().min(4, "Add a descriptive title."),
+  excerpt: z.string().min(20, "Write an excerpt with at least 20 characters."),
+  tags: z
+    .array(z.string().trim().min(1, "Tags cannot be empty."))
+    .optional()
+    .default([]),
   thumbnailUrl: z
     .string()
     .optional()
     .transform((value) => value?.trim() ?? "")
-    .refine(
-      (value) => !value || /^https?:\/\//.test(value),
-      "Please enter a valid URL."
-    ),
-  categoryId: z.string().optional(),
+    .refine((value) => !value || /^https?:\/\//.test(value), {
+      message: "Use a valid http or https URL.",
+    }),
+  category: z.coerce.string().min(1, "Select a category."),
+  collection: z.coerce.string().optional().default(""),
+  status: z.enum(["draft", "published"]),
   readTimeMins: z
     .union([z.number(), z.string()])
     .optional()
@@ -26,10 +29,7 @@ export const articleSchema = z.object({
       }
       return undefined;
     }),
-  tags: z
-    .array(z.string().trim().min(1, "Tags cannot be empty string."))
-    .optional()
-    .default([]),
+  contentHtml: z.string().min(1, "Write your article content."),
 });
 
 export const articleFormResolver = zodResolver(articleSchema);

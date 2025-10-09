@@ -28,39 +28,9 @@ import type { Category, Collection } from "@/lib/types";
 import { estimateReadTime } from "../_utils/form-utils";
 import { TagInput } from "@/components/ui/tag-input";
 import { useEffect } from "react";
+import { articleFormSchema } from "../_types";
 
 export const DEFAULT_CONTENT_HTML = "<p></p>";
-
-export const articleFormSchema = z.object({
-  title: z.string().min(4, "Add a descriptive title."),
-  excerpt: z.string().min(20, "Write an excerpt with at least 20 characters."),
-  tags: z
-    .array(z.string().trim().min(1, "Tags cannot be empty."))
-    .optional()
-    .default([]),
-  thumbnailUrl: z
-    .string()
-    .optional()
-    .transform((value) => value?.trim() ?? "")
-    .refine((value) => !value || /^https?:\/\//.test(value), {
-      message: "Use a valid http or https URL.",
-    }),
-  categoryId: z.string().min(1, "Select a category."),
-  collectionId: z.string().optional().default(""),
-  status: z.enum(["draft", "published"]),
-  readTimeMins: z
-    .union([z.number(), z.string()])
-    .optional()
-    .transform((value) => {
-      if (typeof value === "number") return value;
-      if (typeof value === "string" && value.trim() !== "") {
-        const parsed = Number(value);
-        return Number.isNaN(parsed) ? undefined : parsed;
-      }
-      return undefined;
-    }),
-  contentHtml: z.string().min(1, "Write your article content."),
-});
 
 export type ArticleFormValues = z.infer<typeof articleFormSchema>;
 
@@ -69,8 +39,8 @@ export const articleDefaultValues: ArticleFormValues = {
   excerpt: "",
   tags: [],
   thumbnailUrl: "",
-  categoryId: "",
-  collectionId: "",
+  category: '',
+  collection: '',
   status: "draft",
   readTimeMins: undefined,
   contentHtml: DEFAULT_CONTENT_HTML,
@@ -172,7 +142,7 @@ function MetadataStep({ form, categories, collections }: MetadataStepProps) {
       <div className="space-y-4">
         <FormField
           control={form.control}
-          name="categoryId"
+          name="category"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
@@ -194,7 +164,7 @@ function MetadataStep({ form, categories, collections }: MetadataStepProps) {
         />
         <FormField
           control={form.control}
-          name="collectionId"
+          name="collection"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Collection (optional)</FormLabel>
@@ -341,7 +311,7 @@ export function buildArticleSteps({ categories, collections }: BuildStepsArgs) {
       title: "Metadata",
       description: "Attach visuals, category, collections, and status.",
       Icon: Palette,
-      fields: ["thumbnailUrl", "categoryId", "collectionId", "status"],
+      fields: ["thumbnailUrl", "category", "collection", "status"],
       render: (form) => (
         <MetadataStep
           form={form}
