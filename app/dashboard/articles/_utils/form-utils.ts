@@ -33,8 +33,8 @@ export const mapArticleToFormValues = (
       ARTICLE_STATUS_OPTIONS.find((opt) => opt.value === article.status)
         ?.value ?? "draft",
     thumbnailUrl: article.thumbnailUrl ?? "",
-    category: article.category?.id ?? "",
-    collection: article.collection?.id ?? "",
+    category: article.category?.id ?? undefined,
+    collection: article.collection?.id ?? undefined,
     readTimeMins: article.readTimeMins,
     tags: article.tags ?? [],
   };

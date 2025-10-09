@@ -15,8 +15,8 @@ export const articleSchema = z.object({
     .refine((value) => !value || /^https?:\/\//.test(value), {
       message: "Use a valid http or https URL.",
     }),
-  category: z.coerce.string().min(1, "Select a category."),
-  collection: z.coerce.string().optional().default(""),
+  category: z.coerce.number().min(1, "Select a category.").optional(),
+  collection: z.coerce.number().optional(),
   status: z.enum(["draft", "published"]),
   readTimeMins: z
     .union([z.number(), z.string()])

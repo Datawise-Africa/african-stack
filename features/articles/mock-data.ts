@@ -3,7 +3,7 @@ import { Article, Category, Comment, Reaction, Bookmark, ReadEvent, Collection }
 // Mock Categories
 export const mockCategories: Category[] = [
   {
-    id: 'cat-1',
+    id: 1,
     slug: 'artificial-intelligence',
     name: 'Artificial Intelligence',
     description: 'Explore the latest developments in AI research, applications, and innovations from across Africa.',
@@ -11,7 +11,7 @@ export const mockCategories: Category[] = [
     color: 'bg-blue-500',
   },
   {
-    id: 'cat-2',
+    id: 2,
     slug: 'machine-learning',
     name: 'Machine Learning',
     description: 'Dive deep into machine learning algorithms, models, and real-world applications in African contexts.',
@@ -19,7 +19,7 @@ export const mockCategories: Category[] = [
     color: 'bg-green-500',
   },
   {
-    id: 'cat-3',
+    id: 3,
     slug: 'data-science',
     name: 'Data Science',
     description: 'Learn about data analysis, visualization, and insights that drive decision-making in African organizations.',
@@ -27,7 +27,7 @@ export const mockCategories: Category[] = [
     color: 'bg-purple-500',
   },
   {
-    id: 'cat-4',
+    id: 4,
     slug: 'startup-stories',
     name: 'Startup Stories',
     description: 'Inspiring stories of African entrepreneurs building innovative tech companies and solving local problems.',
@@ -35,7 +35,7 @@ export const mockCategories: Category[] = [
     color: 'bg-orange-500',
   },
   {
-    id: 'cat-5',
+    id: 5,
     slug: 'tech-policy',
     name: 'Tech Policy',
     description: 'Analysis of technology policies, regulations, and their impact on innovation across African countries.',
@@ -43,7 +43,7 @@ export const mockCategories: Category[] = [
     color: 'bg-red-500',
   },
   {
-    id: 'cat-6',
+    id: 6,
     slug: 'innovation',
     name: 'Innovation',
     description: 'Cutting-edge innovations, breakthrough technologies, and creative solutions emerging from Africa.',
@@ -67,7 +67,7 @@ export const mockTags = [
 
 export const mockCollections: Collection[] = [
   {
-    id: 'collection-1',
+    id: 1,
     name: 'AI Foundations',
     description: 'Core concepts and applications of artificial intelligence tailored for African innovators.',
     coverImageUrl: 'https://picsum.photos/seed/ai-foundations/800/400',
@@ -75,7 +75,7 @@ export const mockCollections: Collection[] = [
     updatedAt: '2024-01-18T09:00:00Z',
   },
   {
-    id: 'collection-2',
+    id: 2,
     name: 'Healthcare Transformation',
     description: 'Machine learning and data science breakthroughs improving healthcare outcomes across the continent.',
     coverImageUrl: 'https://picsum.photos/seed/healthcare/800/400',
@@ -83,7 +83,7 @@ export const mockCollections: Collection[] = [
     updatedAt: '2024-01-14T11:30:00Z',
   },
   {
-    id: 'collection-3',
+    id: 3,
     name: 'Blockchain & Transparency',
     description: 'Building trust and resilient supply chains with distributed technologies.',
     coverImageUrl: 'https://picsum.photos/seed/blockchain/800/400',
@@ -117,11 +117,11 @@ export const mockArticles: Article[] = [
     reactionsCount: 42,
     commentsCount: 8,
     views: 1200,
-    collectionId: 'collection-1',
-    collection: { id: 'collection-1', name: 'AI Foundations' },
+    collectionId: 1,
+    collection: { id: 1, name: 'AI Foundations' },
   },
   {
-    id: 'article-2',
+    id: '2',
     slug: 'machine-learning-healthcare-africa',
     title: 'Machine Learning in Healthcare: African Perspectives',
     excerpt: 'Exploring how ML is transforming healthcare delivery across Africa, from diagnostic tools to treatment optimization.',
@@ -142,11 +142,11 @@ export const mockArticles: Article[] = [
     reactionsCount: 28,
     commentsCount: 5,
     views: 890,
-    collectionId: 'collection-2',
-    collection: { id: 'collection-2', name: 'Healthcare Transformation' },
+    collectionId: 2,
+    collection: { id: 2, name: 'Healthcare Transformation' },
   },
   {
-    id: 'article-3',
+    id: '3',
     slug: 'data-science-startups-africa',
     title: 'Data Science Startups: The African Advantage',
     excerpt: 'Why African data science startups are uniquely positioned for global success and what makes them different.',
@@ -167,8 +167,8 @@ export const mockArticles: Article[] = [
     reactionsCount: 35,
     commentsCount: 12,
     views: 1100,
-    collectionId: 'collection-1',
-    collection: { id: 'collection-1', name: 'AI Foundations' },
+    collectionId: 1,
+    collection: { id: 1, name: 'AI Foundations' },
   },
   {
     id: 'article-4',
@@ -192,8 +192,8 @@ export const mockArticles: Article[] = [
     reactionsCount: 22,
     commentsCount: 7,
     views: 750,
-    collectionId: 'collection-3',
-    collection: { id: 'collection-3', name: 'Blockchain & Transparency' },
+    collectionId: 3,
+    collection: { id: 3, name: 'Blockchain & Transparency' },
   },
   {
     id: 'article-5',
@@ -215,8 +215,8 @@ export const mockArticles: Article[] = [
     updated_at: '2024-01-16T09:15:00Z',
     status: 'draft',
     reactionsCount: 0,
-    collectionId: 'collection-1',
-    collection: { id: 'collection-1', name: 'AI Foundations' },
+    collectionId: 1,
+    collection: { id: 1, name: 'AI Foundations' },
     commentsCount: 0,
     views: 0,
   },

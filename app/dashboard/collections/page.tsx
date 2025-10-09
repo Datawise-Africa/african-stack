@@ -77,7 +77,7 @@ export default function CollectionsPage() {
   );
 
   const handleCollectionToggle = useCallback(
-    (collectionId: string, open: boolean) => {
+    (collectionId: number, open: boolean) => {
       setExpandedCollections((previous) => ({
         ...previous,
         [collectionId]: open,
