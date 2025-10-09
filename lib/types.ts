@@ -15,7 +15,7 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
-  user_role: UserRole
+  user_role: UserRole;
   name: string;
   handle: string;
 }
@@ -95,8 +95,9 @@ export interface Article {
   tags: string[];
   thumbnailUrl?: string;
   readTimeMins: number;
-  publishedAt?: string;
-  updatedAt?: string;
+  published_at?: string;
+  updated_at?: string;
+  created_at?: string;
   status: "draft" | "pending_approval" | "published" | "rejected";
   approvalStatus?: "pending" | "approved" | "rejected";
   reactionsCount: number;

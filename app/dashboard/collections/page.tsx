@@ -18,7 +18,13 @@ import { toast } from "react-hot-toast";
 import { AuthGuard } from "@/components/auth-guard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   Collapsible,
@@ -41,16 +47,12 @@ const PAGE_SIZE = 6;
 export default function CollectionsPage() {
   const [page, setPage] = useState(1);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [expandedCollections, setExpandedCollections] = useState<Record<string, boolean>>({});
+  const [expandedCollections, setExpandedCollections] = useState<
+    Record<string, boolean>
+  >({});
 
-  const {
-    data,
-    isPending,
-    isError,
-    error,
-    refetch,
-    isRefetching,
-  } = usePaginatedCollections({ page, limit: PAGE_SIZE });
+  const { data, isPending, isError, error, refetch, isRefetching } =
+    usePaginatedCollections({ page, limit: PAGE_SIZE });
 
   const createCollectionMutation = useCreateCollectionMutation({
     onSuccess: (collection) => {
@@ -92,19 +94,25 @@ export default function CollectionsPage() {
 
   const totalCollections = meta?.total_docs ?? collections.length;
   const totalArticlesWithCollections = useMemo(
-    () => collections.reduce((acc, collection) => acc + (collection.articleCount ?? 0), 0),
+    () =>
+      collections.reduce(
+        (acc, collection) => acc + (collection.articleCount ?? 0),
+        0
+      ),
     [collections]
   );
 
   const latestCollectionName = useMemo(() => {
     if (!collections.length) return "—";
-    return collections
-      .slice()
-      .sort(
-        (a, b) =>
-          new Date(b.updatedAt ?? b.createdAt ?? 0).getTime() -
-          new Date(a.updatedAt ?? a.createdAt ?? 0).getTime()
-      )[0]?.name ?? "—";
+    return (
+      collections
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.updatedAt ?? b.createdAt ?? 0).getTime() -
+            new Date(a.updatedAt ?? a.createdAt ?? 0).getTime()
+        )[0]?.name ?? "—"
+    );
   }, [collections]);
 
   useEffect(() => {
@@ -114,14 +122,15 @@ export default function CollectionsPage() {
   }, [isError, error]);
 
   return (
-    <AuthGuard requireAuth allowedRoles={['author', 'admin']}>
+    <AuthGuard requireAuth allowedRoles={["author", "admin"]}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-3xl font-bold">Collections</h1>
               <p className="text-muted-foreground">
-                Group related articles into curated collections for your readers.
+                Group related articles into curated collections for your
+                readers.
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -148,7 +157,9 @@ export default function CollectionsPage() {
             <Card>
               <CardContent className="flex items-center justify-between p-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Total collections</p>
+                  <p className="text-sm text-muted-foreground">
+                    Total collections
+                  </p>
                   <p className="text-2xl font-semibold">
                     {isPending ? "…" : totalCollections}
                   </p>
@@ -183,7 +194,9 @@ export default function CollectionsPage() {
             <Card>
               <CardContent className="flex items-center justify-between p-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Draft collections</p>
+                  <p className="text-sm text-muted-foreground">
+                    Draft collections
+                  </p>
                   <p className="text-2xl font-semibold">0</p>
                 </div>
                 <FileText className="h-8 w-8 text-primary" />
@@ -204,10 +217,16 @@ export default function CollectionsPage() {
             </Card>
           ) : (
             <div className="grid gap-6">
-              {(isPending ? Array.from({ length: PAGE_SIZE }) : collections).map((collectionItem, index) => {
+              {(isPending
+                ? Array.from({ length: PAGE_SIZE })
+                : collections
+              ).map((collectionItem, index) => {
                 if (!collectionItem) {
                   return (
-                    <Card key={`collection-skeleton-${index}`} className="animate-pulse">
+                    <Card
+                      key={`collection-skeleton-${index}`}
+                      className="animate-pulse"
+                    >
                       <CardHeader className="flex flex-col gap-2">
                         <div className="h-6 w-48 rounded bg-muted" />
                         <div className="h-4 w-72 rounded bg-muted" />
@@ -226,21 +245,29 @@ export default function CollectionsPage() {
                   <Collapsible
                     key={collection.id}
                     open={isExpanded}
-                    onOpenChange={(open) => handleCollectionToggle(collection.id, open)}
+                    onOpenChange={(open) =>
+                      handleCollectionToggle(collection.id, open)
+                    }
                   >
                     <Card>
                       <CardHeader className="space-y-3">
                         <div className="space-y-1">
                           <CardTitle>{collection.name}</CardTitle>
                           {collection.description && (
-                            <CardDescription>{collection.description}</CardDescription>
+                            <CardDescription>
+                              {collection.description}
+                            </CardDescription>
                           )}
                         </div>
                         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                           <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                             <span>
                               Updated{" "}
-                              {new Date(collection.updatedAt ?? collection.createdAt ?? Date.now()).toLocaleDateString()}
+                              {new Date(
+                                collection.updatedAt ??
+                                  collection.createdAt ??
+                                  Date.now()
+                              ).toLocaleDateString()}
                             </span>
                             <Separator orientation="vertical" />
                             <span>{collection.articleCount} articles</span>
@@ -266,7 +293,8 @@ export default function CollectionsPage() {
                         <CardContent className="space-y-4">
                           {collection.articles.length === 0 ? (
                             <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
-                              No articles have been added to this collection yet.
+                              No articles have been added to this collection
+                              yet.
                             </div>
                           ) : (
                             <div className="grid gap-3">
@@ -277,10 +305,14 @@ export default function CollectionsPage() {
                                 >
                                   <div className="mr-4 flex-1">
                                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                      <Badge variant="secondary">{article.status}</Badge>
+                                      <Badge variant="secondary">
+                                        {article.status}
+                                      </Badge>
                                       <span>
                                         {new Date(
-                                          article.publishedAt || article.updatedAt || "1970-01-01"
+                                          article.published_at ||
+                                            article.updated_at ||
+                                            "1970-01-01"
                                         ).toLocaleDateString()}
                                       </span>
                                     </div>
@@ -297,7 +329,10 @@ export default function CollectionsPage() {
                                   </div>
                                   <div className="text-right text-xs text-muted-foreground">
                                     <p>{article.readTimeMins} min read</p>
-                                    <p>{article.views?.toLocaleString() ?? 0} views</p>
+                                    <p>
+                                      {article.views?.toLocaleString() ?? 0}{" "}
+                                      views
+                                    </p>
                                   </div>
                                 </div>
                               ))}
@@ -326,7 +361,9 @@ export default function CollectionsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-                disabled={isPending || page === 1 || meta?.has_prev_page === false}
+                disabled={
+                  isPending || page === 1 || meta?.has_prev_page === false
+                }
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Previous

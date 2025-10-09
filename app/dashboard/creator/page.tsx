@@ -45,7 +45,7 @@ export default function CreatorDashboardPage() {
     .sort((a, b) => {
       switch (sortBy) {
         case "latest":
-          return new Date(b.publishedAt || b.updatedAt || '1970-01-01').getTime() - new Date(a.publishedAt || a.updatedAt || '1970-01-01').getTime();
+          return new Date(b.published_at || b.updated_at || '1970-01-01').getTime() - new Date(a.published_at || a.updated_at || '1970-01-01').getTime();
         case "popular":
           return (b.reactionsCount || 0) - (a.reactionsCount || 0);
         case "views":
@@ -186,11 +186,11 @@ export default function CreatorDashboardPage() {
                           {article.status}
                         </Badge>
                         <span className="text-sm text-muted-foreground">
-                          {new Date(article.publishedAt || article.updatedAt || '1970-01-01').toLocaleDateString()}
+                          {new Date(article.published_at || article.updated_at || '1970-01-01').toLocaleDateString()}
                         </span>
                       </div>
                       <h3 className="font-semibold truncate">
-                        <Link href={article.status === 'published' ? `/articles/${article.slug}` : `/dashboard/articles/${article.id}/edit`} className="hover:text-primary">
+                        <Link href={article.status === 'published' ? `/articles/${article.id}` : `/dashboard/articles/${article.id}/edit`} className="hover:text-primary">
                           {article.title}
                         </Link>
                       </h3>
@@ -206,7 +206,7 @@ export default function CreatorDashboardPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link href={article.status === 'published' ? `/articles/${article.slug}` : `/dashboard/articles/${article.id}/edit`}>
+                          <Link href={article.status === 'published' ? `/articles/${article.id}` : `/dashboard/articles/${article.id}/edit`}>
                             <ExternalLink className="w-4 h-4 mr-2" />
                             {article.status === 'published' ? 'View' : 'Edit'}
                           </Link>

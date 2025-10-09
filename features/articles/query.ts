@@ -15,6 +15,7 @@ import { queryKeys } from "@/lib/query-keys";
 import type { Article, Category } from "@/lib/types";
 
 export const ARTICLES_ENDPOINT = "/blogs/articles/";
+export const PUBLISHED_ARTICLES_ENDPOINT = "/blogs/published-articles/";
 
 export type ArticleListParams = {
   page?: number;
@@ -22,6 +23,9 @@ export type ArticleListParams = {
   search?: string;
   status?: string;
   category?: string;
+  author?: string;
+  tag?: string;
+  ordering?: string;
 };
 
 type RawCategory = {
@@ -163,8 +167,8 @@ const normalizeArticle = (raw: RawArticle): Article => {
     tags: (tags ?? []).filter((tag): tag is string => typeof tag === "string"),
     thumbnailUrl: raw.thumbnail ?? undefined,
     readTimeMins: Number(raw.read_time_mins ?? 0),
-    publishedAt: raw.published_at ?? undefined,
-    updatedAt: raw.updated_at ?? raw.created_at ?? undefined,
+    published_at: raw.published_at ?? undefined,
+    updated_at: raw.updated_at ?? raw.created_at ?? undefined,
     status: (raw.status ?? "draft") as Article["status"],
     approvalStatus: undefined,
     reactionsCount: Number(raw.reactions_count ?? 0),
@@ -203,12 +207,35 @@ const extractArticle = (response: ArticleDetailResponse): RawArticle => {
 export const buildArticlesListKey = (params?: ArticleListParams) =>
   [...queryKeys.articles.lists(), params ?? {}] as const;
 
+export const buildPublishedArticlesListKey = (
+  params?: ArticleListParams
+) => [...queryKeys.articles.lists(), "published", params ?? {}] as const;
+
 export async function fetchArticles(
   params: ArticleListParams = {}
 ): Promise<ArticleListResult> {
   const response = await apiClient.get<ArticleListResponse>(ARTICLES_ENDPOINT, {
     params,
   });
+
+  const list = response.data?.data ?? [];
+  const meta = normalizeMeta(response.data?.meta, list.length, params);
+
+  return {
+    data: list.map(normalizeArticle),
+    meta,
+  };
+}
+
+export async function fetchPublishedArticles(
+  params: ArticleListParams = {}
+): Promise<ArticleListResult> {
+  const response = await apiClient.get<ArticleListResponse>(
+    PUBLISHED_ARTICLES_ENDPOINT,
+    {
+      params,
+    }
+  );
 
   const list = response.data?.data ?? [];
   const meta = normalizeMeta(response.data?.meta, list.length, params);
@@ -226,6 +253,36 @@ export async function fetchArticle(idOrSlug: string): Promise<Article> {
   return normalizeArticle(
     extractArticle(response.data ?? (response as unknown as RawArticle))
   );
+}
+
+export async function fetchPublishedArticle(
+  idOrSlug: string
+): Promise<Article> {
+  try {
+    const response = await apiClient.get<ArticleDetailResponse>(
+      `${PUBLISHED_ARTICLES_ENDPOINT}${idOrSlug}/`
+    );
+    return normalizeArticle(
+      extractArticle(response.data ?? (response as unknown as RawArticle))
+    );
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      const fallback = await fetchPublishedArticles({
+        search: idOrSlug,
+        limit: 10,
+      });
+      const normalizedLookup = idOrSlug?.toLowerCase();
+      const match = fallback.data.find((article) => {
+        if (article.id === idOrSlug) return true;
+        if (!normalizedLookup) return false;
+        return article.slug?.toLowerCase() === normalizedLookup;
+      });
+      if (match) {
+        return match;
+      }
+    }
+    throw error;
+  }
 }
 
 const mapPayload = (payload: ArticleUpdatePayload) => ({
@@ -291,6 +348,35 @@ export const useArticleQuery = <TData = Article>(
       ? queryKeys.articles.detail(String(idOrSlug))
       : [...queryKeys.articles.details(), "unknown"],
     queryFn: () => fetchArticle(idOrSlug as string),
+    enabled: !!idOrSlug && (options?.enabled ?? true),
+    staleTime: 5 * 60 * 1000,
+    ...(options ?? {}),
+  });
+
+export const usePublishedArticlesQuery = <TData = ArticleListResult>(
+  params?: ArticleListParams,
+  options?: Omit<
+    UseQueryOptions<ArticleListResult, ApiError, TData>,
+    "queryKey" | "queryFn"
+  >
+): UseQueryResult<TData, ApiError> =>
+  useQuery<ArticleListResult, ApiError, TData>({
+    queryKey: buildPublishedArticlesListKey(params),
+    queryFn: () => fetchPublishedArticles(params),
+    staleTime: 5 * 60 * 1000,
+    // initialData: ,
+    ...options,
+  });
+
+export const usePublishedArticleQuery = <TData = Article>(
+  idOrSlug: string | null | undefined,
+  options?: Omit<UseQueryOptions<Article, ApiError, TData>, "queryKey" | "queryFn">
+): UseQueryResult<TData, ApiError> =>
+  useQuery<Article, ApiError, TData>({
+    queryKey: idOrSlug
+      ? [...queryKeys.articles.details(), "published", String(idOrSlug)]
+      : [...queryKeys.articles.details(), "published", "unknown"],
+    queryFn: () => fetchPublishedArticle(idOrSlug as string),
     enabled: !!idOrSlug && (options?.enabled ?? true),
     staleTime: 5 * 60 * 1000,
     ...(options ?? {}),

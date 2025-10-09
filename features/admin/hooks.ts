@@ -165,7 +165,7 @@ const mockApi = {
 
     article.approvalStatus = "approved";
     article.status = "published";
-    article.publishedAt = new Date().toISOString();
+    article.published_at = new Date().toISOString();
 
     return article;
   },

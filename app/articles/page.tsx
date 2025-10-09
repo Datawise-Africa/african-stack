@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -8,7 +8,7 @@ import { ArticleCard } from "@/components/article-card";
 import { ArticleListSkeleton } from "@/components/article-list-skeleton";
 import { useArticles } from "@/features/articles/hooks";
 import { useCategories } from "@/features/categories/hooks";
-import { ArticleFilters } from "@/lib/types";
+import type { Article, ArticleFilters } from "@/lib/types";
 
 function ArticlesContent() {
   const [filters, setFilters] = useState<ArticleFilters>({
@@ -17,7 +17,38 @@ function ArticlesContent() {
     limit: 9,
   });
   
-  const { data: articlesData, isLoading, error } = useArticles(filters);
+  const {
+    data: articlesResult,
+    isPending,
+    isError,
+    error,
+    isFetching,
+  } = useArticles(filters);
+  const articles = articlesResult?.data ?? [];
+  const meta = articlesResult?.meta;
+  const [displayedArticles, setDisplayedArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    if (!articlesResult) {
+      if (!isFetching && filters.page === 1) {
+        setDisplayedArticles([]);
+      }
+      return;
+    }
+    setDisplayedArticles((prev) => {
+      if ((filters.page ?? 1) > 1) {
+        const merged = new Map(prev.map((article) => [article.id, article]));
+        articles.forEach((article) => {
+          merged.set(article.id, article);
+        });
+        return Array.from(merged.values());
+      }
+      return articles;
+    });
+  }, [articlesResult, articles, filters.page, isFetching]);
+
+  const canLoadMore =
+    meta?.has_next_page ?? (meta ? meta.page < meta.total_pages : false);
   const { data: categories } = useCategories();
 
   const handleSearch = (query: string) => {
@@ -35,14 +66,34 @@ function ArticlesContent() {
       page: 1 
     }));
   };
-
-  if (error) {
+  const renderArticles = useMemo(() => {
+    if (!displayedArticles.length && isPending) {
+      return <ArticleListSkeleton />;
+    }
+    if (!displayedArticles.length) {
+      return (
+        <div className="text-center py-12 text-muted-foreground">
+          No articles available yet.
+        </div>
+      );
+    }
+    return (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {displayedArticles.map((article) => (
+          <ArticleCard key={article.id} article={article} />
+        ))}
+      </div>
+    );
+  }, [displayedArticles, isPending]);
+  if (isError) {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">Failed to load articles. Please try again.</p>
       </div>
     );
   }
+
+
 
   return (
     <>
@@ -115,25 +166,18 @@ function ArticlesContent() {
       </div>
 
       {/* Articles Grid */}
-      {isLoading ? (
-        <ArticleListSkeleton />
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {articlesData?.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-        </div>
-      )}
+      {renderArticles}
 
       {/* Load More */}
-      {articlesData && articlesData.length > 0 && (
+      {displayedArticles.length > 0 && canLoadMore && (
         <div className="mt-12 text-center">
           <Button 
             variant="outline" 
             size="lg"
-            onClick={() => setFilters(prev => ({ ...prev, page: prev.page! + 1 }))}
+            onClick={() => setFilters(prev => ({ ...prev, page: (prev.page ?? 1) + 1 }))}
+            disabled={isFetching}
           >
-            Load More Articles
+            {isFetching ? "Loading…" : "Load More Articles"}
           </Button>
         </div>
       )}

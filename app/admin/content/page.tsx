@@ -339,7 +339,7 @@ export default function ContentModeration() {
                     const authorName = `${article.author?.first_name ?? ""} ${
                       article.author?.last_name ?? ""
                     }`.trim() || article.author?.handle || "Unknown author";
-                    const submittedDate = article.updatedAt ?? article.createdAt;
+                    const submittedDate = article.updated_at ?? article.created_at;
                     const minuteRead = article.readTimeMins ?? 0;
                     return (
                       <Card key={article.id}>

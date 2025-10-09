@@ -70,8 +70,9 @@ export type ArticleSummary = Pick<
   | "status"
   | "readTimeMins"
   | "views"
-  | "publishedAt"
-  | "updatedAt"
+  | "published_at"
+  | "updated_at"
+  | "created_at"
 >;
 
 export type CollectionWithArticles = Collection & {
@@ -92,8 +93,8 @@ const normalizeArticle = (article: RawArticle): ArticleSummary => {
     status: (article.status ?? "draft") as ArticleSummary["status"],
     readTimeMins: Number(article.read_time_mins ?? article.read_time ?? 0) || 0,
     views: Number(article.views ?? 0) || 0,
-    publishedAt: article.published_at ?? undefined,
-    updatedAt: article.updated_at ?? undefined,
+    published_at: article.published_at ?? undefined,
+    updated_at: article.updated_at ?? undefined,
   };
 };
 

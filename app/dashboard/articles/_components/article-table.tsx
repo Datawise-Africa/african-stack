@@ -199,7 +199,7 @@ export function ArticleTable({
           </Button>
         ),
         cell: ({ row }) => {
-          const date = row.original.updatedAt ?? row.original.publishedAt;
+          const date = row.original.updated_at ?? row.original.published_at;
           return (
             <span className="text-muted-foreground">
               {date ? new Date(date).toLocaleDateString() : "—"}

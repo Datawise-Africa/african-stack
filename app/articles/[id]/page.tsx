@@ -4,38 +4,50 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share2, Clock, Calendar } from "lucide-react";
 import { ArticleCard } from "@/components/article-card";
+import { ArticleListSkeleton } from "@/components/article-list-skeleton";
 import { CommentList } from "@/components/comment-list";
 import { ReactionButton } from "@/components/reaction-button";
 import { BookmarkButton } from "@/components/bookmark-button";
 import { RichTextRenderer } from "@/components/rich-text-renderer";
 import { useArticle } from "@/features/articles/hooks";
 import { useArticleComments } from "@/features/interactions/hooks";
-import { mockArticles } from "@/features/articles/mock-data";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-// Get related articles (excluding current article)
-const getRelatedArticles = (currentSlug: string) => {
-  return mockArticles
-    .filter(
-      (article) =>
-        article.slug !== currentSlug && article.status === "published"
-    )
-    .slice(0, 2);
-};
+import { usePublishedArticlesQuery } from "@/features/articles/query";
 
 type PageProps = {
   params: Promise<{
-    slug: string;
+    id: string;
   }>;
 };
 
 export default function ArticlePage({ params }: PageProps) {
   const resolvedParams = React.use(params);
-  const { data: article, isLoading, error } = useArticle(resolvedParams.slug);
+  const articleId = resolvedParams.id;
+  const {
+    data: article,
+    isPending,
+    isError,
+    error,
+  } = useArticle(articleId);
   useArticleComments(article?.id || "");
 
-  if (isLoading) {
+  const categorySlug = article?.category?.slug;
+  const {
+    data: relatedResult,
+    isPending: isRelatedPending,
+  } = usePublishedArticlesQuery(
+    {
+      category: categorySlug,
+      limit: 4,
+      page: 1,
+    },
+    {
+      enabled: !!categorySlug,
+    }
+  );
+
+  if (isPending) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -54,11 +66,18 @@ export default function ArticlePage({ params }: PageProps) {
     );
   }
 
-  if (error || !article) {
+  if (isError || error || !article) {
     notFound();
+    return null;
   }
 
-  const relatedArticles = getRelatedArticles(article.slug);
+  const relatedArticles =
+    relatedResult?.data
+      ?.filter(
+        (related) =>
+          related.id !== article.id && related.status === "published"
+      )
+      .slice(0, 2) ?? [];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -92,14 +111,14 @@ export default function ArticlePage({ params }: PageProps) {
             <div>
               <div className="font-semibold">{article.author.first_name}</div>
               <div className="text-sm text-muted-foreground">
-                @{article.author.handle}
+                {article.author.handle}
               </div>
             </div>
             <div className="flex items-center space-x-4 text-sm text-muted-foreground ml-auto">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1" />
-                {article.publishedAt
-                  ? new Date(article.publishedAt).toLocaleDateString()
+                {article.published_at
+                  ? new Date(article.published_at).toLocaleDateString()
                   : "Draft"}
               </div>
               <div className="flex items-center">
@@ -167,11 +186,19 @@ export default function ArticlePage({ params }: PageProps) {
         {/* Related Articles */}
         <div>
           <h3 className="text-2xl font-bold mb-6">Related Articles</h3>
-          <div className="grid gap-6 md:grid-cols-2">
-            {relatedArticles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
+          {isRelatedPending ? (
+            <ArticleListSkeleton />
+          ) : relatedArticles.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2">
+              {relatedArticles.map((related) => (
+                <ArticleCard key={related.id} article={related} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">
+              No related articles available right now.
+            </p>
+          )}
         </div>
       </div>
     </div>

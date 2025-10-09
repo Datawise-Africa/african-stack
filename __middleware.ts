@@ -35,7 +35,7 @@ const publicRoutes = [
   '/newsletter/subscribe',
   '/newsletter/[id]',
   '/articles',
-  '/articles/[slug]',
+  '/articles/[id]',
   '/contribute',
   '/auth/login',
   '/auth/register',

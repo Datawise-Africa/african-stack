@@ -1,7 +1,13 @@
+import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/query-keys';
 import { mockArticles, mockCategories, mockTags } from './mock-data';
 import { Article, ArticleFilters, Category, Tag } from '@/lib/types';
+import {
+  type ArticleListParams,
+  usePublishedArticlesQuery,
+  usePublishedArticleQuery,
+} from './query';
 
 // Mock API functions (will be replaced with real API calls)
 const mockApi = {
@@ -49,8 +55,8 @@ const mockApi = {
       filteredArticles.sort((a, b) => b.reactionsCount - a.reactionsCount);
     } else if (filters.sort === 'latest') {
       filteredArticles.sort((a, b) => 
-        new Date(b.publishedAt || b.updatedAt || '').getTime() - 
-        new Date(a.publishedAt || a.updatedAt || '').getTime()
+        new Date(b.published_at || b.updated_at || '').getTime() - 
+        new Date(a.published_at || a.updated_at || '').getTime()
       );
     }
     
@@ -85,8 +91,8 @@ const mockApi = {
       tags: article.tags || [],
       thumbnailUrl: article.thumbnailUrl,
       readTimeMins: article.readTimeMins || 5,
-      publishedAt: article.status === 'published' ? new Date().toISOString() : undefined,
-      updatedAt: new Date().toISOString(),
+      published_at: article.status === 'published' ? new Date().toISOString() : undefined,
+      updated_at: new Date().toISOString(),
       status: article.status || 'draft',
       approvalStatus: article.approvalStatus,
       reactionsCount: 0,
@@ -156,30 +162,46 @@ const mockApi = {
   },
 };
 
-// Article Hooks
-export const useArticles = (filters: ArticleFilters = {}) => {
-  return useQuery({
-    queryKey: queryKeys.articles.list(filters),
-    queryFn: () => mockApi.getArticles(filters),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+const sortToOrdering: Record<string, string> = {
+  latest: '-published_at',
+  trending: '-views',
+  popular: '-reactions_count',
 };
 
-export const useArticle = (slug: string) => {
-  return useQuery({
-    queryKey: queryKeys.articles.bySlug(slug),
-    queryFn: () => mockApi.getArticle(slug),
-    enabled: !!slug,
-    staleTime: 10 * 60 * 1000, // 10 minutes
+const mapFiltersToParams = (filters: ArticleFilters = {}): ArticleListParams => {
+  const params: ArticleListParams = {
+    page: filters.page,
+    limit: filters.limit,
+    search: filters.query,
+    category: filters.category,
+    status: filters.status,
+    author: filters.author,
+    tag: filters.tag,
+  };
+
+  if (filters.sort && sortToOrdering[filters.sort]) {
+    params.ordering = sortToOrdering[filters.sort];
+  }
+
+  return params;
+};
+
+// Article Hooks
+export const useArticles = (filters: ArticleFilters = {}) => {
+  const params = useMemo(() => mapFiltersToParams(filters), [filters]);
+
+  return usePublishedArticlesQuery(params);
+};
+
+export const useArticle = (articleId: string) => {
+  return usePublishedArticleQuery(articleId, {
+    enabled: !!articleId,
   });
 };
 
 export const useArticleById = (id: string) => {
-  return useQuery({
-    queryKey: queryKeys.articles.detail(id),
-    queryFn: () => mockApi.getArticleById(id),
+  return usePublishedArticleQuery(id, {
     enabled: !!id,
-    staleTime: 10 * 60 * 1000,
   });
 };
 
@@ -270,11 +292,17 @@ export const usePopularTags = () => {
 
 // Search Hooks
 export const useSearchArticles = (query: string) => {
-  return useQuery({
-    queryKey: queryKeys.articles.search(query),
-    queryFn: () => mockApi.getArticles({ query }),
+  const params = useMemo<ArticleListParams>(
+    () => ({
+      search: query || undefined,
+      page: 1,
+      limit: 10,
+    }),
+    [query]
+  );
+
+  return usePublishedArticlesQuery(params, {
     enabled: !!query && query.length > 2,
-    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
 
