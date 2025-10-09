@@ -64,11 +64,11 @@ export function ArticleCard({
             <span className="text-sm text-muted-foreground">
               {article.author.first_name}
             </span>
-            {article.publishedAt && (
+            {article.published_at && (
               <>
                 <span className="text-muted-foreground">•</span>
                 <span className="text-sm text-muted-foreground">
-                  {new Date(article.publishedAt).toLocaleDateString()}
+                  {new Date(article.published_at).toLocaleDateString()}
                 </span>
               </>
             )}
@@ -77,7 +77,7 @@ export function ArticleCard({
 
         {/* Title */}
         <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-          <Link href={`/articles/${article.slug}`}>{article.title}</Link>
+          <Link href={`/articles/${article.id}`}>{article.title}</Link>
         </h3>
 
         {/* Excerpt */}

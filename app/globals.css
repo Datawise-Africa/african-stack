@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -316,4 +317,74 @@ body {
 
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.tiptap {
+  min-height: 320px;
+  padding: 1rem;
+}
+
+.tiptap:focus {
+  outline: none;
+}
+
+.tiptap > * + * {
+  margin-top: 0.75em;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5rem;
+}
+
+.tiptap ul {
+  list-style: disc;
+}
+
+.tiptap ol {
+  list-style: decimal;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4 {
+  line-height: 1.2;
+}
+
+.tiptap code {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.tiptap pre {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.tiptap blockquote {
+  border-left: 4px solid hsl(var(--primary));
+  margin: 1rem 0;
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  display: block;
+  margin: 1rem auto;
+}
+
+.tiptap a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
 }

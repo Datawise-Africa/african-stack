@@ -312,13 +312,15 @@ export const useCreateRoleRequest = () => {
 };
 
 // User Articles Hook
-export const useUserArticles = (userId: string, filters: Record<string, unknown> = {}) => {
+export const useUserArticles = (userId: string, _filters: Record<string, unknown> = {}) => {
   return useQuery({
     queryKey: queryKeys.users.articles(userId),
     queryFn: async () => {
       // This would typically call a different API endpoint
       // For now, we'll filter articles by author
       const { mockArticles } = await import('../articles/mock-data');
+      console.log(_filters);
+      
       return mockArticles.filter(article => article.author.id === userId);
     },
     enabled: !!userId,

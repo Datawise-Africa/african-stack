@@ -235,7 +235,7 @@ const dashboardNotifications = [
     id: "notif-1",
     title: "Article published",
     description: "Your article “Building AI Solutions in Africa” is live.",
-    href: "/articles/building-ai-solutions-africa",
+    href: "/articles/article-1",
     time: "2h ago",
     unread: true,
   },

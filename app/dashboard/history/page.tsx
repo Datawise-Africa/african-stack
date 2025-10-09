@@ -230,7 +230,7 @@ export default function DashboardHistoryPage() {
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold mb-2">
                           <Link
-                            href={`/articles/${item.article.slug}`}
+                            href={`/articles/${item.article.id}`}
                             className="hover:text-primary transition-colors"
                           >
                             {item.article.title}
@@ -249,7 +249,7 @@ export default function DashboardHistoryPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
-                            <Link href={`/articles/${item.article.slug}`}>
+                            <Link href={`/articles/${item.article.id}`}>
                               <ExternalLink className="w-4 h-4 mr-2" />
                               Read Again
                             </Link>
@@ -287,7 +287,7 @@ export default function DashboardHistoryPage() {
                       <span className="text-muted-foreground">•</span>
                       <span className="text-sm text-muted-foreground">
                         {new Date(
-                          item.article.publishedAt!
+                          item.article.published_at!
                         ).toLocaleDateString()}
                       </span>
                     </div>
